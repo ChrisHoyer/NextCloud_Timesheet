@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-    <id>timesheet</id>
-    <name>Time Sheet</name>
-    <summary>Simple Timesheet</summary>
-    <description><![CDATA[Simple Timesheet]]></description>
-    <version>0.0.1</version>
+    <id>notestutorial</id>
+    <name>Notes Tutorial</name>
+    <summary>App for taking notes</summary>
+    <description><![CDATA[This is a tutorial app for taking notes to demonstrate the Nextcloud API]]></description>
+    <version>17.0.0</version>
     <licence>agpl</licence>
-    <author mail="info@chrishoyer.de" homepage="http://www.chrishoyer.de">ChrisHoyer</author>
-    <namespace>TimeSheet</namespace>
-    <category>organization</category>
-    <bugs>http://gitlab.chrishoyer.de</bugs>
+    <author mail="dev@bernhard-posselt.com" >Bernhard Posselt</author>
+    <namespace>NotesTutorial</namespace>
+    <category>office</category>
+    <bugs>https://github.com/nextcloud/app-tutorial</bugs>
     <dependencies>
-        <nextcloud min-version="15" max-version="15"/>
+        <nextcloud min-version="16" max-version="18"/>
     </dependencies>
     <navigations>
         <navigation>
-            <name>Time Sheet</name>
-            <route>timesheet.page.index</route>
+            <name>Notes Tutorial</name>
+            <route>notestutorial.page.index</route>
         </navigation>
     </navigations>
 </info>

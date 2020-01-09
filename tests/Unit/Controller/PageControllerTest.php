@@ -1,30 +1,25 @@
 <?php
+namespace OCA\NotesTutorial\Controller;
 
-namespace OCA\TimeSheet\Tests\Unit\Controller;
-
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_TestCase;
 
 use OCP\AppFramework\Http\TemplateResponse;
 
-use OCA\TimeSheet\Controller\PageController;
+class PageControllerTest extends TestCase {
 
-
-class PageControllerTest extends PHPUnit_Framework_TestCase {
 	private $controller;
-	private $userId = 'john';
 
-	public function setUp() {
+	public function setUp(): void {
 		$request = $this->getMockBuilder('OCP\IRequest')->getMock();
-
-		$this->controller = new PageController(
-			'timesheet', $request, $this->userId
-		);
+		$this->controller = new PageController('notestutorial', $request);
 	}
+
 
 	public function testIndex() {
 		$result = $this->controller->index();
 
-		$this->assertEquals('index', $result->getTemplateName());
+		$this->assertEquals('main', $result->getTemplateName());
 		$this->assertTrue($result instanceof TemplateResponse);
 	}
 

@@ -1,52 +1,27 @@
-# Time Sheet
-Place this app in **nextcloud/apps/**
+# Nextcloud App Tutorial
 
-## Building the app
+[![Build Status](https://travis-ci.org/nextcloud/app-tutorial.svg?branch=master)](https://travis-ci.org/nextcloud/app-tutorial)
 
-The app can be built by using the provided Makefile by running:
+This is the [tutorial app](https://docs.nextcloud.com/server/latest/developer_manual/app/tutorial.html) which shows how to develop a very simple notes app.
+ 
+## Try it 
+To install it change into your Nextcloud's apps directory:
 
-    make
+    cd nextcloud/apps
 
-This requires the following things to be present:
-* make
-* which
-* tar: for building the archive
-* curl: used if phpunit and composer are not installed to fetch them from the web
-* npm: for building and testing everything JS, only required if a package.json is placed inside the **js/** folder
+Then run:
 
-The make command will install or update Composer dependencies if a composer.json is present and also **npm run build** if a package.json is present in the **js/** folder. The npm **build** script should use local paths for build systems and package managers, so people that simply want to build the app won't need to install npm libraries globally, e.g.:
+    git clone https://github.com/nextcloud/app-tutorial.git notestutorial
 
-**package.json**:
-```json
-"scripts": {
-    "test": "node node_modules/gulp-cli/bin/gulp.js karma",
-    "prebuild": "npm install && node_modules/bower/bin/bower install && node_modules/bower/bin/bower update",
-    "build": "node node_modules/gulp-cli/bin/gulp.js"
-}
-```
+Then install the dependencies using:
 
+    make composer
 
-## Publish to App Store
+## Frontend development
 
-First get an account for the [App Store](http://apps.nextcloud.com/) then run:
+The app tutorial also shows the very basic implementation of an app frontend using [Vue.js](https://vuejs.org/). To build the frontend code after doing changes to its source in `src/` requires to have Node and npm installed.
 
-    make && make appstore
+- 👩‍💻 Run `make dev-setup` to install the frontend dependencies
+- 🏗 To build the Javascript whenever you make changes, run `make build-js`
 
-The archive is located in build/artifacts/appstore and can then be uploaded to the App Store.
-
-## Running tests
-You can use the provided Makefile to run all tests by using:
-
-    make test
-
-This will run the PHP unit and integration tests and if a package.json is present in the **js/** folder will execute **npm run test**
-
-Of course you can also install [PHPUnit](http://phpunit.de/getting-started.html) and use the configurations directly:
-
-    phpunit -c phpunit.xml
-
-or:
-
-    phpunit -c phpunit.integration.xml
-
-for integration tests
+To continuously run the build when editing source files you can make use of the `make watch-js` command.
