@@ -1,0 +1,15 @@
+{
+    "name": "Time Sheet",
+    "description": "App for creating time sheets",
+    "type": "project",
+    "license": "AGPL",
+    "authors": [
+        {
+            "name": "ChrisHoyer"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
+}
