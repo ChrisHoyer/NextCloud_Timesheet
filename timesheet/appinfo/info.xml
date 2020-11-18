@@ -2,21 +2,23 @@
 <info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>timesheet</id>
-    <name>Time Sheet</name>
-    <summary>App for creating time sheets</summary>
-    <description><![CDATA[App for creating time sheets]]></description>
+    <name>Timesheet</name>
+    <summary>A timesheet (or time sheet) is a method for recording the amount of a worker&#39;s time spent on each job</summary>
+    <description><![CDATA[Timesheet Tabular
+
+tbd]]></description>
     <version>0.0.1</version>
     <licence>agpl</licence>
     <author mail="info@chrishoyer.de" >ChrisHoyer</author>
-    <namespace>TimeSheet</namespace>
-    <category>tools</category>
+    <namespace>Timesheet</namespace>
+    <category>office</category>
     <bugs>https://github.com/ChrisHoyer/NextCloud_Timesheet</bugs>
     <dependencies>
         <nextcloud min-version="15" max-version="15"/>
     </dependencies>
     <navigations>
         <navigation>
-            <name>Time Sheet</name>
+            <name>Timesheet</name>
             <route>timesheet.page.index</route>
         </navigation>
     </navigations>

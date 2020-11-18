@@ -1,6 +1,6 @@
 {
-    "name": "Time Sheet",
-    "description": "App for creating time sheets",
+    "name": "Timesheet",
+    "description": "A timesheet (or time sheet) is a method for recording the amount of a worker&#39;s time spent on each job",
     "type": "project",
     "license": "AGPL",
     "authors": [

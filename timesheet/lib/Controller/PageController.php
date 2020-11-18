@@ -1,5 +1,5 @@
 <?php
-namespace OCA\TimeSheet\Controller;
+namespace OCA\Timesheet\Controller;
 
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
