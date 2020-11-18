@@ -14,7 +14,7 @@ tbd]]></description>
     <category>office</category>
     <bugs>https://github.com/ChrisHoyer/NextCloud_Timesheet</bugs>
     <dependencies>
-        <nextcloud min-version="15" max-version="15"/>
+        <nextcloud min-version="15" max-version="20"/>
     </dependencies>
     <navigations>
         <navigation>

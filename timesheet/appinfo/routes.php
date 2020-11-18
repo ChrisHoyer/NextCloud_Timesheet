@@ -10,6 +10,7 @@
 return [
     'routes' => [
 	   ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-	   ['name' => 'page#do_echo', 'url' => '/echo', 'verb' => 'POST'],
+	   ['name' => 'timesheet#show', 'url' => '/record/{id}', 'verb' => 'GET'],
+	   ['name' => 'timesheet#create', 'url' => '/record', 'verb' => 'POST'],
     ]
 ];
