@@ -12,27 +12,32 @@ class RecordMapper extends QBMapper {
 
 	// got from parent: insert and update function
 
+// ==================================================================================================================
 	// find using SQL commands
     public function find(int $id, string $userId) {
 		
 		// Build SQL querry
         $qb = $this->db->getQueryBuilder();
-
-					// select from app Table, where only this ID and current user
-                    $qb->select('*')
-                             ->from($this->getTableName())
-                             ->where(
-                                     $qb->expr()->eq('id', $qb->createNamedParameter($id))
-                             )->andWhere(
-             $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+		
+		// select from app Table, where only this ID and current user
+		$qb->select('*')
+		   ->from($this->getTableName())
+		   ->where(
+		   $qb->expr()->eq('id', $qb->createNamedParameter($id))
+		   )->andWhere(
+		   $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
            );
 
         return $this->findEntity($qb);
     }
 
-/*    public function findAll(string $userId) {
+// ==================================================================================================================
+    public function findAll(string $userId) {
+		
+		// Build SQL querry
         $qb = $this->db->getQueryBuilder();
 
+		// select from DB, where only current user
         $qb->select('*')
            ->from($this->getTableName())
            ->where(
@@ -40,6 +45,7 @@ class RecordMapper extends QBMapper {
            );
 
         return $this->findEntities($qb);
-    } */
+    } 
 
+// ==================================================================================================================
 }

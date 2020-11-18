@@ -1,3 +1,83 @@
 #hello {
 	color: red;
 }
+
+/* ============ Adjust Nextcloud Style ============ */
+/* Resize Main Box from Nextcloud */
+#app-content-wrapper {
+	width: 100%;
+	display:block;
+}
+
+#app {
+	width: 100%;
+}
+
+/* ============ Content Alignment ============ */
+#timesheet-content {
+	
+	/* fit parent size */
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	width: 100%;
+		 
+	display: flex;
+	flex-direction: column;
+	background-color: #8A2BE2;
+}
+
+#timesheet-header {
+	width: 100%;
+	height: 65px;
+	
+    padding: 5px 20px 5px 20px;
+	background-color: #FF7F50;
+}
+
+/* Top New Record Bar */
+#timesheet-newrecord {
+	
+    height: 95px;
+
+    padding: 10px 20px 10px 20px;	
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	
+	background-color: #BDB76B;
+}
+
+/* Center Record Table */
+#timesheet-record-table
+{
+	width: 100%;
+	min-height: 100px;
+    padding: 5px 20px 5px 20px;
+
+	background-color: #228B22;
+}
+
+/* ============ timesheet-newrecord-bar ============ */
+
+.timesheet-newrecord-itembox {
+	background-color: #7FFF00;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;	
+}
+
+.timesheet-newrecord-entrybox {
+	text-align: center;	
+}
+
+
+/* ============ timesheet-record-table ============ */

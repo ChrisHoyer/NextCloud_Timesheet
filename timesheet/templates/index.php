@@ -1,6 +1,10 @@
 <?php
 script('timesheet', 'script');
 style('timesheet', 'style');
+
+script('timesheet', 'daterangepicker');
+script('timesheet', 'moment.min');
+style('timesheet', 'daterangepicker');
 ?>
 
 <div id="app">

@@ -89,9 +89,15 @@ Now, we want to save it. Therefore we need a database, see (https://docs.nextclo
 
 ```mermaid
 sequenceDiagram
-    TimesheetController.php->>TimesheetService.php: create(POST.data + userID)
-    TimesheetService.php-->>TimesheetService.php: New $record
-    TimesheetService.php->>TimesheetMapper.php: insert($record)
+    participant Client Side
+    participant Nextcloud Environment
+    Client Side->>Nextcloud Environment: GET .../apps/timesheet/record/1
+    Nextcloud Environment-->>routes.php: Check Routes
+    routes.php-->>Nextcloud Environment: Route: timesheet-show
+    Nextcloud Environment->>TimesheetController.php: New TimesheetController($appName, $request, $userID)
+    Nextcloud Environment->>TimesheetController.php: show($id)
+    TimesheetController.php->>TimesheetService.php: find($id)
+    TimesheetService.php->>TimesheetMapper.php: find($id)
     TimesheetMapper.php->>TimesheetService.php: SQL Result(with $id)
     TimesheetService.php->>TimesheetController.php: $record + id
 ```
