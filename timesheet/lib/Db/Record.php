@@ -8,38 +8,36 @@ use OCP\AppFramework\Db\Entity;
 class Record extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
-    protected $startdate;
-    protected $starttime;
-    protected $enddate;
-    protected $endtime;
-	protected $breaktime;
-	protected $recordduration;
-	protected $description;
-	protected $timezoneoffset;
-	protected $userId;
+    public $startdatetime;
+    public $enddatetime;
+	public $breaktime;
 	
-	protected $title;
-    protected $content;
-		
+	public $recordduration;
+	public $description;
+	public $timezoneoffset;
+	public $userId;
+
+	public $tags;
+	public $projects;
+			
     public function jsonSerialize() {
         return [
-		
-			// old stuff
-            'title' => $this->title,
-            'content' => $this->content,
 				
 			// Record Entitiy ID
             'id' => $this->id,
+			
 			// Start/End Time and Date
-            'startdate' => $this->startdate,
-            'starttime' => $this->starttime,
-            'enddate' => $this->enddate,
-            'endtime' => $this->endtime,
+            'startdatetime' => $this->startdatetime,
+            'enddatetime' => $this->enddatetime,
+									
 			// Breaktime and record time
             'breaktime' => $this->breaktime,
 			'recordduration' => $this->recordduration,
-			// Additional stuff like description and timezone
+			
+			// Additional stuff like description, tags and timezone
             'description' => $this->description,
+			'tags' => $this->tags,
+			'projects' => $this->projects,
             'timezoneoffset' => $this->timezoneoffset,
 			'userId' => $this->userId
         ];

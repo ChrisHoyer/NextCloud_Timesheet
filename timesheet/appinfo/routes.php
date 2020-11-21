@@ -10,7 +10,14 @@
 return [
     'routes' => [
 	   ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
+	   
+	   // Modify records
 	   ['name' => 'timesheet#create', 'url' => '/record', 'verb' => 'POST'],
-	   ['name' => 'timesheet#showAll', 'url' => '/allrecords', 'verb' => 'GET'],
+	   ['name' => 'timesheet#delete', 'url' => '/record/{id}', 'verb' => 'DELETE'],
+	   ['name' => 'timesheet#update', 'url' => '/record/{id}', 'verb' => 'PUT'],
+	   	   	   
+	   // show records
+	   ['name' => 'timesheet#show', 'url' => '/record/{id}', 'verb' => 'GET'],	   
+	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
     ]
 ];

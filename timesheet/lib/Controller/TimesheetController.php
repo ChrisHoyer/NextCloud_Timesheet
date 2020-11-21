@@ -18,7 +18,6 @@
 	 private $service;
 	 
 	 protected $request;
-	 private $request_calc;
 	 
 	 // use Errors.php
 	 use Errors;
@@ -27,15 +26,23 @@
 	// Check record data from request
 	private function validate_recorddate(){
 
+		 // create instance of database class
+		 $record = new Record();
+		 $record->setUserId($this->userId);
+		 
 		 // Check user input: starttime/startdate before endtime/enddate
 		 if (isset($this->request->starttime) & isset($this->request->startdate) & isset($this->request->endtime) & isset($this->request->enddate) ) {
 			 
 			 	// Get complete Start and End time for calculation of Duration
-			 	$t_start = \DateTime::createFromFormat ("H:i Y-m-d", ($this->request->starttime . " " . $this->request->startdate));
-				$t_end = \DateTime::createFromFormat ("H:i Y-m-d", ($this->request->endtime . " " . $this->request->enddate));
+			 	$t_start = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->starttime . " " . $this->request->startdate));
+				$t_end = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->endtime . " " . $this->request->enddate));
 				
 				// Calculate complete Duration in seconds
 			 	$t_completeduration = $t_end->getTimestamp() - $t_start->getTimestamp();
+
+		 		// Save combination of both (with sec.)
+		 		$record->setStartdatetime( $t_start->getTimestamp() );
+		 		$record->setEnddatetime( $t_end->getTimestamp() );
 				
 				// Todo: If Negative, Error Message
 				if ($t_completeduration < 0)
@@ -44,9 +51,9 @@
 				}
 				
 				// Include Breaktime, if available (otherwise UNIX std time) 
-				$t_break = \DateTime::createFromFormat ("H:i Y-m-d", ("00:00 1970-01-01"));
+				$t_break = \DateTime::createFromFormat("H:i Y-m-d", ("00:00 1970-01-01"));
 				if(isset($this->request->breaktime)){
-					$t_break = \DateTime::createFromFormat ("H:i Y-m-d", ($this->request->breaktime . " 1970-01-01"));
+					$t_break = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->breaktime . " 1970-01-01"));
 				}
 				
 				// Calculate Working duration
@@ -57,16 +64,55 @@
 				{
 					return false;
 				}
+				
+				// Save Break and Duration
+				$record->setBreaktime( $t_break->getTimestamp() );
+				$record->setRecordduration(gmdate("H:i", $t_workingduration));
 		 }
 		 
-		 // Save Working Duration as String (HH:MM)
-		 $this->request_calc->recordduration = gmdate("H:i", $t_workingduration);
+
+		 // Set additional Information
+		 $record->setDescription($this->request->description);
+		 $record->setTimezoneoffset($this->request->timezoneoffset);
+		 
+		 // Default Value for Tags and Projects
+		 $record->setTags("");
+		 $record->setProjects("");		 
+		 
 		 
 		 // return ok
-		 return true;
+		 return $record;
 		 		
 	}
 
+// ==================================================================================================================
+	// tidy up record data from request
+	private function tidyup_recorddates($recordlist){
+			
+		$recordlist_decoded;
+		
+			
+		// Split into Groups for each Month
+		foreach ($recordlist as &$record) {
+
+			$record_decoded["id"] = $record->id;		
+			$record_decoded["startdate"] = gmdate("Y-m-d", $record->startdatetime);			
+			$record_decoded["starttime"] = gmdate("H:i", $record->startdatetime);
+			$record_decoded["endtime"] = gmdate("H:i", $record->enddatetime);
+			$record_decoded["breaktime"] = gmdate("H:i", $record->breaktime);
+			
+			$record_decoded["recordduration"] = $record->recordduration;
+			$record_decoded["description"] = $record->description;		
+
+			$recordlist_decoded[] = $record_decoded;
+								
+		}
+		
+		// return
+		return $recordlist_decoded;
+		
+		
+	}
 
 // ==================================================================================================================
 	// Constructing this instance
@@ -90,31 +136,61 @@
       */
      public function create() {
 
-		// validation of record data 
-		if ($this->validate_recorddate() == false) {
-			return new DataResponse("Error: Invalid Data.");
-		}
+		// validation of record data
+		$valid_data = $this->validate_recorddate(); 
 		
-		 // create instance of database class
-		 $record = new Record();
-		 $record->setUserId($this->userId);
+		if ($valid_data == false) {
+			// Error?
+			return new DataResponse("Error: Invalid input data.");
+			
+		} else {
+			
+			// Use service to save the record data in a database
+			$serviceResponse = $this->service->create($valid_data, $this->userId);
+			return new DataResponse($serviceResponse);
 		 
-		 $record->setStartdate($this->request->startdate);
-		 $record->setStarttime($this->request->starttime);
-		 $record->setEnddate($this->request->enddate);
-		 $record->setEndtime($this->request->endtime);
+		}
+     }
+
+// ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      * 
+	  * @param string $title
+	  * @param string $content	  
+      */
+     public function update(int $id) {
+
+		// validation of record data
+		$valid_data = $this->validate_recorddate(); 
+		
+		if ($valid_data == false) {
+			// Error?
+			return new DataResponse("Error: Invalid input data.");
+			
+		} else {
+					
+			// Use service to save the record data in a database
+			$serviceResponse = $this->service->update($id, $valid_data, $this->userId);
+			return new DataResponse($serviceResponse);
+			
+			
 		 
-		 $record->setBreaktime($this->request->breaktime);
-		 $record->setRecordduration($this->request_calc->recordduration);
-		 
-		 $record->setDescription($this->request->description);
-		 $record->setTimezoneoffset($this->request->timezoneoffset);
-		 
-		 		 								
-		 // Use service to save the record data in a database
-		 //$serviceResponse = $this->service->create($record, $this->userId);
-		 //return new DataResponse($serviceResponse);
-		 return new DataResponse($record);
+		}
+     }
+
+// ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      * 
+	  * @param int $id  
+      */
+     public function delete(int $id) {	
+	 	// New Error Handler function, which calls the find function
+		 return $this->handleNotFound(function () use ($id) {
+		 // now find the id and show it			 
+            return $this->service->delete($id, $this->userId);
+        });
      }
 
 // ==================================================================================================================	
@@ -137,8 +213,19 @@
       * 
       */
      public function showAll() {	
-		 // now find the all from userid and show it			 
-            return $this->service->findAll($this->userId);
+		 // now find the all from userid and show it
+		 $recordlist = $this->service->findAll($this->userId);
+		 
+		 // Sort content by date (highest ID first)
+		 usort($recordlist, function($a, $b) {
+		 	return $a->startdatetime > $b->startdatetime ? -1 : 1; //Compare the id
+		 });   
+		 
+		 // tidy up records
+		$recordlist_decoded = $this->tidyup_recorddates($recordlist);
+		 
+		 // Return
+		 return $recordlist_decoded;
      }	 
 
  }

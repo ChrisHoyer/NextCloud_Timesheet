@@ -10,7 +10,7 @@ class RecordMapper extends QBMapper {
         parent::__construct($db, 'timesheet_records', Record::class);
     }
 
-	// got from parent: insert and update function
+	// got from parent: insert, delete and update function
 
 // ==================================================================================================================
 	// find using SQL commands

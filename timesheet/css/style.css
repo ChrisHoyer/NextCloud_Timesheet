@@ -13,6 +13,9 @@
 	width: 100%;
 }
 
+/* Dialogs on top! */ 
+.ui-dialog { z-index: 1000 !important ;}
+
 /* ============ Content Alignment ============ */
 #timesheet-content {
 	
@@ -26,6 +29,8 @@
 	display: flex;
 	flex-direction: column;
 	background-color: #8A2BE2;
+	
+	  
 }
 
 #timesheet-header {
@@ -33,6 +38,7 @@
 	height: 65px;
 	
     padding: 5px 20px 5px 20px;
+	  
 	background-color: #FF7F50;
 }
 
@@ -80,4 +86,72 @@
 }
 
 
-/* ============ timesheet-record-table ============ */
+/* ============ timesheet-record-table header ============ */
+
+/* Table Header */
+#timesheet-record-table-header {
+	height: 35px;
+			
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	
+	background-color: #FFF8DC;		
+}
+
+.timesheet-record-table-header-cell {
+	margin: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;	
+
+	background-color: #00FFFF;	
+}
+
+/* ============ timesheet-record-table rows ============ */
+
+
+/* Row Settings */
+.timesheet-record-table-row {
+	height: 35px;
+
+    padding: 10px 20px 10px 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;	
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	
+	background-color: #E0FFFF;
+}
+
+.timesheet-record-table-row:hover {
+	background-color: #FFB6C1;
+}
+
+/* Cell Settings */
+.timesheet-record-table-row-cell {
+	background-color: #FAFAD2;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;	
+}
+
+/* ============ Dialog Content ============ */
+#dialog-modify-record {
+	text-align: center;
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;	
+	
+}

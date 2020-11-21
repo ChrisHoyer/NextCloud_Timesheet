@@ -37,12 +37,66 @@ class TimesheetService {
 
 // ==================================================================================================================	
 	// Create a new entry
-	public function create(string $title, string $content, string $userId) {
+	public function create(Record $record, string $userId) {
 		 
 		 //insert in table
 		 return $this->mapper->insert($record);
+		 
      }	
 
+// ==================================================================================================================	
+	// Update an entry
+	public function update(int $id, Record $new_record, string $userId) {
+		
+		 // Try to find and update the Id and User ID
+		 try {
+		 	
+			// find ID and then delete it
+			$record = $this->mapper->find($id, $userId);
+			
+			// Copy all data to new old record
+			$record->setStartdatetime($new_record->startdatetime);
+			$record->setEnddatetime($new_record->enddatetime);
+			$record->setBreaktime($new_record->breaktime);
+									
+			$record->setDescription($new_record->description);
+			$record->setTimezoneoffset($new_record->timezoneoffset);
+			$record->setRecordduration($new_record->recordduration);
+						
+		 	//insert in table
+		 	return $this->mapper->update($record);	
+		 		
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 } 			
+			
+
+		 
+     }	
+	 
+// ==================================================================================================================	
+	 // delete an entry
+	 public function delete(int $id, string $userId){
+		 
+		 // Try to find and delete the Id and User ID
+		 try {
+		 	
+			// find ID and then delete it
+			$record = $this->mapper->find($id, $userId);
+			$this->mapper->delete($record);
+			
+			return $record;		  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 } 
+	 }
+	 
 // ==================================================================================================================	 
 	 // Find an entry
 	 public function find(int $id, string $userId){

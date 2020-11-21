@@ -7,7 +7,7 @@
     <description><![CDATA[Timesheet Tabular
 
 tbd]]></description>
-    <version>0.0.1</version>
+    <version>0.3.10</version>
     <licence>agpl</licence>
     <author mail="info@chrishoyer.de" >ChrisHoyer</author>
     <namespace>Timesheet</namespace>
