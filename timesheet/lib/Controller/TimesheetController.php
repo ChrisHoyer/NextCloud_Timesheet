@@ -9,7 +9,7 @@
  use OCP\AppFramework\Http\JSONResponse;
  
  use OCA\Timesheet\Service\TimesheetService;
- use OCA\Timesheet\Db\Record;
+ use OCA\Timesheet\Db\WorkRecord;
  
  class TimesheetController extends Controller {
 
@@ -27,49 +27,48 @@
 	private function validate_recorddate(){
 
 		 // create instance of database class
-		 $record = new Record();
+		 $record = new WorkRecord();
 		 $record->setUserId($this->userId);
 		 
 		 // Check user input: starttime/startdate before endtime/enddate
 		 if (isset($this->request->starttime) & isset($this->request->startdate) & isset($this->request->endtime) & isset($this->request->enddate) ) {
 			 
-			 	// Get complete Start and End time for calculation of Duration
-			 	$t_start = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->starttime . " " . $this->request->startdate));
-				$t_end = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->endtime . " " . $this->request->enddate));
+			 							
+			 	// Get complete Start and End time for calculation of Duration in UNIX time
+			 	$record->setStartdatetime( strtotime( $this->request->starttime . " " . $this->request->startdate ) );
+				$record->setEnddatetime(  strtotime( $this->request->endtime . " " . $this->request->enddate ) );
 				
 				// Calculate complete Duration in seconds
-			 	$t_completeduration = $t_end->getTimestamp() - $t_start->getTimestamp();
-
-		 		// Save combination of both (with sec.)
-		 		$record->setStartdatetime( $t_start->getTimestamp() );
-		 		$record->setEnddatetime( $t_end->getTimestamp() );
+			 	$t_completeduration = $record->enddatetime - $record->startdatetime;
 				
 				// Todo: If Negative, Error Message
 				if ($t_completeduration < 0)
 				{
-					return false;
+					return "ERROR - invalid start-end data: " . $record->enddatetime . " - " . $record->startdatetime;
 				}
 				
 				// Include Breaktime, if available (otherwise UNIX std time) 
-				$t_break = \DateTime::createFromFormat("H:i Y-m-d", ("00:00 1970-01-01"));
+				$record->setBreaktime( strtotime( "00:00 1970-01-01" ) );
 				if(isset($this->request->breaktime)){
-					$t_break = \DateTime::createFromFormat("H:i Y-m-d", ($this->request->breaktime . " 1970-01-01"));
+					$record->setBreaktime( strtotime( $this->request->breaktime . " 1970-01-01" ) );
 				}
 				
 				// Calculate Working duration
-			 	$t_workingduration = $t_completeduration - $t_break->getTimestamp();
+			 	$t_workingduration = $t_completeduration - $record->breaktime;
 				
 				// Todo: If Negative, Error Message								
 				if ($t_workingduration < 0)
 				{
-					return false;
+					return "ERROR - invalid break data: " . $record ;
 				}
 				
 				// Save Break and Duration
-				$record->setBreaktime( $t_break->getTimestamp() );
 				$record->setRecordduration(gmdate("H:i", $t_workingduration));
 		 }
 		 
+
+
+
 
 		 // Set additional Information
 		 $record->setDescription($this->request->description);
@@ -87,7 +86,7 @@
 
 // ==================================================================================================================
 	// tidy up record data from request
-	private function tidyup_recorddates($recordlist){
+	private function read_recorddates($recordlist){
 			
 		$recordlist_decoded;
 		
@@ -139,9 +138,9 @@
 		// validation of record data
 		$valid_data = $this->validate_recorddate(); 
 		
-		if ($valid_data == false) {
-			// Error?
-			return new DataResponse("Error: Invalid input data.");
+		if ( strpos($valid_data, "ERROR") == true) {
+			// Error -> send it back to form
+			return new DataResponse( $valid_data );
 			
 		} else {
 			
@@ -150,6 +149,7 @@
 			return new DataResponse($serviceResponse);
 		 
 		}
+		
      }
 
 // ==================================================================================================================	
@@ -164,9 +164,9 @@
 		// validation of record data
 		$valid_data = $this->validate_recorddate(); 
 		
-		if ($valid_data == false) {
-			// Error?
-			return new DataResponse("Error: Invalid input data.");
+		if ( strpos($valid_data, "ERROR") == true) {
+			// Error -> send it back to form
+			return new DataResponse( $valid_data );
 			
 		} else {
 					
@@ -221,8 +221,8 @@
 		 	return $a->startdatetime > $b->startdatetime ? -1 : 1; //Compare the id
 		 });   
 		 
-		 // tidy up records
-		$recordlist_decoded = $this->tidyup_recorddates($recordlist);
+		 // read records and cast into format for jquery
+		$recordlist_decoded = $this->read_recorddates($recordlist);
 		 
 		 // Return
 		 return $recordlist_decoded;

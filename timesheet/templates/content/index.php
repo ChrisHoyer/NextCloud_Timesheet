@@ -8,49 +8,53 @@ $currenttime = date("H:i");
 
 <!-- Header -->
     <div id="timesheet-header">
-    	Header
+    	Timesheet for Month/Year
     </div>
 
 <!-- new record bar -->
-	<form oninput="timesheet-newrecord-worktime.value=timesheet-newrecord-starttime.value">
-	<div id="timesheet-newrecord" class="form-row">	
-    	<div class="timesheet-newrecord-itembox">
-        	<label for="timesheet-newrecord-date">Date</label>
-        	<input type="date" name="date" id="timesheet-newrecord-date" value="<?php echo $today ?>" max="<?php echo $today ?>" class="timesheet-newrecord-entrybox">
+    	<form id="timesheet-newrecord" oninput="timesheet-newrecord-worktime.value=timesheet-newrecord-starttime.value">
+        <div id="timesheet-newrecord-form">	
+        	<div class="timesheet-newrecord-itembox timesheet-newrecord-label">
+                ADD
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <label for="timesheet-newrecord-date">Date</label>
+                <input type="date" name="date" id="timesheet-newrecord-date" value="<?php echo $today ?>" max="<?php echo $today ?>" class="timesheet-newrecord-entrybox">
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <label for="timesheet-newrecord-starttime">Start Time</label>
+                <input type="time" name="starttime" id="timesheet-newrecord-starttime" value="00:00" class="timesheet-newrecord-entrybox">
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <label for="timesheet-newrecord-endtime">End Time</label>
+                <input type="time" name="endtime" id="timesheet-newrecord-endtime" value="<?php echo $currenttime ?>" class=" timesheet-newrecord-entrybox">
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <label for="timesheet-newrecord-breaktime">Break</label>
+                <input type="time" name="breaktime" id="timesheet-newrecord-breaktime" value="00:00" class="timesheet-newrecord-entrybox">
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <label for="timesheet-newrecord-description">Description</label>
+                <input type="text" name="description" id="timesheet-newrecord-description" value="" class="timesheet-newrecord-entrybox">
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <button type="button" id="timesheet-newrecord-submit" class="timesheet-newrecord-entrybox timesheet-newrecord-entrybox-button"><span class='icon-confirm timesheet-newrecord-button-icon'></span>Submit</button>
+            </div>
+            <div class="timesheet-newrecord-itembox">
+                <button type="button" id="timesheet-newrecord-refresh" class="timesheet-newrecord-entrybox timesheet-newrecord-entrybox-button"><span class='icon-history timesheet-newrecord-button-icon'></span>Refresh</button>
+            </div>
         </div>
-        <div class="timesheet-newrecord-itembox">
-            <label for="timesheet-newrecord-starttime">Start Time</label>
-        	<input type="time" name="starttime" id="timesheet-newrecord-starttime" value="10:00" class="timesheet-newrecord-entrybox">
-        </div>
-        <div class="timesheet-newrecord-itembox">
-            <label for="timesheet-newrecord-endtime">End Time</label>
-        	<input type="time" name="endtime" id="timesheet-newrecord-endtime" value="<?php echo $currenttime ?>" class=" timesheet-newrecord-entrybox">
-        </div>
-        <div class="timesheet-newrecord-itembox">
-            <label for="timesheet-newrecord-breaktime">Break Duration</label>
-        	<input type="time" name="breaktime" id="timesheet-newrecord-breaktime" value="00:30" class="timesheet-newrecord-entrybox">
-        </div>
-        <div class="timesheet-newrecord-itembox">
-            <label for="timesheet-newrecord-worktime">Work Duration</label>
-        	<output type="time" name="worktime" id="timesheet-newrecord-worktime" class="timesheet-newrecord-entrybox">00:00</output>
-        </div>
-        <div class="timesheet-newrecord-itembox">
-        	<button type="button" id="submit" class="timesheet-newrecord-entrybox">Submit</button>
-		</div>
-        <div class="timesheet-newrecord-itembox">
-        	<button type="button" id="refresh" class="timesheet-newrecord-entrybox">Refresh</button>
-		</div>
-	</div>
-	</form>    
+        </form>
 <!-- generated record table -->
     <div id="timesheet-record-table">
     	<!-- record table header -->
         <div id="timesheet-record-table-header">
-            <div class="timesheet-record-table-header-cell"> Date </div>
-            <div class="timesheet-record-table-header-cell"> Start Time </div>
-            <div class="timesheet-record-table-header-cell"> End Time </div>
-            <div class="timesheet-record-table-header-cell"> Break Time </div>
-            <div class="timesheet-record-table-header-cell"> Working Duration </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-date"> Date </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-start"> Start Time </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-end"> End Time </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-break"> Break </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-duration"> Working Time </div>
+            <div class="timesheet-record-table-header-cell timesheet-record-table-column-description"> Description </div>
         </div>
         <div id="timesheet-record-table-content">
             <!-- autogenerated content -->

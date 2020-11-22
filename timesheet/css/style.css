@@ -2,6 +2,8 @@
 	color: red;
 }
 
+
+
 /* ============ Adjust Nextcloud Style ============ */
 /* Resize Main Box from Nextcloud */
 #app-content-wrapper {
@@ -13,8 +15,6 @@
 	width: 100%;
 }
 
-/* Dialogs on top! */ 
-.ui-dialog { z-index: 1000 !important ;}
 
 /* ============ Content Alignment ============ */
 #timesheet-content {
@@ -27,49 +27,46 @@
 	width: 100%;
 		 
 	display: flex;
-	flex-direction: column;
-	background-color: #8A2BE2;
-	
-	  
+	flex-direction: column;	  
 }
+
 
 #timesheet-header {
 	width: 100%;
 	height: 65px;
 	
-    padding: 5px 20px 5px 20px;
-	  
-	background-color: #FF7F50;
-}
-
-/* Top New Record Bar */
-#timesheet-newrecord {
+    padding: 30px 20px 5px 20px;
+	text-align:center;
 	
-    height: 95px;
-
-    padding: 10px 20px 10px 20px;	
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: center;
-	
-	background-color: #BDB76B;
-}
-
-/* Center Record Table */
-#timesheet-record-table
-{
-	width: 100%;
-	min-height: 100px;
-    padding: 5px 20px 5px 20px;
-
-	background-color: #228B22;
+	font-size:20px;
+	font-weight:bold;
 }
 
 /* ============ timesheet-newrecord-bar ============ */
 
+/* Top New Record Bar */
+#timesheet-newrecord {	
+	display: inline-block;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	
+	background-color: #f1f1f1;
+	border: 1px solid #212121;
+}
+
+/* Top New Record Bar */
+#timesheet-newrecord-form {	
+    height: 95px;
+
+    padding: 10px 20px 10px 20px;	
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+}
+
 .timesheet-newrecord-itembox {
-	background-color: #7FFF00;
 	padding-left: 5px;
 	padding-right: 5px;
 	margin-left: 5px;
@@ -79,70 +76,129 @@
 	flex-direction: column;
 	justify-content: center;
 	text-align: center;	
+	
+	font-size:: 15px;
+	font-weight: bold;
+	
+}
+
+.timesheet-newrecord-label {
+	writing-mode: tb-rl;
+	writing-mode: vertical-rl;
+	color: #bbb6b6;
+	line-height: 1;
+	font-size:30px;
 }
 
 .timesheet-newrecord-entrybox {
 	text-align: center;	
 }
 
+.timesheet-newrecord-entrybox-button {
+	font-weight :bold;
+	color: #212121;
+	width: 100px;
+}
+
+.timesheet-newrecord-button-icon {
+	margin-right: 5px;
+}
+
+
+
+#timesheet-newrecord-description {
+	width: 300px;
+}
+
+#timesheet-newrecord-breaktime::-webkit-datetime-edit-ampm-field {
+   display: none;
+ }
+	
+
+/* ============ timesheet-record-table ============ */
+
+/* Record Table Center and fitted to content */
+#timesheet-record-table
+{
+	min-height: 100px;
+    padding: 5px 20px 30px 20px;
+	display: inline-block;
+	margin: 0 auto;
+	background-color: #f1f1f1;
+}
 
 /* ============ timesheet-record-table header ============ */
 
 /* Table Header */
 #timesheet-record-table-header {
-	height: 35px;
-			
+	height: 35px;	
+		
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
-	
-	background-color: #FFF8DC;		
+	flex-wrap: nowrap;
+	text-align: center;		
 }
 
 .timesheet-record-table-header-cell {
 	margin: 5px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	text-align: center;	
-
-	background-color: #00FFFF;	
+	font-size:: 15px;
+	font-weight: bold;
+	color: #212121;
 }
 
 /* ============ timesheet-record-table rows ============ */
 
-
 /* Row Settings */
 .timesheet-record-table-row {
 	height: 35px;
-
-    padding: 10px 20px 10px 20px;
-	margin-top: 5px;
-	margin-bottom: 5px;	
+	
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-	justify-content: center;
-	
-	background-color: #E0FFFF;
+	text-align: center;	
 }
 
 .timesheet-record-table-row:hover {
-	background-color: #FFB6C1;
+	background-color: #bbb6b6;	
 }
 
 /* Cell Settings */
 .timesheet-record-table-row-cell {
-	background-color: #FAFAD2;
-	padding-left: 2px;
-	padding-right: 2px;
-	margin-left: 2px;
-	margin-right: 2px;
-	
+	margin: 5px;
+}
+
+/* column: date, start, end, break and duration */
+.timesheet-record-table-column-date, .timesheet-record-table-column-start, .timesheet-record-table-column-end, .timesheet-record-table-column-break, .timesheet-record-table-column-duration {
+	width: 100px;	
+}
+
+/* column: description in header and in general */
+.timesheet-record-table-column-description {
+	min-width: 300px;
+	padding: 0px 10px 0px 10px;
+}
+.timesheet-record-table-header-cell.timesheet-record-table-column-description {
+	margin-left: 60px;
+}
+
+/* column modify */
+.timesheet-record-table-column-modify {
+	width: 50px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	justify-content: center;
-	text-align: center;	
+	text-align: center;
+	opacity: 20%;
+}
+
+/* column modify */
+.timesheet-record-table-row:hover .timesheet-record-table-column-modify {
+	opacity: 100%;
+}
+
+/* Hover for rename */
+.icon-rename:hover {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgaWQ9InN2ZzQiCiAgIHdpZHRoPSIxNiIKICAgaGVpZ2h0PSIxNiIKICAgdmlld0JveD0iMCAwIDE2IDE2IgogICB2ZXJzaW9uPSIxLjEiPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTEwIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT48L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzOCIgLz4KICA8cGF0aAogICAgIHN0eWxlPSJmaWxsOiNlOTMyMmQ7ZmlsbC1vcGFjaXR5OjEiCiAgICAgaWQ9InBhdGgyIgogICAgIGZpbGw9IiMwMDAiCiAgICAgZD0iTTEyLjU5NCAxLjM0NEMxMi4wNjIgMS4zMTQgMTEuNSAxLjUgMTEgMmwzIDNjMS41LTEuNS4xODgtMy41NjMtMS40MDYtMy42NTZ6TTEwIDNsLTcgNy0yIDUgNS0yIDctNy0zLTN6bS02LjUgNy41bDIgMkwzIDE0bC0xLTEgMS41LTIuNXoiIC8+Cjwvc3ZnPgo=);
 }
 
 /* ============ Dialog Content ============ */
@@ -155,3 +211,6 @@
 	text-align: center;	
 	
 }
+
+/* Dialogs on top! */ 
+.ui-dialog { z-index: 1000 !important ;}

@@ -4,10 +4,10 @@ namespace OCA\Timesheet\Db;
 use OCP\IDbConnection;
 use OCP\AppFramework\Db\QBMapper;
 
-class RecordMapper extends QBMapper {
+class WorkRecordMapper extends QBMapper {
 
     public function __construct(IDbConnection $db) {
-        parent::__construct($db, 'timesheet_records', Record::class);
+        parent::__construct($db, 'timesheet_records', WorkRecord::class);
     }
 
 	// got from parent: insert, delete and update function

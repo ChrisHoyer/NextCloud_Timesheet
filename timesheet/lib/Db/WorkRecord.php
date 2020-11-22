@@ -5,20 +5,24 @@ use JsonSerializable;
 
 use OCP\AppFramework\Db\Entity;
 
-class Record extends Entity implements JsonSerializable {
+class WorkRecord extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
     public $startdatetime;
     public $enddatetime;
 	public $breaktime;
-	
+	public $holiday;	
+	public $vacation;
+		
 	public $recordduration;
+	public $regularhours;
 	public $description;
 	public $timezoneoffset;
 	public $userId;
 
 	public $tags;
 	public $projects;
+
 			
     public function jsonSerialize() {
         return [
@@ -33,6 +37,12 @@ class Record extends Entity implements JsonSerializable {
 			// Breaktime and record time
             'breaktime' => $this->breaktime,
 			'recordduration' => $this->recordduration,
+			'regularhours' => $this->regularhours,
+			
+			// User vacation and legal holidays
+			'holiday' => $this->holiday,
+			'vacation' => $this->vacation,			
+			
 			
 			// Additional stuff like description, tags and timezone
             'description' => $this->description,

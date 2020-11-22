@@ -23,7 +23,7 @@ dialogModifyRecordForm = $("#dialog-modify-record").dialog({
 	getRecordList();
 
 // ===================== Submit Button click
-$("#submit").click(function() {
+$("#timesheet-newrecord-submit").click(function() {
 
 	// Request using POST at /record
 	var record_url = baseUrl + '/record';
@@ -39,7 +39,7 @@ $("#submit").click(function() {
 			// Breaktime
 			breaktime: $('#timesheet-newrecord-breaktime').val(),
 			// Additional stuff like description and timezone
-            description: "",
+            description: $('#timesheet-newrecord-description').val(),
             timezoneoffset: new Date().getTimezoneOffset()
 		};
 		
@@ -64,7 +64,7 @@ $("#submit").click(function() {
 
 // ===================== Refresh Click
 // Refresh Button click
-$("#refresh").click(function() {
+$("#timesheet-newrecord-refresh").click(function() {
 	
 	// get Records from this user
 	getRecordList();
@@ -170,23 +170,23 @@ function generateRecordList(recordlist){
 		record_table_row = record_table_row + "<div class='timesheet-record-table-row' entityid=" + record_entity.id + ">";
 
 		// Generate first column of object
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-date'>" + record_entity.startdate + "</div>";		
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-start'>" + record_entity.starttime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-end'>" + record_entity.endtime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-break'>" + record_entity.breaktime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-duration'>" + record_entity.recordduration + "</div>";		
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-row-description'>" + record_entity.description + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-date'>" + record_entity.startdate + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-duration'>" + record_entity.recordduration + "</div>";		
 						
 		// Generate clickable trash can (trash can icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-trash  timesheet-record-table-row-cell'>";
-		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' id="+record_entity.id+"></span>";
-		record_table_row = record_table_row + "</div>";
-
 		// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-edit  timesheet-record-table-row-cell'>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-modify'>";
+		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' id="+record_entity.id+"></span>";
 		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' id=" + record_entity.id + " data-startdate='" + record_entity.startdate + "'";
 		record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
-		record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";		
+		record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
+		
+		// Description
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-description'>" + record_entity.description + "</div>";
+			
 		// End Table Row
 		record_table_row = record_table_row + "</div>";
 		

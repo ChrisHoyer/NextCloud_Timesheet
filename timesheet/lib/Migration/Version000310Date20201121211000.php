@@ -23,55 +23,66 @@
           if (!$schema->hasTable('timesheet_records')) {
 			  
 			  // create Table
-			  $table = $schema->createTable('timesheet_records');
+			  $table_records = $schema->createTable('timesheet_records');
 			         
 			  // Table Layout ID  and user ID
-              $table->addColumn('id', 'integer', [
+              $table_records->addColumn('id', 'integer', [
                   'autoincrement' => true,
                   'notnull' => true,
               ]);
-              $table->addColumn('user_id', 'string', [
+              $table_records->addColumn('user_id', 'string', [
                   'notnull' => true,
                   'length' => 200,
               ]);			  
 			  
 			  // Table Layout Start End (UNIX STD Time)
-              $table->addColumn('startdatetime', 'integer', [
+              $table_records->addColumn('startdatetime', 'integer', [
                   'notnull' => true,
               ]);
-              $table->addColumn('enddatetime', 'integer', [
-                  'notnull' => true,
-              ]);
-			  		  
-			  // and Break (UNIX STD Time) and Record Duration time
-			  $table->addColumn('breaktime', 'integer', [
-                  'notnull' => true,
-              ]);
-              $table->addColumn('recordduration', 'string', [
+              $table_records->addColumn('enddatetime', 'integer', [
                   'notnull' => true,
               ]);
 			  		  
+			  // and Break (UNIX STD Time) and Record Duration and regular hours time
+			  $table_records->addColumn('breaktime', 'integer', [
+                  'notnull' => true,
+              ]);
+              $table_records->addColumn('recordduration', 'string', [
+                  'notnull' => true,
+              ]);
+              $table_records->addColumn('regularhours', 'string', [
+                  'notnull' => true,
+              ]);
+			  			  	
+			  // legal holidays and vacation
+			  $table_records->addColumn('holiday', 'bool', [
+                  'default' => false,
+              ]);
+              $table_records->addColumn('vacation', 'bool', [
+                  'default' => false,
+              ]);
+			  	  
 		  			  
 			  // Table Description, Tags, projects and Timezone
-              $table->addColumn('description', 'text', [
+              $table_records->addColumn('description', 'text', [
                   'notnull' => true,
                   'default' => '',
               ]);
-			  $table->addColumn('tags', 'text', [
+			  $table_records->addColumn('tags', 'text', [
                   'notnull' => true,
                   'default' => '',
               ]);
-			  $table->addColumn('projects', 'text', [
+			  $table_records->addColumn('projects', 'text', [
                   'notnull' => true,
                   'default' => '',
               ]);
-              $table->addColumn('timezoneoffset', 'integer', [
+              $table_records->addColumn('timezoneoffset', 'integer', [
 			      'notnull' => true,
               ]);			  
 			  
 			  // Keys
-              $table->setPrimaryKey(['id']);
-              $table->addIndex(['user_id'], 'timesheet_user_id_index');
+              $table_records->setPrimaryKey(['id']);
+              $table_records->addIndex(['user_id'], 'timesheet_user_id_index');
           }
 		  	  
 

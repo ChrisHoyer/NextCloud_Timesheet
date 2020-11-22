@@ -21,5 +21,15 @@ trait Errors {
             return new DataResponse($message, Http::STATUS_NOT_FOUND);
         }
     }
+	
+	// Function for casting input data
+    protected function handleInvalidData (Closure $callback) {
+        try {
+            return $callback();
+        } catch(Exception $e) {
+            $message = ['message' => $e->getMessage()];
+            return new DataResponse($message, Http::STATUS_NOT_FOUND);
+        }
+    }
 
 }

@@ -1,8 +1,8 @@
 <?php
 namespace OCA\Timesheet\Service;
 
-use OCA\Timesheet\Db\Record;
-use OCA\Timesheet\Db\RecordMapper;
+use OCA\Timesheet\Db\WorkRecord;
+use OCA\Timesheet\Db\WorkRecordMapper;
 
 use Exception;
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -30,14 +30,14 @@ class TimesheetService {
 	
 // ==================================================================================================================	
 	// Create Mapper while constructing this instance
-     public function __construct(RecordMapper $mapper){
+     public function __construct(WorkRecordMapper $mapper){
 		 // initialize variables
 		 $this->mapper = $mapper;
 	 }
 
 // ==================================================================================================================	
 	// Create a new entry
-	public function create(Record $record, string $userId) {
+	public function create(WorkRecord $record, string $userId) {
 		 
 		 //insert in table
 		 return $this->mapper->insert($record);
@@ -46,7 +46,7 @@ class TimesheetService {
 
 // ==================================================================================================================	
 	// Update an entry
-	public function update(int $id, Record $new_record, string $userId) {
+	public function update(int $id, WorkRecord $new_record, string $userId) {
 		
 		 // Try to find and update the Id and User ID
 		 try {
@@ -62,6 +62,9 @@ class TimesheetService {
 			$record->setDescription($new_record->description);
 			$record->setTimezoneoffset($new_record->timezoneoffset);
 			$record->setRecordduration($new_record->recordduration);
+			$record->setRegularhours($new_record->regularhours);
+			$record->setHoliday($new_record->holiday);
+			$record->setVacation($new_record->vacation);			
 						
 		 	//insert in table
 		 	return $this->mapper->update($record);	
@@ -127,7 +130,8 @@ class TimesheetService {
 			 
 			 // Exception Handler
 			 $this->handleException($e);
-		 } 
+		 }
+		 
 	 } 
   
 };

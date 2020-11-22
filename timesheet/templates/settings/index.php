@@ -5,6 +5,7 @@
 		></button>
 	</div>
 	<div id="app-settings-content">
+    Test
 		<!-- Your settings in here -->
 	</div>
 </div>
