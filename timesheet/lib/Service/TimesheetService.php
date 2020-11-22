@@ -58,13 +58,17 @@ class TimesheetService {
 			$record->setStartdatetime($new_record->startdatetime);
 			$record->setEnddatetime($new_record->enddatetime);
 			$record->setBreaktime($new_record->breaktime);
-									
-			$record->setDescription($new_record->description);
-			$record->setTimezoneoffset($new_record->timezoneoffset);
+			
 			$record->setRecordduration($new_record->recordduration);
 			$record->setRegularhours($new_record->regularhours);
+			$record->setUnpayedoverhours($new_record->unpayedoverhours);
+						
+			$record->setDescription($new_record->description);
+			$record->setTimezoneoffset($new_record->timezoneoffset);
+			
 			$record->setHoliday($new_record->holiday);
-			$record->setVacation($new_record->vacation);			
+			$record->setVacation($new_record->vacation);
+						
 						
 		 	//insert in table
 		 	return $this->mapper->update($record);	

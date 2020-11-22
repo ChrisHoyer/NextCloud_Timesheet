@@ -40,7 +40,10 @@ $("#timesheet-newrecord-submit").click(function() {
 			breaktime: $('#timesheet-newrecord-breaktime').val(),
 			// Additional stuff like description and timezone
             description: $('#timesheet-newrecord-description').val(),
-            timezoneoffset: new Date().getTimezoneOffset()
+            timezoneoffset: new Date().getTimezoneOffset(),
+			holiday: 			"false",	
+			vacation: 			"false",
+			unpayedoverhours: 	"false",	
 		};
 		
 	//alert(JSON.stringify(record_data));
@@ -88,25 +91,23 @@ function editRecord(dialogModifyRecordForm) {
 
 	var record_data = {
 			// Start/End Time and Date
-            startdate: form.find("#timesheet-dialog-startdate").val(),		
-            starttime: form.find("#timesheet-dialog-starttime").val(),		
-            endtime: form.find("#timesheet-dialog-endtime").val(),
-			enddate: form.find("#timesheet-dialog-startdate").val(),		
+            startdate: 			form.find("#timesheet-dialog-startdate").val(),		
+            starttime: 			form.find("#timesheet-dialog-starttime").val(),		
+            endtime: 			form.find("#timesheet-dialog-endtime").val(),
+			enddate: 			form.find("#timesheet-dialog-startdate").val(),		
 			// Breaktime
-			breaktime: form.find("#timesheet-dialog-breaktime").val(),		
+			breaktime: 			form.find("#timesheet-dialog-breaktime").val(),		
 			// Additional stuff like description and timezone
-            description: form.find("#timesheet-dialog-description").val(),		
+            description: 		form.find("#timesheet-dialog-description").val(),
+			holiday: 			form.find("#timesheet-dialog-holiday").prop('checked'),	
+			vacation: 			form.find("#timesheet-dialog-vacation").prop('checked'),
+			unpayedoverhours: 	form.find("#timesheet-dialog-unpayedoverhours").prop('checked'),		
             timezoneoffset: new Date().getTimezoneOffset()
 		};
-		
-		
+			
 	// PUT request with entity ID and new data
 	$.ajax({ url: record_url, type: 'PUT', data: record_data,})
-		.done(function (response) {	
-				// Generate Table
-				var response = data;
-				generateRecordList(response);
-		 });
+		.done(function (response) {	});
 
 	// Info and refresh
 	$(dialogModifyRecordForm).dialog("close");
@@ -170,7 +171,7 @@ function generateRecordList(recordlist){
 		record_table_row = record_table_row + "<div class='timesheet-record-table-row' entityid=" + record_entity.id + ">";
 
 		// Generate first column of object
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-date'>" + record_entity.startdate + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-date'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
 		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
@@ -182,6 +183,7 @@ function generateRecordList(recordlist){
 		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' id="+record_entity.id+"></span>";
 		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' id=" + record_entity.id + " data-startdate='" + record_entity.startdate + "'";
 		record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
+		record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
 		record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
 		
 		// Description
@@ -228,7 +230,9 @@ function generateRecordList(recordlist){
 		form.find("#timesheet-dialog-endtime").val($(e.target).data("endtime"));
 		form.find("#timesheet-dialog-breaktime").val($(e.target).data("breaktime"));
 		form.find("#timesheet-dialog-description").val($(e.target).data("description"));
-														
+		form.find("#timesheet-dialog-holiday").attr( 'checked', $(e.target).data("holiday") );
+		form.find("#timesheet-dialog-vacation").attr( 'checked', $(e.target).data("vacation") );
+		form.find("#timesheet-dialog-unpayedoverhours").attr( 'checked', $(e.target).data("unpayedoverhours") );															
 		// Open dialog form
 		dialogModifyRecordForm.dialog("open");
 		

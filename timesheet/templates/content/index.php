@@ -76,9 +76,16 @@ $currenttime = date("H:i");
             <label for="timesheet-dialog-breaktime">Break Time</label>
             <input type="time" name="endtime" id="timesheet-dialog-breaktime" value="" class="timesheet-dialog-entrybox">  
         </div>   
-        <label for="timesheet-dialog-description">Description</label>
-      <textarea  style='vertical-align: middle;width:300px;' name="description" id="timesheet-dialog-description" cols="40" rows="5" value=""  class="timesheet-dialog-entrybox"></textarea>
- 
+        	<label for="timesheet-dialog-description">Description</label>
+      		<textarea  style='vertical-align: middle;width:300px;' name="description" id="timesheet-dialog-description" cols="40" rows="5" value=""  class="timesheet-dialog-entrybox"></textarea>
+ 		<div>
+            <label for="timesheet-dialog-holiday">Legal Holiday</label>
+            <input type="checkbox" name="holiday" id="timesheet-dialog-holiday" value="" class="timesheet-dialog-entrybox">  
+            <label for="timesheet-dialog-vacation">Vacation (Payed)</label>
+            <input type="checkbox" name="vacation" id="timesheet-dialog-vacation" value="" class="timesheet-dialog-entrybox">  
+            <label for="timesheet-dialog-unpayedoverhours">Unpayed Overhours</label>
+            <input type="checkbox" name="unpayedoverhours" id="timesheet-dialog-unpayedoverhours" value="" class="timesheet-dialog-entrybox"> 
+        </div>
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </fieldset>

@@ -66,9 +66,14 @@
 				$record->setRecordduration(gmdate("H:i", $t_workingduration));
 		 }
 		 
-
-
-
+		 // Regular Hours Availible?
+		 $record->setRegularhours(0);
+		 
+		 
+		 // Get all Flags and convert to integer
+		 $record->setHoliday( $this->request->holiday );
+		 $record->setVacation( $this->request->vacation );
+		 $record->setUnpayedoverhours( $this->request->unpayedoverhours );		 		 
 
 		 // Set additional Information
 		 $record->setDescription($this->request->description);
@@ -88,23 +93,27 @@
 	// tidy up record data from request
 	private function read_recorddates($recordlist){
 			
-		$recordlist_decoded;
-		
+		$recordlist_decoded;		
 			
 		// Split into Groups for each Month
 		foreach ($recordlist as &$record) {
 
-			$record_decoded["id"] = $record->id;		
+			$record_decoded["id"] = $record->id;
+			$record_decoded["startday"] = gmdate("D", $record->startdatetime);				
 			$record_decoded["startdate"] = gmdate("Y-m-d", $record->startdatetime);			
 			$record_decoded["starttime"] = gmdate("H:i", $record->startdatetime);
 			$record_decoded["endtime"] = gmdate("H:i", $record->enddatetime);
 			$record_decoded["breaktime"] = gmdate("H:i", $record->breaktime);
 			
+			$record_decoded["holiday"] = $record->holiday;
+			$record_decoded["vacation"] = $record->vacation;
+			$record_decoded["unpayedoverhours"] = $record->unpayedoverhours;
+			
 			$record_decoded["recordduration"] = $record->recordduration;
 			$record_decoded["description"] = $record->description;		
 
 			$recordlist_decoded[] = $record_decoded;
-								
+											
 		}
 		
 		// return
@@ -165,11 +174,13 @@
 		$valid_data = $this->validate_recorddate(); 
 		
 		if ( strpos($valid_data, "ERROR") == true) {
+			
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
 			
 		} else {
-					
+			
+				
 			// Use service to save the record data in a database
 			$serviceResponse = $this->service->update($id, $valid_data, $this->userId);
 			return new DataResponse($serviceResponse);

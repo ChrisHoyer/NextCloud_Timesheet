@@ -13,6 +13,7 @@ class WorkRecord extends Entity implements JsonSerializable {
 	public $breaktime;
 	public $holiday;	
 	public $vacation;
+	public $unpayedoverhours;
 		
 	public $recordduration;
 	public $regularhours;
@@ -38,7 +39,8 @@ class WorkRecord extends Entity implements JsonSerializable {
             'breaktime' => $this->breaktime,
 			'recordduration' => $this->recordduration,
 			'regularhours' => $this->regularhours,
-			
+			'unpayedoverhours' => $this->unpayedoverhours,
+						
 			// User vacation and legal holidays
 			'holiday' => $this->holiday,
 			'vacation' => $this->vacation,			

@@ -7,7 +7,7 @@
   use OCP\Migration\SimpleMigrationStep;
   use OCP\Migration\IOutput;
 
-  class Version000310Date20201121211000 extends SimpleMigrationStep {
+  class Version000420Date20201122191000 extends SimpleMigrationStep {
 
       /**
         * @param IOutput $output
@@ -53,13 +53,19 @@
               $table_records->addColumn('regularhours', 'string', [
                   'notnull' => true,
               ]);
-			  			  	
-			  // legal holidays and vacation
-			  $table_records->addColumn('holiday', 'bool', [
-                  'default' => false,
+			  $table_records->addColumn('unpayedoverhours', 'string', [
+			      'notnull' => true,
+                  'default' => 0,
               ]);
-              $table_records->addColumn('vacation', 'bool', [
-                  'default' => false,
+			  			  			  	
+			  // legal holidays and vacation
+			  $table_records->addColumn('holiday', 'string', [
+                  'notnull' => true,
+                  'default' => 0,
+              ]);
+              $table_records->addColumn('vacation', 'string', [
+			      'notnull' => true,
+                  'default' => 0,
               ]);
 			  	  
 		  			  
