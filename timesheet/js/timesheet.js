@@ -157,29 +157,31 @@ function getRecordList() {
 
 // ===================== Generates Table from Recordlist JSON Response
 function generateRecordList(recordlist){
-	
+
 	// table content
-	var record_table = [];
+	var content = [];
 	
-	// Iterate all items in List
-	$.each(recordlist, function (record_index, record_entity){
+	// ===================== Generate Record Table ===================	
+	
+	// Iterate all record items in List
+	$.each(recordlist.record, function (record_index, record_entity){
 		
 		// table row
 		var record_table_row = [];
 		
 		// Generate table row content
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row' entityid=" + record_entity.id + ">";
+		record_table_row = "<div class='timesheet-record-table-content-row' entityid=" + record_entity.id + ">";
 
 		// Generate first column of object
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-date'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-duration'>" + record_entity.recordduration + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-date'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-duration'>" + record_entity.recordduration + "</div>";		
 						
 		// Generate clickable trash can (trash can icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 		// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-modify'>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-modify'>";
 		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' id="+record_entity.id+"></span>";
 		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' id=" + record_entity.id + " data-startdate='" + record_entity.startdate + "'";
 		record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
@@ -187,22 +189,45 @@ function generateRecordList(recordlist){
 		record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
 		
 		// Description
-		record_table_row = record_table_row + "<div class='timesheet-record-table-row-cell timesheet-record-table-column-description'>" + record_entity.description + "</div>";
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-description'>" + record_entity.description + "</div>";
 			
 		// End Table Row
 		record_table_row = record_table_row + "</div>";
 		
-		
 		// Include into Table
-		record_table.push(record_table_row.toString());
+		content.push(record_table_row.toString());
 		
 	});
 	
 	// ===================== Display HTML Table ===================
 	$("#timesheet-record-table-content").html($( "<div/>", {
                       "class": "timesheet-record-table-content-generated",
-                      html: record_table.join( "" )
+                      html: content.join( "" )
                     }));
+
+	// ===================== Generate Report Row ===================		
+	
+	// report row
+	var report_row = [];	
+	
+
+	// Generate table row content
+	report_row = "<div class='timesheet-record-table-content-row'>";
+	
+	// Generate table report row content
+	report_row = report_row + "<div class='timesheet-record-table-report-row-leftfiller'></div>";	
+	report_row = report_row + "<div class='timesheet-record-table-report-row-cell timesheet-record-table-report-workinghours'>" + recordlist.report.workinghours + "</div>";
+			
+	// End Table Row
+	report_row = (report_row + "</div>").toString();
+		
+	
+	// Include into Table
+	$("#timesheet-record-table-report").html($( "<div/>", {
+                      "class": "timesheet-record-table-report-generated",
+                      html: report_row
+                    }));			
+
 					
 	// ===================== Delete Click ===================
 	$(".timesheet-record-delete").click(function(e) {

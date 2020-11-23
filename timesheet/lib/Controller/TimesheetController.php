@@ -93,7 +93,8 @@
 	// tidy up record data from request
 	private function read_recorddates($recordlist){
 			
-		$recordlist_decoded;		
+		$recordlist_decoded;	
+		$report["workinghours"] = floatval("0.0");
 			
 		// Split into Groups for each Month
 		foreach ($recordlist as &$record) {
@@ -112,9 +113,21 @@
 			$record_decoded["recordduration"] = $record->recordduration;
 			$record_decoded["description"] = $record->description;		
 
-			$recordlist_decoded[] = $record_decoded;
-											
+			// add to recordlist
+			$recordlist_decoded["record"][] = $record_decoded;
+			
+			// Report Stuff
+			
+			// Total Working Hours
+			$recordduration_float = explode(':', $record->recordduration);
+			$report["workinghours"] = $report["workinghours"] + floatval($recordduration_float[0]) +  floor(( floatval($recordduration_float[1])/60)*100 )/100 ;
+														
 		}
+		
+
+		// add to recordlist
+		$report["workinghours"] = floor($report["workinghours"] ) . ':' . (($report["workinghours"]  * 60) % 60);
+		$recordlist_decoded["report"] = $report;
 		
 		// return
 		return $recordlist_decoded;
@@ -138,9 +151,7 @@
 // ==================================================================================================================	
      /**
       * @NoAdminRequired
-      * 
-	  * @param string $title
-	  * @param string $content	  
+      *  
       */
      public function create() {
 
@@ -165,8 +176,7 @@
      /**
       * @NoAdminRequired
       * 
-	  * @param string $title
-	  * @param string $content	  
+	  * @param int $id  	  
       */
      public function update(int $id) {
 

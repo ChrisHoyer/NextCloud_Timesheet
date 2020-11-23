@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="script.js" server="192.168.178.3//mnt/Main/iocage/jails/NextCloud_Test/root/usr/local/www/nextcloud/apps/timesheet/" local="132444114396631363" remote="132444115030000000" Dst="2" />
-<file name="script.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132505435754139861" remote="132505435770000000" Dst="1" />
 <file name="daterangepicker.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132406270290000000" remote="132501940020000000" Dst="1" />
 <file name="moment.min.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132406270290000000" remote="132501950620000000" Dst="1" />
+<file name="timesheet.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132506384703075064" remote="132506387010000000" Dst="1" />
+<file name="settings.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132506399119438125" remote="132506399120000000" Dst="1" />
 </dwsync>

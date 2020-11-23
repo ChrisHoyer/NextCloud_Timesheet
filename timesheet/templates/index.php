@@ -1,10 +1,11 @@
 <?php
-script('timesheet', 'script');
-style('timesheet', 'style');
+// Scripts and Style for timesheet app
+script('timesheet', 'timesheet');
+style('timesheet', 'timesheet');
 
-script('timesheet', 'daterangepicker');
-script('timesheet', 'moment.min');
-style('timesheet', 'daterangepicker');
+// Scripts and Style for timesheet app
+script('timesheet', 'settings');
+
 ?>
 
 <div id="app">

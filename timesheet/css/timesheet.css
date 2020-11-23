@@ -67,10 +67,10 @@
 }
 
 .timesheet-newrecord-itembox {
-	padding-left: 5px;
+	/*padding-left: 5px;
 	padding-right: 5px;
 	margin-left: 5px;
-	margin-right: 5px;
+	margin-right: 5px;*/
 	
 	display: flex;
 	flex-direction: column;
@@ -94,11 +94,6 @@
 	text-align: center;	
 }
 
-.timesheet-newrecord-entrybox-button {
-	font-weight :bold;
-	color: #212121;
-	width: 100px;
-}
 
 .timesheet-newrecord-button-icon {
 	margin-right: 5px;
@@ -149,7 +144,7 @@
 /* ============ timesheet-record-table rows ============ */
 
 /* Row Settings */
-.timesheet-record-table-row {
+.timesheet-record-table-content-row {
 	height: 35px;
 	
 	display: flex;
@@ -158,12 +153,12 @@
 	text-align: center;	
 }
 
-.timesheet-record-table-row:hover {
+.timesheet-record-table-content-row:hover {
 	background-color: #bbb6b6;	
 }
 
 /* Cell Settings */
-.timesheet-record-table-row-cell {
+.timesheet-record-table-content-row-cell {
 	margin: 5px;
 }
 
@@ -192,7 +187,7 @@
 }
 
 /* column modify */
-.timesheet-record-table-row:hover .timesheet-record-table-column-modify {
+.timesheet-record-table-content-row:hover .timesheet-record-table-column-modify {
 	opacity: 100%;
 }
 
@@ -214,3 +209,10 @@
 
 /* Dialogs on top! */ 
 .ui-dialog { z-index: 1000 !important ;}
+
+/* ============ Forms Content ============ */
+.timesheet-button {
+	font-weight :bold;
+	color: #212121;
+	width: 100px;
+}

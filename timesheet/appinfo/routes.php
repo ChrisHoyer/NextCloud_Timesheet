@@ -19,5 +19,10 @@ return [
 	   // show records
 	   ['name' => 'timesheet#show', 'url' => '/record/{id}', 'verb' => 'GET'],	   
 	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
+	   
+	   // change settings
+	   ['name' => 'settings#change', 'url' => '/settings', 'verb' => 'GET'],
+	   ['name' => 'settings#change', 'url' => '/settings', 'verb' => 'POST'],
+	   	   
     ]
 ];
