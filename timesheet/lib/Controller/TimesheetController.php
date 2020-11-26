@@ -135,6 +135,7 @@
 		
 	}
 
+		
 // ==================================================================================================================
 	// Constructing this instance
      public function __construct(string $AppName, IRequest $request, $userId,
@@ -233,9 +234,14 @@
       * @NoAdminRequired
       * 
       */
-     public function showAll() {	
+     public function showAll($year, $month) {
+		 
+		 //	 Check if Get parameters are defined
+		 if( ($year == "undefined") & ($month == "undefined") )
+		 		return;
+	 		 
 		 // now find the all from userid and show it
-		 $recordlist = $this->service->findAll($this->userId);
+		 $recordlist = $this->service->findAllMonth($year, $month, $this->userId);
 		 
 		 // Sort content by date (highest ID first)
 		 usort($recordlist, function($a, $b) {
@@ -247,6 +253,8 @@
 		 
 		 // Return
 		 return $recordlist_decoded;
+		 
+		 
      }	 
 
  }

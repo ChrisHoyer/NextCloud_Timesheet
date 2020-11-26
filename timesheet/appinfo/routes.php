@@ -20,9 +20,11 @@ return [
 	   ['name' => 'timesheet#show', 'url' => '/record/{id}', 'verb' => 'GET'],	   
 	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
 	   
-	   // change settings
-	   ['name' => 'settings#change', 'url' => '/settings', 'verb' => 'GET'],
-	   ['name' => 'settings#change', 'url' => '/settings', 'verb' => 'POST'],
-	   	   
+	   // Modify report
+	   ['name' => 'report#create', 'url' => '/report', 'verb' => 'POST'],
+
+	   // show report
+	   ['name' => 'report#showAllReports', 'url' => '/reports', 'verb' => 'GET'],
+	   ['name' => 'report#show', 'url' => '/report/{id}', 'verb' => 'GET'],	   	   
     ]
 ];

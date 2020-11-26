@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
 <file name="PageController.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132501698420000000" remote="132501700090000000" Dst="1" />
-<file name="TimesheetController.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132506400080719719" remote="132506400120000000" Dst="1" />
+<file name="TimesheetController.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132508991417972946" remote="132508994730000000" Dst="1" />
 <file name="Errors.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132505354384882611" remote="132505355380000000" Dst="1" />
-<file name="SettingsController.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132506399891005296" remote="132506400120000000" Dst="1" />
+<file name="ReportController.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132509024167532985" remote="132509024180000000" Dst="1" />
 </dwsync>

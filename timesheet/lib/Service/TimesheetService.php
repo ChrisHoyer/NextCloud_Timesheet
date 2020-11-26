@@ -44,6 +44,15 @@ class TimesheetService {
 		 
      }	
 
+// ==================================================================================================================
+	// read all dates from existing records
+	public function read_existingdates(string $userId){
+		
+		// get values
+		return $this->mapper->getDates($userId);
+		
+	}
+	
 // ==================================================================================================================	
 	// Update an entry
 	public function update(int $id, WorkRecord $new_record, string $userId) {
@@ -137,5 +146,28 @@ class TimesheetService {
 		 }
 		 
 	 } 
-  
+
+// ==================================================================================================================
+ 	 // Find an entry for a specific month
+	 public function findAllMonth(string $year, string $month, string $userId){
+		 
+		 // Generate timestemp for the first and last day of the month in UNIX time
+		$firstday_month = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")));
+		$lastday_month = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")));
+		 
+		 
+		 // Try to find the Id and User ID
+		 try {
+		 	
+			return $this->mapper->findAllMonth($firstday_month, $lastday_month, $userId);	
+				  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 }
+		 
+	 } 
+	   
 };

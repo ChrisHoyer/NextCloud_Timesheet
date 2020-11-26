@@ -48,4 +48,38 @@ class WorkRecordMapper extends QBMapper {
     } 
 
 // ==================================================================================================================
+    public function findAllMonth(string $firstday_month, string $lastday_month, string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select from DB, where only current user
+        $qb->select('*')
+           ->from($this->getTableName())
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+		   ->andWhere('startdatetime >= :firstday')
+		   ->andWhere('startdatetime <= :lastday')
+		   ->setParameter('firstday', $firstday_month)
+		   ->setParameter('lastday', $lastday_month);
+		   
+        return $this->findEntities($qb);
+    } 
+	
+// ==================================================================================================================
+    public function getDates(string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select from DB, where only current user
+        $qb->select('startdatetime')
+           ->from($this->getTableName())
+           ->where(
+            $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+           );
+
+        return $this->findEntities($qb);
+    } 
+	
+// ==================================================================================================================
 }

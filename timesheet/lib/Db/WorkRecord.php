@@ -30,6 +30,7 @@ class WorkRecord extends Entity implements JsonSerializable {
 				
 			// Record Entitiy ID
             'id' => $this->id,
+			'userId' => $this->userId,
 			
 			// Start/End Time and Date
             'startdatetime' => $this->startdatetime,
@@ -50,8 +51,8 @@ class WorkRecord extends Entity implements JsonSerializable {
             'description' => $this->description,
 			'tags' => $this->tags,
 			'projects' => $this->projects,
-            'timezoneoffset' => $this->timezoneoffset,
-			'userId' => $this->userId
+            'timezoneoffset' => $this->timezoneoffset
+
         ];
     }
 }

@@ -1,7 +1,7 @@
 // default app URL
 var baseUrl = OC.generateUrl('/apps/timesheet');
 
-// ==========================================================================================
+// ====================================================================
 // ============================== Functional Events ===================
 (function() {
 
@@ -18,10 +18,6 @@ dialogModifyRecordForm = $("#dialog-modify-record").dialog({
             close: function() { form[ 0 ].reset();}
           });
 		  
-// ===================== Load Page ===================	
-	// get Records from this user
-	getRecordList();
-
 // ===================== Submit Button click
 $("#timesheet-newrecord-submit").click(function() {
 
@@ -73,10 +69,12 @@ $("#timesheet-newrecord-refresh").click(function() {
 	getRecordList();
 		
 	});
-	  
 
+// ===================== Load Page ===================	
+	// get Reports from this user
+	getReportList();  
 
-// ==========================================================================================
+// ==========================================================================
 // ============================== Static Events/Functions ===================
 
 // ===================== Delete Records for this user
@@ -132,23 +130,52 @@ function deleteRecord(recordID) {
 
 }
 
-// ===================== Load Records for this user
+// ===================== Load Records for this user in time periode
 function getRecordList() {
 	
+	// Get Selected Data
+	var selected_year = $('#timesheet-header-selectionbox-year').val();	
+	var selected_month = $('#timesheet-header-selectionbox-month').val();		
+		
 	// Request using POST at /record
-	var record_url = baseUrl + '/records';
+	var record_url = baseUrl + "/records?year=" + selected_year + "&month=" + selected_month;
 	
 	// GET request with all data from userID
 	$.getJSON(record_url, function() {})
 			.done(function(data, status) {
 				
 				// Generate Table
-				var response = data;
-				generateRecordList(response);
+				generateRecordList(data);
+			
 										
 			})
 			.fail(function() {
 				alert( "error" );
+			})
+			.always(function() {
+			});	
+	
+}
+
+// ===================== Load Reports of this user
+function getReportList() {
+	
+	// Request using POST at /record
+	var record_url = baseUrl + '/reports';
+		
+	// GET request with all data from userID
+	$.getJSON(record_url, function() {})
+			.done(function(data, status) {
+				
+				// Generate Table
+				generateReport(data);
+				
+				// Load Records
+				getRecordList();
+										
+			})
+			.fail(function(response) {
+				alert( "error:" + response );
 			})
 			.always(function() {
 			});	
@@ -173,7 +200,8 @@ function generateRecordList(recordlist){
 		record_table_row = "<div class='timesheet-record-table-content-row' entityid=" + record_entity.id + ">";
 
 		// Generate first column of object
-		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-date'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-date timesheet-record-table-column-row-d";
+		record_table_row = record_table_row +  + record_entity.startday + "'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
@@ -182,8 +210,8 @@ function generateRecordList(recordlist){
 		// Generate clickable trash can (trash can icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 		// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-modify'>";
-		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' id="+record_entity.id+"></span>";
-		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' id=" + record_entity.id + " data-startdate='" + record_entity.startdate + "'";
+		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete'></span>";
+		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
 		record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
 		record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
 		record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
@@ -266,5 +294,69 @@ function generateRecordList(recordlist){
 
 };
 
+// ===================== Generates Table from Recordlist JSON Response
+function generateReport(reportlist){
+	
+		// Generate HTML code for Report Header
+		var TScontent_selection = [];
+		var preselect_year;
+		
+		// Generate table row content
+		TScontent_selection = "<div class='timesheet-header-content' > Timesheet for ";
+
+		// Generate selectionbox
+		TScontent_selection = TScontent_selection + "<select id='timesheet-header-selectionbox-year' name='year' class='timesheet-header-selectionbox' >";
+		
+		// Iterate all years
+		$.each(reportlist.select, function (record_index, report_year){
+			if(record_index == reportlist.preselect_year){
+				TScontent_selection = TScontent_selection + "<option selected='selected'>" + record_index + "</option>";
+				preselect_year = record_index;			
+			} else
+				TScontent_selection = TScontent_selection + "<option>" + record_index + "</option>";
+		});
+				
+		// End Table Row
+		TScontent_selection = TScontent_selection + "</select><select id='timesheet-header-selectionbox-month' name='month'  class='timesheet-header-selectionbox' >";
+
+		$.each(reportlist.select[preselect_year], function (record_index, report_month){		
+			if(record_index == reportlist.preselect_month)
+				TScontent_selection = TScontent_selction + "<option selected='selected'>" + report_month + "</option>";			
+			else
+				TScontent_selection = TScontent_selection + "<option>" + report_month + "</option>";
+		});
+		
+		TScontent_selection = TScontent_selection + "</select></div>";
+
+				
+		// Include into Table
+		$("#timesheet-header").html($( "<div/>", {
+                      "class": "timesheet-record-table-report-generated",
+                      html: TScontent_selection.toString()
+                    }));
+						
+	// ===================== Year changed ===================					
+	$('#timesheet-header-selectionbox-year').change(function () {
+		
+		// Get selected year and corresponding months
+		var year = $(this).val();
+		var cormonths = reportlist.select[year];
+
+		var html_options = $.map(cormonths, function(month){
+								return '<option value="' + month + '">' + month + '</option>'
+						}).join('');	
+							
+		$("#timesheet-header-selectionbox-month").html(html_options);
+		getRecordList();		
+			
+    });
+
+
+	// ===================== Month changed ===================					
+	$('#timesheet-header-selectionbox-month').change(function () {
+		getRecordList();
+		});
+			
+};
 
 }());
