@@ -210,7 +210,7 @@ function generateRecordList(recordlist){
 		// Generate clickable trash can (trash can icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 		// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-modify'>";
-		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete'></span>";
+		record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' data-dbid=" + record_entity.id + "></span>";
 		record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
 		record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
 		record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
@@ -261,10 +261,10 @@ function generateRecordList(recordlist){
 	$(".timesheet-record-delete").click(function(e) {
 		
 		// Ask for permission
-	 	var result = confirm( "Delete ID: " + e.target.id + " ?");
+	 	var result = confirm( "Delete ID: " + $(e.target).data("dbid") + " ?");
 		
 		if (result == true) {
-			deleteRecord(e.target.id);
+			deleteRecord($(e.target).data("dbid"));
 		}
 	
 	});

@@ -250,6 +250,9 @@
 		 
 		 // read records and cast into format for jquery
 		$recordlist_decoded = $this->read_recorddates($recordlist);
+		
+		// Now get everything related to that month and year
+		
 		 
 		 // Return
 		 return $recordlist_decoded;

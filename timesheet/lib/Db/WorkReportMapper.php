@@ -32,6 +32,24 @@ class WorkReportMapper extends QBMapper {
     }
 
 // ==================================================================================================================
+    public function findMonYear(string $monyearid, string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select from DB, where only current user
+        $qb->select('*')
+           ->from($this->getTableName())
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+		   ->andWhere('monyearid >= :monyearid')
+		   ->setParameter('monyearid', $monyearid);
+		   
+        return $this->findEntities($qb);
+    } 
+
+
+
+// ==================================================================================================================
     public function findAll(string $userId) {
 		
 		// Build SQL querry
@@ -45,7 +63,7 @@ class WorkReportMapper extends QBMapper {
            );
 
         return $this->findEntities($qb);
-    } 
-
-// ==================================================================================================================
+    }
+	
+// ================================================================================================================== 
 }

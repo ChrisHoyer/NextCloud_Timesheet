@@ -32,7 +32,7 @@
 		 // create instance of database class
 		 $report = new WorkReport();
 		 $report->setUserId($this->userId);
-		 $report->setmonyearid();
+		 $report->setmonyearid($this->request->monyearid);
  		 		 
 		 // Weekly Hours and Days
 		 $report->setRegularweeklyhours($this->request->regularweeklyhours);
@@ -40,7 +40,15 @@
 		 $RegularDays = $RegularDays . $this->request->workingdDayThu . "," . $this->request->workingdDayFri . ",";	
 		 $RegularDays = $RegularDays . $this->request->workingdDaySat . "," . $this->request->workingdDaySun;			 
 		 $report->setRegulardays($RegularDays);
-
+		 
+		 // no data
+		 $report->setVacation(0);
+		 $report->setActualhours(0);
+		 $report->setTargethours(0);
+		 $report->setOvertimepayed(0);
+		 $report->setOvertimeunpayed(0);
+		 $report->setOvertimecompensation(0);
+			 
 		 // return ok
 		 return $report;
 		 		
@@ -57,7 +65,23 @@
 		 return $summary;
 		 		
 	}
-	 	 
+
+// ==================================================================================================================
+	// tidy up record data from return
+	private function clean_report($response){
+			
+		$reportlist_decoded;
+		
+		// Seperate Dates
+		$reportlist_decoded["regularweeklyhours"] = $response->regularweeklyhours;
+
+		
+		// return
+		return $reportlist_decoded;
+		
+		
+	}
+		 	 
 	 // ==================================================================================================================
 	// Constructing this instance
      public function __construct(string $AppName, IRequest $request, $userId,
@@ -71,19 +95,38 @@
 		 $this->TSservice = $TSservice;
      }
 	 
-	 // ==================================================================================================================	
+	 
+// ==================================================================================================================	
      /**
       * @NoAdminRequired
-      * 	  
+      *  
       */
-     public function change() {
-		 
+     public function createupdate() {
+
 		 // validation of record data
 		$valid_report = $this->validate_WorkReport(); 
-		 
-		 return new DataResponse($valid_report);
 
+		// check if database entry exists 
+		$existingID = $this->RPservice->findMonYear($valid_report->monyearid, $this->userId);
+		
+		// create new ID, if nothing found
+		if (empty($existingID)){	
+			$serviceResponse = $this->RPservice->create($valid_report, $this->userId);
+			return new DataResponse($this->clean_report($serviceResponse));
+			
+		// ID found	
+		} else {
+			
+			$serviceResponse = $this->RPservice->update($existingID[0]->id, $valid_report, $this->userId);
+			return new DataResponse($this->clean_report($serviceResponse));
+			
+		}
+		
+
+		
+	
      }
+
 
 // ==================================================================================================================	
      /**

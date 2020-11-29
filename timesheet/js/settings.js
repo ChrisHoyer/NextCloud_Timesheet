@@ -10,8 +10,12 @@ var baseUrl = OC.generateUrl('/apps/timesheet');
 	$("#timesheet-settings-save").click(function() {
 	
 	// Request using POST at /record
-	var record_url = baseUrl + '/settings';
-		
+	var record_url = baseUrl + '/report';
+
+	// Get Selected Data
+	var selected_year = $('#timesheet-header-selectionbox-year').val();	
+	var selected_month = $('#timesheet-header-selectionbox-month').val();	
+			
 	var settings_data = {
 			// Working Hours and Days
             regularweeklyhours: $("#timesheet-settings-regularweeklyhours").val(),		
@@ -22,6 +26,9 @@ var baseUrl = OC.generateUrl('/apps/timesheet');
 			workingdDayFri: 	$("#timesheet-settings-DayFri").prop('checked'),
 			workingdDaySat: 	$("#timesheet-settings-DaySat").prop('checked'),
 			workingdDaySun: 	$("#timesheet-settings-DaySun").prop('checked'),
+			
+			// selected sheet
+			monyearid: 			selected_year + "," + selected_month
 		};
 		
 	// POST request with all data

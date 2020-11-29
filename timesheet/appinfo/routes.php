@@ -10,21 +10,17 @@
 return [
     'routes' => [
 	   ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-	   
+
+	   // show records /reports 
+	   ['name' => 'report#showAllReports', 'url' => '/reports', 'verb' => 'GET'],
+	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
+	   	   
 	   // Modify records
 	   ['name' => 'timesheet#create', 'url' => '/record', 'verb' => 'POST'],
 	   ['name' => 'timesheet#delete', 'url' => '/record/{id}', 'verb' => 'DELETE'],
 	   ['name' => 'timesheet#update', 'url' => '/record/{id}', 'verb' => 'PUT'],
 	   	   	   
-	   // show records
-	   ['name' => 'timesheet#show', 'url' => '/record/{id}', 'verb' => 'GET'],	   
-	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
-	   
 	   // Modify report
-	   ['name' => 'report#create', 'url' => '/report', 'verb' => 'POST'],
-
-	   // show report
-	   ['name' => 'report#showAllReports', 'url' => '/reports', 'verb' => 'GET'],
-	   ['name' => 'report#show', 'url' => '/report/{id}', 'verb' => 'GET'],	   	   
+	   ['name' => 'report#createupdate', 'url' => '/report', 'verb' => 'POST'],	   
     ]
 ];
