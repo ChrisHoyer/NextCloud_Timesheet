@@ -149,13 +149,9 @@ class TimesheetService {
 
 // ==================================================================================================================
  	 // Find an entry for a specific month
-	 public function findAllMonth(string $year, string $month, string $userId){
+	 public function findAllMonth(string $firstday_month, string $lastday_month, string $userId){
 		 
-		 // Generate timestemp for the first and last day of the month in UNIX time
-		$firstday_month = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
-		$lastday_month = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
-		 
-		 
+
 		 // Try to find the Id and User ID
 		 try {
 		 	

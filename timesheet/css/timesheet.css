@@ -109,6 +109,16 @@
    display: none;
  }
 	
+/* ============ timesheet-record-barchart ============ */
+
+#timesheet-record-recordgraph-chart {
+	display: inline-block;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	height: 300px;
+	
+}
 
 /* ============ timesheet-record-table ============ */
 
@@ -153,6 +163,11 @@
 	text-align: center;	
 }
 
+/* Row Settings for weekends*/
+.timesheet-record-table-column-row-dSun, .timesheet-record-table-column-row-dSat {
+	background-color: #e3c3c3;	
+}
+
 .timesheet-record-table-content-row:hover {
 	background-color: #bbb6b6;	
 }
@@ -165,6 +180,10 @@
 /* column: date, start, end, break and duration */
 .timesheet-record-table-column-date, .timesheet-record-table-column-start, .timesheet-record-table-column-end, .timesheet-record-table-column-break, .timesheet-record-table-column-duration {
 	width: 100px;	
+}
+
+.timesheet-record-table-column-date {
+	text-align: left;
 }
 
 /* column: description in header and in general */

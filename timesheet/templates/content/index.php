@@ -45,6 +45,10 @@ $currenttime = date("H:i");
             </div>
         </div>
         </form>
+<!-- report bar chart -->   
+ 	<div id="timesheet-record-recordgraph">
+    	<canvas id="timesheet-record-recordgraph-chart"></canvas>
+    </div>   
 <!-- generated record table -->
     <div id="timesheet-record-table">
     	<!-- record table header -->

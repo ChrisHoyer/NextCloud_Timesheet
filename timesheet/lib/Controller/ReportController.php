@@ -140,7 +140,42 @@
 
 		 // now find the id and show it			 
 		 $reportlist = $this->RPservice->findAll($this->userId);
-		
+		 $reportlist_decoded["resp1"] = $reportlist;		
+		  
+		// Generate default entry on existing records (startdate) of user
+		if (!empty($reportlist)){	
+
+			// Extract existing dates from records			
+			foreach ($reportlist as &$report) {
+				
+				// Seperate Month and Year
+				$MonYear = explode(",", $report->monyearid);
+				$report_year = $MonYear[0];			
+				$report_month = $MonYear[1];
+				
+			    $reportlist_decoded["resp"][$report_month] = $report_year;
+				
+				// Get all months from this year (empty if generated new)
+				$existing_months = $reportlist_decoded["select"][$report_year];
+				
+				// check if months is empty, otherwise load
+				if( empty($existing_months) )
+					$existing_months = array($report_month);
+				else {
+					
+					// check if month is included
+					if (!in_array($report_month, $existing_months))
+						array_push($existing_months, $report_month);					
+				}
+				
+				// Write Back
+				$reportlist_decoded["select"][$report_year] = $existing_months;				
+								
+			}
+							
+		}
+
+		 	
 		// No values availible?
 			
 		// Generate default entry on existing records (startdate) of user

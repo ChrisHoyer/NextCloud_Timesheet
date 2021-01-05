@@ -92,10 +92,18 @@
 // ==================================================================================================================
 	// tidy up record data from request
 	private function read_recorddates($recordlist){
-			
-		$recordlist_decoded;	
+
+	
+		// Sort content by date (highest ID first)
+		 usort($recordlist, function($a, $b) {
+		 	return $a->startdatetime > $b->startdatetime ? -1 : 1; //Compare the id
+		 }); 
+		 		 
+	
+		$recordlist_decoded;
 		$report["workinghours"] = floatval("0.0");
-			
+	
+					
 		// Split into Groups for each Month
 		foreach ($recordlist as &$record) {
 
@@ -239,21 +247,18 @@
 		 //	 Check if Get parameters are defined
 		 if( ($year == "undefined") & ($month == "undefined") )
 		 		return;
-	 		 
+
+		 // Generate timestemp for the first and last day of the month in UNIX time
+		$firstday_month = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
+		$lastday_month = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
+			 		 
 		 // now find the all from userid and show it
-		 $recordlist = $this->service->findAllMonth($year, $month, $this->userId);
+		 $recordlist = $this->service->findAllMonth($firstday_month, $lastday_month, $this->userId);
 		 
-		 // Sort content by date (highest ID first)
-		 usort($recordlist, function($a, $b) {
-		 	return $a->startdatetime > $b->startdatetime ? -1 : 1; //Compare the id
-		 });   
-		 
+	 
 		 // read records and cast into format for jquery
 		$recordlist_decoded = $this->read_recorddates($recordlist);
-		
-		// Now get everything related to that month and year
-		
-		 
+
 		 // Return
 		 return $recordlist_decoded;
 		 

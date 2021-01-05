@@ -188,6 +188,10 @@ function generateRecordList(recordlist){
 	// table content
 	var content = [];
 	
+	// content for barchart
+	var barchart_date = [];
+	var barchart_recordduration = [];
+		
 	// ===================== Generate Record Table ===================	
 	
 	// Iterate all record items in List
@@ -197,11 +201,10 @@ function generateRecordList(recordlist){
 		var record_table_row = [];
 		
 		// Generate table row content
-		record_table_row = "<div class='timesheet-record-table-content-row' entityid=" + record_entity.id + ">";
+		record_table_row = "<div class='timesheet-record-table-content-row timesheet-record-table-column-row-d" +  record_entity.startday + "' entityid=" + record_entity.id + ">";
 
 		// Generate first column of object
-		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-date timesheet-record-table-column-row-d";
-		record_table_row = record_table_row +  + record_entity.startday + "'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
+		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-date'>" + record_entity.startday + ", " + record_entity.startdate + "</div>";		
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-start'>" + record_entity.starttime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-end'>" + record_entity.endtime + "</div>";
 		record_table_row = record_table_row + "<div class='timesheet-record-table-content-row-cell timesheet-record-table-column-break'>" + record_entity.breaktime + "</div>";
@@ -225,13 +228,21 @@ function generateRecordList(recordlist){
 		// Include into Table
 		content.push(record_table_row.toString());
 		
+		// include into barchart data
+		barchart_date.unshift(record_entity.startdate);
+		barchart_recordduration.unshift( parseFloat(record_entity.recordduration.split(":")[0]) + parseFloat(record_entity.recordduration.split(":")[1])/60 );
+				
 	});
+	
 	
 	// ===================== Display HTML Table ===================
 	$("#timesheet-record-table-content").html($( "<div/>", {
                       "class": "timesheet-record-table-content-generated",
                       html: content.join( "" )
                     }));
+					
+	// Update BarChart
+	updateBarChart(barchart_date, barchart_recordduration);
 
 	// ===================== Generate Report Row ===================		
 	
@@ -359,4 +370,30 @@ function generateReport(reportlist){
 			
 };
 
+// ===================== Generate BarChart
+function updateBarChart(barchart_date, barchart_recordduration){
+	
+	// reset canvas element
+	 $('#timesheet-record-recordgraph-chart').remove(); // this is my <canvas> element
+	 $('#timesheet-record-recordgraph').append('<canvas id="timesheet-record-recordgraph-chart"><canvas>');
+	
+	// get Cavas Element
+	var c = document.getElementById("timesheet-record-recordgraph-chart");
+	var ctx = c.getContext("2d");
+	
+	// draw chart
+	var myChart = new Chart(ctx, {
+		type: 'bar',
+    data: {
+        labels: barchart_date,
+        datasets: [{
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: barchart_recordduration
+        }]
+    },
+		options: { responsive: false }
+	});
+
+};
 }());

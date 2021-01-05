@@ -1,10 +1,12 @@
 <?php
 // Scripts and Style for timesheet app
 script('timesheet', 'timesheet');
-style('timesheet', 'timesheet');
+script('timesheet', 'settings');
+script('timesheet', 'Chart.min');
 
 // Scripts and Style for timesheet app
-script('timesheet', 'settings');
+style('timesheet', 'timesheet');
+
 
 ?>
 
