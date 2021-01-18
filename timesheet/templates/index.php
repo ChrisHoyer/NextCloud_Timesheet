@@ -1,12 +1,15 @@
 <?php
-// Scripts and Style for timesheet app
-script('timesheet', 'timesheet');
+// Scripts and Style for global app
+style('timesheet', 'global');
 script('timesheet', 'settings');
-script('timesheet', 'Chart.min');
 
-// Scripts and Style for timesheet app
-style('timesheet', 'timesheet');
+// scripts for third party
+script('timesheet', 'chart.min');
+script('timesheet', 'calendar.min');
 
+// scripts and style for specific page
+style('timesheet', $style);
+script('timesheet', $script);
 
 ?>
 
@@ -18,7 +21,7 @@ style('timesheet', 'timesheet');
 
 	<div id="app-content">
 		<div id="app-content-wrapper">
-			<?php print_unescaped($this->inc('content/index')); ?>
+			<?php print_unescaped($this->inc($appPage)); ?>
 		</div>
 	</div>
 </div>

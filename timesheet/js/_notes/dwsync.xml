@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="daterangepicker.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132406270290000000" remote="132501940020000000" Dst="1" />
-<file name="moment.min.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132406270290000000" remote="132501950620000000" Dst="1" />
-<file name="timesheet.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132543567790558507" remote="132543582720000000" Dst="1" />
+<file name="timesheet.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132554764755615002" remote="132554764770000000" Dst="1" />
 <file name="settings.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132511401948369613" remote="132511401980000000" Dst="1" />
-<file name="Chart.min.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="121436361000000000" remote="132543497230000000" Dst="1" />
+<file name="calendar.min.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132552628380000000" remote="132554672150000000" Dst="1" />
+<file name="chart.min.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="121436361000000000" remote="132554672150000000" Dst="1" />
+<file name="calendar.js" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132554726381112321" remote="132554726400000000" Dst="1" />
 </dwsync>

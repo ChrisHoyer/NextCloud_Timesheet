@@ -9,8 +9,9 @@
  */
 return [
     'routes' => [
-	   ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-
+	   ['name' => 'timesheet#index', 'url' => '/', 'verb' => 'GET'],
+	   ['name' => 'calendar#index', 'url' => '/calendar', 'verb' => 'GET'],
+	   
 	   // show records /reports 
 	   ['name' => 'report#showAllReports', 'url' => '/reports', 'verb' => 'GET'],
 	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
