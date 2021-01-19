@@ -48,7 +48,7 @@ class WorkRecordMapper extends QBMapper {
     } 
 
 // ==================================================================================================================
-    public function findAllMonth(string $firstday_month, string $lastday_month, string $userId) {
+    public function findAllStartDateRange(string $firstday, string $lastday, string $userId) {
 		
 		// Build SQL querry
         $qb = $this->db->getQueryBuilder();
@@ -59,8 +59,8 @@ class WorkRecordMapper extends QBMapper {
            ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
 		   ->andWhere('startdatetime >= :firstday')
 		   ->andWhere('startdatetime <= :lastday')
-		   ->setParameter('firstday', $firstday_month)
-		   ->setParameter('lastday', $lastday_month);
+		   ->setParameter('firstday', $firstday)
+		   ->setParameter('lastday', $lastday);
 		   
         return $this->findEntities($qb);
     } 

@@ -149,13 +149,13 @@ class TimesheetService {
 
 // ==================================================================================================================
  	 // Find an entry for a specific month
-	 public function findAllMonth(string $firstday_month, string $lastday_month, string $userId){
+	 public function findAllRange(string $firstday, string $lastday, string $userId){
 		 
 
 		 // Try to find the Id and User ID
 		 try {
 		 	
-			return $this->mapper->findAllMonth($firstday_month, $lastday_month, $userId);	
+			return $this->mapper->findAllStartDateRange($firstday, $lastday, $userId);	
 				  
 		 // Id not found
 		 } catch(Exception $e) {

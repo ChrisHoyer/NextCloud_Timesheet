@@ -54,6 +54,20 @@ function addEvent2Timesheet(CalTitle, CalArgs) {
 			});
 	}	
 	
+// ===================== Delete Records for this user
+function deleteEventfromTimesheet(recordID) {
+
+	// Request a Delete at /record/{id}
+	var record_url = baseUrl + '/record/' + recordID;
+		
+	// DELETE request with entity ID
+	$.ajax({ url: record_url, type: 'DELETE'})
+		.done(function () {	
+			//alert( "Deleted: " + JSON.stringify(response) );
+		 });
+
+}
+	
 // ============================== Create Calendar ===================	
 	document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('timesheet-calendar');
@@ -81,19 +95,54 @@ function addEvent2Timesheet(CalTitle, CalArgs) {
 		// selection cleated
         calendar.unselect()
       },
+	  
 	  // Click on Event?
       eventClick: function(arg) {
-        if (confirm('Are you sure you want to delete this event?')) {
-          arg.event.remove()
+	  
+        if (confirm('Are you sure you want to delete ' + arg.event.title + ' ?')) {
+			deleteEventfromTimesheet(arg.event.id);
+			arg.event.remove();
         }
       },
 	  
       editable: true,
       dayMaxEvents: true, // allow "more" link when too many events
-      events: [ ]
-    });
+	  
+	  // Get Events from JSON request
+	  events: function(info, successCallback, failureCallback) {
 
+		 // Request using GET at /records
+		 var record_url = baseUrl + "/records?start=" + (info.start.valueOf()).toString().slice(0, -3) + "&end=" + (info.end.valueOf()).toString().slice(0, -3);
+		  
+		 // AJAX call
+		 $.ajax({ url: record_url, type: 'GET', headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+		  
+			// if ajax success
+			success: function (response) { 
+				var events = [];
+				
+				// iterate all day events  
+				$(response['allEvents']).each(function () { 
+					events.push({
+						id: $(this).attr('id'),
+						title: $(this).attr('description'),
+						start: new Date($(this).attr('startdate') + " " + $(this).attr('starttime')),
+						end: new Date($(this).attr('enddate') + " " + $(this).attr('endtime')),
+						allDay : true, // Events are always all day
+						color: 'blue',
+					});
+				});
+				
+			successCallback(events);
+			}
+			
+		// Close function
+		}); },
+	  
+    });
+	
     calendar.render();
+	
   });
 
 

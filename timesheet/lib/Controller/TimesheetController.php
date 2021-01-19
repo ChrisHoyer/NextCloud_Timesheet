@@ -135,26 +135,42 @@
       * @NoAdminRequired
       * 
       */
-     public function showAll($year, $month) {
-		 
-		 //	 Check if Get parameters are defined
-		 if( ($year == "undefined") & ($month == "undefined") )
-		 		return;
-
-		 // Generate timestemp for the first and last day of the month in UNIX time
-		$firstday_month = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
-		$lastday_month = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
+     public function showAll($year, $month, $start, $end, $format) {
+		 		 
+		 //	 Check if parameters for year and month are defined
+		 if( !is_null($year) & !is_null($month) ) {
+			 
+			 // Generate timestemp for the first and last day of the month in UNIX time
+			 $firstday = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
+			 $lastday = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
+			 
+		// check if parameters for startdate and enddate are defined
+		 } elseif( !is_null($start) & !is_null($end) ) {
+			 
+			 // Generate timestemp for the first and last day from UNIX Time (in seconds!)
+			 $firstday = $start;
+			 $lastday = $end;
+			 
+		// bad request
+		 } else {
+			 
+			 return "Error in Request";
+		 }
 			 		 
 		// now find all entries from this month
-		$recordlist = $this->service->findAllMonth($firstday_month, $lastday_month, $this->userId);
+		$recordlist = $this->service->findAllRange($firstday, $lastday, $this->userId);
 		
 		// get all days of this month (if current month, only days in past)
-		if($lastday_month > time()) $lastday_month = time();
-		for($i=$lastday_month; $i>$firstday_month; $i-=86400) {$daylist[] = date('Y-m-d', $i);}	 
+		if($lastday > time()) $lastday = time();
+		for($i=$lastday; $i>$firstday; $i-=86400) {$daylist[] = date('Y-m-d', $i);}	 
 		
 		 // read records and cast into format for jquery
 		$recordlist_table = $this->fwservice->map_record2date($recordlist, $daylist);
-
+		
+		// some infos about search request
+		$recordlist_table["requested"] = "Search between " .$firstday . " and " . $lastday;
+		$recordlist_table["request_arg"] = "year=" . $year . " month=" . $month . " start=" . $start . " end=" . $end . " format=" . $format;
+				
 		 // Return
 		 return $recordlist_table;
 		 
