@@ -15,8 +15,9 @@ dialogModifyRecordForm = $("#dialog-modify-record").dialog({
 				"Edit Record": function(){ editRecord(dialogModifyRecordForm); },
 				Cancel: function() { dialogModifyRecordForm.dialog( "close" ); }
 					},
-            close: function() { form[ 0 ].reset();}
-          });
+            close: function() { $("#dialog-modify-record")[0].reset();}
+		});
+
 		  
 // ===================== Submit Button click
 $("#timesheet-newrecord-submit").click(function() {
@@ -104,8 +105,12 @@ function editRecord(dialogModifyRecordForm) {
 		};
 			
 	// PUT request with entity ID and new data
-	$.ajax({ url: record_url, type: 'PUT', data: record_data,})
-		.done(function (response) {	});
+	$.ajax({
+		headers: {requesttoken: oc_requesttoken},
+		url: record_url,
+		type: 'PUT', 
+		data: record_data
+		});
 
 	// Info and refresh
 	$(dialogModifyRecordForm).dialog("close");
@@ -113,22 +118,6 @@ function editRecord(dialogModifyRecordForm) {
 
 }
 
-// ===================== Delete Records for this user
-function deleteRecord(recordID) {
-
-	// Request a Delete at /record/{id}
-	var record_url = baseUrl + '/record/' + recordID;
-		
-	// DELETE request with entity ID
-	$.ajax({ url: record_url, type: 'DELETE'})
-		.done(function () {	
-			//alert( "Deleted: " + JSON.stringify(response) );
-		 });
-
-	// Info and refresh
-	getRecordList();
-
-}
 
 // ===================== Load Records for this user in time periode
 function getRecordList() {
@@ -138,23 +127,20 @@ function getRecordList() {
 	var selected_month = $('#timesheet-header-selectionbox-month').val();		
 		
 	// Request using POST at /record
-	var record_url = baseUrl + "/records?year=" + selected_year + "&month=" + selected_month;
+	var record_url = baseUrl + "/records?year=" + selected_year + "&month=" + selected_month + "&output=report";
 	
 	// GET request with all data from userID
-	$.getJSON(record_url, function() {})
-			.done(function(data, status) {
+	$.ajax({
+		headers: {requesttoken: oc_requesttoken},
+		url: record_url,
+		type: 'GET', 
+		})
+		.done(function(data, status) {
 				
-				// Generate Table
-				generateRecordList(data);
-			
-										
-			})
-			.fail(function() {
-				alert( "error" );
-			})
-			.always(function() {
-			});	
-	
+			// Generate Table
+			generateRecordList(data);
+		})
+		.fail(function() { alert( "error" );})
 }
 
 // ===================== Load Reports of this user
@@ -163,8 +149,13 @@ function getReportList() {
 	// Request using POST at /record
 	var record_url = baseUrl + '/reports';
 		
-	// GET request with all data from userID
-	$.getJSON(record_url, function() {})
+	// GET request with all reports from userID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: record_url,
+			dataType: 'json',	
+			type: 'GET',
+			})
 			.done(function(data, status) {
 				
 				// Generate Table
@@ -197,13 +188,23 @@ function generateRecordList(recordlist){
 	// Iterate all record items in List
 	$.each(recordlist.report, function (day_index, day_entity){
 		
+		// header information about overtime
+		if(day_entity.difference_duration_hours !=0 ){
+			var overtime = day_entity.difference_duration;	
+			var overtime_sign = (day_entity.difference_duration_hours > 0) ? "pos": (day_entity.difference_duration_hours < 0) ? "neg": "none";						
+		} else { var overtime = ""; var overtime_sign="none"; }
+
+		
+
+		
 		// create table for current day entry day header
 		var row_day = [];
 		row_day = "<div class='timesheet-report-day timesheet-report-row-d" +  day_entity.day + " timesheet-report-row-e" +  day_entity.eventtype + "' >" + "<div class='timesheet-report-day-header' >";
 		row_day	= row_day + "<div class='timesheet-report-day-header-date'>" + day_entity.day + ", " + day_entity.date  + "</div>";
 		row_day	= row_day + "<div class='timesheet-report-day-header-workinghours'>" + day_entity.total_duration + "</div>";
-		row_day	= row_day + "<div class='timesheet-report-column-modify'> </div> <div class='timesheet-report-day-header-events'>" + day_entity.eventtype + "</div></div>";
-			
+		row_day	= row_day + "<div class='timesheet-report-day-header-overtime timesheet-report-day-header-overtimesgn-" + overtime_sign +"'>" + overtime + "</div>";
+		row_day	= row_day + "<div class='timesheet-report-day-header-events'>" + day_entity.eventtype + "</div></div>";
+		 	
 		// day_entity contains records
 		if(day_entity.hasOwnProperty('records')) {
 			
@@ -292,7 +293,7 @@ function generateRecordList(recordlist){
 	 	var result = confirm( "Delete ID: " + $(e.target).data("dbid") + " ?");
 		
 		if (result == true) {
-			deleteRecord($(e.target).data("dbid"));
+			deleteRecordID($(e.target).data("dbid"));
 		}
 	
 	});

@@ -10,6 +10,7 @@
  use OCP\AppFramework\Http\JSONResponse;
  
  use OCA\Timesheet\Service\TimesheetService;
+ use OCA\Timesheet\Service\ReportService;
  use OCA\Timesheet\Service\FrameworkService;
  
  use OCA\Timesheet\Db\WorkRecord;
@@ -20,7 +21,8 @@
      private $userId;
 	 private $service;
 	 private $fwservice;
-	 
+	 private $rpservice;
+	 	 
 	 protected $request;
 	 
 	 // use Errors.php
@@ -30,7 +32,7 @@
 // ==================================================================================================================
 	// Constructing this instance
      public function __construct(string $AppName, IRequest $request, $userId,
-	 							 TimesheetService $service, FrameworkService $fwservice){
+	 							 TimesheetService $service, FrameworkService $fwservice, ReportService $rpservice){
          parent::__construct($AppName, $request);
 		 
 		 // initialize variables
@@ -38,6 +40,7 @@
 		 $this->userId = $userId;
 		 $this->service = $service;
 		 $this->fwservice = $fwservice;
+		 $this->rpservice = $rpservice;
      }
 
 // ==================================================================================================================	
@@ -135,7 +138,7 @@
       * @NoAdminRequired
       * 
       */
-     public function showAll($year, $month, $start, $end, $format) {
+     public function showAll($year, $month, $start, $end, $output) {
 		 		 
 		 //	 Check if parameters for year and month are defined
 		 if( !is_null($year) & !is_null($month) ) {
@@ -165,11 +168,16 @@
 		for($i=$lastday; $i>$firstday; $i-=86400) {$daylist[] = date('Y-m-d', $i);}	 
 		
 		 // read records and cast into format for jquery
-		$recordlist_table = $this->fwservice->map_record2date($recordlist, $daylist);
+		if($output == "report"){
+			 $monthly_report_setting = $this->rpservice->findMonYear(($year . "," . $month), $this->userId);
+			 $recordlist_table = $this->fwservice->map_report($recordlist, $daylist, $monthly_report_setting);
+		} elseif($output == "list"){
+			 $recordlist_table = $this->fwservice->map_list($recordlist, $daylist);
+		}
 		
 		// some infos about search request
 		$recordlist_table["requested"] = "Search between " .$firstday . " and " . $lastday;
-		$recordlist_table["request_arg"] = "year=" . $year . " month=" . $month . " start=" . $start . " end=" . $end . " format=" . $format;
+		$recordlist_table["requested"] = "year=" . $year . " month=" . $month . " start=" . $start . " end=" . $end . " output=" . $output;
 				
 		 // Return
 		 return $recordlist_table;

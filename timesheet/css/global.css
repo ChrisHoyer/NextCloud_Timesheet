@@ -9,6 +9,8 @@
 	width: 100%;
 }
 
+/* Dialogs on top! */ 
+.ui-dialog { z-index: 1000 !important ;}
 
 /* ============ Content Alignment ============ */
 #timesheet-content {

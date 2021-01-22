@@ -32,16 +32,12 @@ var baseUrl = OC.generateUrl('/apps/timesheet');
 		};
 		
 	// POST request with all data
-	$.post(record_url, settings_data, function() { })
-			.done(function(response) {
-				alert( response );
-	
-			})
-			.fail(function() {
-				alert( "error" );
-			})
-			.always(function() {
-			})
+	$.ajax({
+		headers: {requesttoken: oc_requesttoken},
+		url: record_url,
+		type: 'POST', 
+		data: settings_data
+		});
 	});
 	
 	}());

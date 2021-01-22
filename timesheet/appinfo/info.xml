@@ -19,7 +19,7 @@ tbd]]></description>
     <navigations>
         <navigation>
             <name>Timesheet</name>
-            <route>timesheet.page.index</route>
+            <route>timesheet.timesheet.index</route>
         </navigation>
     </navigations>
 </info>

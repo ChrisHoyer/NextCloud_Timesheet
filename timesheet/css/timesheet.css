@@ -147,6 +147,20 @@
 	font-weight: bold;	
 }
 
+.timesheet-report-day-header-overtime {
+	margin: 5px;
+	width: 50px;
+	font-weight: bold;	
+}
+
+.timesheet-report-day-header-overtimesgn-pos {
+	color:#006400	
+}
+
+.timesheet-report-day-header-overtimesgn-neg {
+	color:#8B0000	
+}
+
 /* Day Header Working event */
 .timesheet-report-day-header-events {
 	margin: 5px;
@@ -221,8 +235,6 @@
 	
 }
 
-/* Dialogs on top! */ 
-.ui-dialog { z-index: 1000 !important ;}
 
 /* ============ Forms Content ============ */
 .timesheet-button {
