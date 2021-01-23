@@ -12,6 +12,13 @@
 /* Dialogs on top! */ 
 .ui-dialog { z-index: 1000 !important ;}
 
+/* ============ Forms Content ============ */
+.timesheet-button {
+	font-weight :bold;
+	color: #212121;
+	width: 100px;
+}
+
 /* ============ Content Alignment ============ */
 #timesheet-content {
 	

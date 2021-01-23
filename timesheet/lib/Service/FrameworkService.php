@@ -89,14 +89,13 @@ class FrameworkService {
 					// add total working hours in hours (decimal)
 					$duation_hours = explode(':', $record->recordduration);
 					$duation_hours = floatval($duation_hours[0]) + floor(( floatval($duation_hours[1])/60 )*100 )/100;
+					
 					$recordlist_table["report"][$day]["total_duration_hours"] = $recordlist_table["report"][$day]["total_duration_hours"] +  $duation_hours;
+					$recordlist_table["summary"]["total_duration_hours"]  = $recordlist_table["summary"]["total_duration_hours"] + $duation_hours;
 				}
 				
 			}
 			
-			// add total working hours in hours:minutes and in hours
-			$time = $recordlist_table["report"][$day]["total_duration_hours"];
-			$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int) $time, round(fmod($time, 1) * 60));
 		}
 					
 		// Add Events into Day Information
@@ -121,28 +120,49 @@ class FrameworkService {
 				
 				// get current date and total duration
 				$day = $dayrecord["date"];
-				$difference_duration = $recordlist_table["report"][$day]["total_duration_hours"];
+				$difference_duration = $recordlist_table["report"][$day]["total_duration_hours"];			
+				$total_duration = $recordlist_table["report"][$day]["total_duration_hours"];			
 				$target_duration = 	floatval(0.0);			
-
+				$target_workduration = 	floatval(0.0);	
+				
 				// Subtract regular working time for working days
-				$freetime = $dayrecord["eventtype"] != "Vacation" or $dayrecord["eventtype"] != "Holiday";
-				if(in_array($dayrecord["day"], $monthly_report["workingdays"]) and $freetime)
+				$nofreetime_bool = (boolean) $dayrecord["eventtype"] != "Holiday" || (boolean) $dayrecord["eventtype"] != "Vacation";
+				if(in_array($dayrecord["day"], $monthly_report["workingdays"]))
 				{
 						// Calculate Difference in Duration for Workingdays
-						$difference_duration = $difference_duration - $monthly_report["dailyhours"];
-						$target_duration = $monthly_report["dailyhours"];						
+						if($nofreetime_bool) { $difference_duration = $difference_duration - $monthly_report["dailyhours"];}
+						if($nofreetime_bool) { $target_workduration = $monthly_report["dailyhours"]; }
+												
+						// vacation days have always dailyhours (if payed)
+						if(!$nofreetime_bool) { $total_duration = $total_duration + $monthly_report["dailyhours"];}	
 						
+						// Count Working Days
+						$target_duration = $monthly_report["dailyhours"];					
 				}
-					
+		
 				// if Holiday or Vacation, add daily hours in hours and in hours:minutes
 				$recordlist_table["report"][$day]["difference_duration_hours"]  = $difference_duration;
 				$recordlist_table["report"][$day]["target_duration_hours"]  = $target_duration;
-										
-				$recordlist_table["report"][$day]["difference_duration"] = sprintf('%02d:%02d', (int) ($difference_duration), round(fmod($difference_duration, 1) * 60));
-
-			}
-		}	
+				$recordlist_table["report"][$day]["target_workduration_hours"]  = $target_workduration;
+								
+				// Add to Summary
+				$recordlist_table["summary"]["difference_duration_hours"]  = $recordlist_table["summary"]["difference_duration_hours"] + $difference_duration;
+				$recordlist_table["summary"]["target_duration_hours"]  = $recordlist_table["summary"]["target_duration_hours"] + $target_duration;
+				$recordlist_table["summary"]["target_workingduration_hours"]  = $recordlist_table["summary"]["target_workingduration_hours"] + $target_workduration;
+													
+				$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($difference_duration), round(fmod($difference_duration, 1) * 60));				
+				$recordlist_table["report"][$day]["difference_duration"] = ((int)$difference_duration > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
+				$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int)$total_duration, round(fmod($total_duration, 1) * 60));				
+			}	
+		}
 		
+		// generate Summary
+		$diff_duration_HHMM = sprintf('%02d:%02d', (int)$recordlist_table["summary"]["difference_duration_hours"], 
+												round(fmod($recordlist_table["summary"]["difference_duration_hours"], 1) * 60));			
+		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ?
+																		 ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;			
+		$recordlist_table["summary"]["total_duration"] = sprintf('%02d:%02d', (int)$recordlist_table["summary"]["total_duration_hours"],
+																	 round(fmod($recordlist_table["summary"]["total_duration_hours"], 1) * 60));			
 		// return
 		return $recordlist_table;
 		

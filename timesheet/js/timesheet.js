@@ -182,7 +182,9 @@ function generateRecordList(recordlist){
 	// content for barchart
 	var barchart_date = [];
 	var barchart_recordduration = [];
-		
+	var barchart_targetduration = [];
+	var barchart_differenceduration = [];
+				
 	// ===================== Generate Record Table ===================	
 	
 	// Iterate all record items in List
@@ -194,15 +196,12 @@ function generateRecordList(recordlist){
 			var overtime_sign = (day_entity.difference_duration_hours > 0) ? "pos": (day_entity.difference_duration_hours < 0) ? "neg": "none";						
 		} else { var overtime = ""; var overtime_sign="none"; }
 
-		
-
-		
 		// create table for current day entry day header
 		var row_day = [];
 		row_day = "<div class='timesheet-report-day timesheet-report-row-d" +  day_entity.day + " timesheet-report-row-e" +  day_entity.eventtype + "' >" + "<div class='timesheet-report-day-header' >";
 		row_day	= row_day + "<div class='timesheet-report-day-header-date'>" + day_entity.day + ", " + day_entity.date  + "</div>";
 		row_day	= row_day + "<div class='timesheet-report-day-header-workinghours'>" + day_entity.total_duration + "</div>";
-		row_day	= row_day + "<div class='timesheet-report-day-header-overtime timesheet-report-day-header-overtimesgn-" + overtime_sign +"'>" + overtime + "</div>";
+		row_day	= row_day + "<div class='timesheet-report-day-header-overtime timesheet-report-overtimesgn-" + overtime_sign +"'>" + overtime + "</div>";
 		row_day	= row_day + "<div class='timesheet-report-day-header-events'>" + day_entity.eventtype + "</div></div>";
 		 	
 		// day_entity contains records
@@ -248,8 +247,9 @@ function generateRecordList(recordlist){
 		// include into barchart data
 		barchart_date.unshift(day_entity.date);
 		barchart_recordduration.unshift(day_entity.total_duration_hours);
-		
-				
+		barchart_targetduration.unshift(day_entity.target_workduration_hours);		
+		barchart_differenceduration.unshift(day_entity.difference_duration_hours);
+					
 	});
 	
 	
@@ -260,21 +260,29 @@ function generateRecordList(recordlist){
                     }));
 					
 	// Update BarChart
-	updateBarChart(barchart_date, barchart_recordduration);
+	updateBarChart(barchart_date, barchart_recordduration, barchart_targetduration, barchart_differenceduration);
 
-	// ===================== Generate Report Row ===================		
+	// ===================== Generate Report summary Row ===================
+			
+	// header information about overtime
+	if(recordlist.summary.difference_duration_hours !=0 ){
+			var monthly_difference = recordlist.summary.difference_duration;	
+			var monthly_difference_sign = (recordlist.summary.difference_duration_hours > 0) ? "pos": (recordlist.summary.difference_duration_hours < 0) ? "neg": "none";						
+		} else { var monthly_difference = ""; var monthly_difference_sign="none"; }
+
 	
 	// report row
 	var report_row = [];	
 	
 
 	// Generate table row content
-	report_row = "<div class='timesheet-record-table-content-row'>";
+	report_row = "<div class='timesheet-record-summary-row'>";
 	
 	// Generate table report row content
-	report_row = report_row + "<div class='timesheet-record-table-report-row-leftfiller'></div>";	
-	report_row = report_row + "<div class='timesheet-record-table-report-row-cell timesheet-record-table-report-workinghours'>" + recordlist.report.workinghours + "</div>";
-			
+	report_row = report_row + "<div class='timesheet-record-table-summary-leftfiller'></div>";	
+	report_row = report_row + "<div class='timesheet-record-summary-workinghours'> <span>&Sigma;</span> " + recordlist.summary.total_duration + "</div>";
+	report_row = report_row + "<div class='timesheet-record-summary-overtime timesheet-report-overtimesgn-" + monthly_difference_sign +"'>" + monthly_difference + "</div>";
+				
 	// End Table Row
 	report_row = (report_row + "</div>").toString();
 		
@@ -389,7 +397,7 @@ function generateReport(reportlist){
 };
 
 // ===================== Generate BarChart
-function updateBarChart(barchart_date, barchart_recordduration){
+function updateBarChart(barchart_date, barchart_recordduration, barchart_targetduration, barchart_differenceduration){
 	
 	// reset canvas element
 	 $('#timesheet-record-recordgraph-chart').remove(); // this is my <canvas> element
@@ -405,12 +413,28 @@ function updateBarChart(barchart_date, barchart_recordduration){
     data: {
         labels: barchart_date,
         datasets: [{
+			label: 'worked time',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
+			stack: 'Stack 1',
             data: barchart_recordduration
-        }]
+        },{
+			label: 'target workingtime',
+            backgroundColor: 'rgb(99, 132, 255)',
+            borderColor: 'rgb(99, 104, 255)',
+			stack: 'Stack 0',
+            data: barchart_targetduration
+        },{
+			label: 'overtime',
+            backgroundColor: 'rgb(132, 255, 99)',
+            borderColor: 'rgb(132, 255, 99)',
+			stack: 'Stack 0',
+            data: barchart_differenceduration
+		}]		
     },
-		options: { responsive: false }
+		options: { responsive: false,
+				   scales: {xAxes: [{ stacked: true }], yAxes: [{ stacked: true }] }
+				 }
 	});
 
 };
