@@ -6,6 +6,7 @@ use OCA\Timesheet\Db\WorkReport;
  
 class FrameworkService {
 	
+
 // ==================================================================================================================
 	public function map_report($recordlist, $daylist, $monthly_report_setting){
 		
@@ -14,6 +15,7 @@ class FrameworkService {
 		
 		// Return values
 		$recordlist_table;
+		$recordlist_table["settings"] = $monthly_report_setting[0];
 		$eventlist;
 										 	
 		// Iterate all days and find corresponding records
@@ -114,7 +116,9 @@ class FrameworkService {
 			// Extract values from Report Setting
 			$monthly_report["workingdays"] = explode(",", $monthly_report_setting[0]->regulardays);
 			$monthly_report["dailyhours"] = floatval($monthly_report_setting[0]->regularweeklyhours)/count($monthly_report["workingdays"]);
-			
+
+			$recordlist_table["summary"]["vacationdays"] = floatval(0.0);
+							
 			// Iterate each entry
 			foreach($recordlist_table["report"] as $dayrecord) {
 				
@@ -124,22 +128,29 @@ class FrameworkService {
 				$total_duration = $recordlist_table["report"][$day]["total_duration_hours"];			
 				$target_duration = 	floatval(0.0);			
 				$target_workduration = 	floatval(0.0);	
-				
+								
 				// Subtract regular working time for working days
-				$nofreetime_bool = (boolean) $dayrecord["eventtype"] != "Holiday" || (boolean) $dayrecord["eventtype"] != "Vacation";
+				$eventtype_currentrecord = $dayrecord["eventtype"];
+				$holiday_book = (boolean) strcasecmp($eventtype_currentrecord, "Holiday") == 0;
+				$vacation_bool = (boolean) strcasecmp($eventtype_currentrecord, "Vacation") == 0;
+				$freetime_bool = $holiday_book || $vacation_bool;
+				
 				if(in_array($dayrecord["day"], $monthly_report["workingdays"]))
 				{
 						// Calculate Difference in Duration for Workingdays
-						if($nofreetime_bool) { $difference_duration = $difference_duration - $monthly_report["dailyhours"];}
-						if($nofreetime_bool) { $target_workduration = $monthly_report["dailyhours"]; }
+						if(!$freetime_bool) { $difference_duration = $difference_duration - $monthly_report["dailyhours"];}
+						if(!$freetime_bool) { $target_workduration = $monthly_report["dailyhours"]; }
 												
 						// vacation days have always dailyhours (if payed)
-						if(!$nofreetime_bool) { $total_duration = $total_duration + $monthly_report["dailyhours"];}	
+						if($freetime_bool) { $total_duration = $total_duration + $monthly_report["dailyhours"];}	
+						
+						// count vacation days
+						if($vacation_bool) {$recordlist_table["summary"]["vacationdays"] = $recordlist_table["summary"]["vacationdays"] + 1; }
 						
 						// Count Working Days
 						$target_duration = $monthly_report["dailyhours"];					
 				}
-		
+						
 				// if Holiday or Vacation, add daily hours in hours and in hours:minutes
 				$recordlist_table["report"][$day]["difference_duration_hours"]  = $difference_duration;
 				$recordlist_table["report"][$day]["target_duration_hours"]  = $target_duration;
@@ -157,12 +168,14 @@ class FrameworkService {
 		}
 		
 		// generate Summary
-		$diff_duration_HHMM = sprintf('%02d:%02d', (int)$recordlist_table["summary"]["difference_duration_hours"], 
+		$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["difference_duration_hours"]), 
 												round(fmod($recordlist_table["summary"]["difference_duration_hours"], 1) * 60));			
 		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ?
 																		 ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;			
 		$recordlist_table["summary"]["total_duration"] = sprintf('%02d:%02d', (int)$recordlist_table["summary"]["total_duration_hours"],
-																	 round(fmod($recordlist_table["summary"]["total_duration_hours"], 1) * 60));			
+																	 round(fmod($recordlist_table["summary"]["total_duration_hours"], 1) * 60));	
+		$recordlist_table["summary"]["reportID"] = $monthly_report_setting[0]->monyearid;		
+																	 		
 		// return
 		return $recordlist_table;
 		
@@ -215,7 +228,7 @@ class FrameworkService {
 		
 	}
 // ==================================================================================================================
-	public function validate_RecordRequest($newrequest, $userid){
+	public function validate_RecordReq($newrequest, $userid){
 		
 		// this function validates a new recorddate, given by a new request with a userid
 
@@ -290,7 +303,7 @@ class FrameworkService {
 
 // ==================================================================================================================	
 	// Check record data from request
-	public function validate_ReportSettings($newrequest, $userID){
+	public function validate_ReportReq($newrequest, $userID){
 
 		 // create instance of database class
 		 $report = new WorkReport();
@@ -325,9 +338,72 @@ class FrameworkService {
 	}
 	
 // ==================================================================================================================
-	
-	
-	
+// return availible reports
+public function extract_availReports($response){
+
+		// Report List for Drop Down Menü
+		$reportlist_decoded;	
+		 	
+		// get current month is included
+		$current_year = gmdate("Y");			
+		$current_month = gmdate("n");
+		
+		$reportlist_decoded["DB"] = $response;
+			
+				  
+		// Generate default entry on existing records (startdate) of user
+		if (!empty($response)){	
+
+			// Extract existing dates from records			
+			foreach ($response as &$report) {
+				
+				// Seperate Month and Year
+				$MonYear = explode(",", $report->monyearid);
+				$report_year = $MonYear[0];			
+				$report_month = $MonYear[1];
+				
+				// Get all months from this year (empty if generated new)
+				$existing_months = $reportlist_decoded["reports"][$report_year];
+				
+				// check if months is empty, otherwise load
+				if( empty($existing_months) )
+					$existing_months = array($report_month);
+					
+				else {
+					
+					// check if month is included
+					if (!in_array($report_month, $existing_months))
+						array_push($existing_months, $report_month);					
+				}
+							
+				// Write Back
+				$reportlist_decoded["reports"][$report_year] = $existing_months;				
+								
+			}			
+		}
+
+		// check if current month/year is included
+		$existing_months = $reportlist_decoded["reports"][$current_year];
+			
+		if( empty($existing_months) ) {
+			
+			$existing_months = array($current_month);
+			$reportlist_decoded["reports"][$current_year] = $existing_months;
+				
+		} else {
+
+			// check if month is included			
+			if (!in_array($current_month, $existing_months)){
+					array_push($existing_months, $current_month);
+					$reportlist_decoded["reports"][$current_year] = $existing_months;
+			}
+		}	
+		
+		return $reportlist_decoded;
+}
+
+
+		
 // ==================================================================================================================
 	// tidy up record data from return
 	public function clean_report($response){

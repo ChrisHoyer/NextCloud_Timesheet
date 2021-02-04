@@ -84,11 +84,7 @@ $currenttime = date("H:i");
         </div>   
         	<label for="timesheet-dialog-description">Description
       		<textarea  style='vertical-align: middle;width:300px;' name="description" id="timesheet-dialog-description" cols="40" rows="5" value=""  class="timesheet-dialog-entrybox"></textarea></label>
- 		<div>
-            <label for="timesheet-dialog-holiday">Legal Holiday
-            <input type="checkbox" name="holiday" id="timesheet-dialog-holiday" value="" class="timesheet-dialog-entrybox"> </label> 
-            <label for="timesheet-dialog-vacation">Vacation (Payed)
-            <input type="checkbox" name="vacation" id="timesheet-dialog-vacation" value="" class="timesheet-dialog-entrybox"></label>  
+ 		<div>  
             <label for="timesheet-dialog-unpayedoverhours">Unpayed Overhours
             <input type="checkbox" name="unpayedoverhours" id="timesheet-dialog-unpayedoverhours" value="" class="timesheet-dialog-entrybox"> </label>
         </div>

@@ -22,10 +22,8 @@ class WorkReportMapper extends QBMapper {
 		// select from app Table, where only this ID and current user
 		$qb->select('*')
 		   ->from($this->getTableName())
-		   ->where(
-		   $qb->expr()->eq('id', $qb->createNamedParameter($id))
-		   )->andWhere(
-		   $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+		   ->where($qb->expr()->eq('id', $qb->createNamedParameter($id)))
+		   ->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
            );
 
         return $this->findEntity($qb);
@@ -41,7 +39,7 @@ class WorkReportMapper extends QBMapper {
         $qb->select('*')
            ->from($this->getTableName())
            ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
-		   ->andWhere('monyearid >= :monyearid')
+		   ->andWhere($qb->expr()->eq('monyearid', $qb->createNamedParameter($monyearid)))
 		   ->setParameter('monyearid', $monyearid);
 		   
         return $this->findEntities($qb);

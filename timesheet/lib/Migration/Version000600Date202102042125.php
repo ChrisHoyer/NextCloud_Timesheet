@@ -7,7 +7,7 @@
   use OCP\Migration\SimpleMigrationStep;
   use OCP\Migration\IOutput;
 
-  class Version000520Date20201126181000 extends SimpleMigrationStep {
+  class Version000600Date202102042125 extends SimpleMigrationStep {
 
       /**
         * @param IOutput $output
@@ -128,7 +128,7 @@
                   'notnull' => true,
               ]);
 			  
-			  $table_reports->addColumn('overtimepayed', 'float', [
+			  $table_reports->addColumn('overtime', 'float', [
                   'notnull' => true,
               ]);
 			  
@@ -136,13 +136,13 @@
                   'notnull' => true,
               ]);
 			  
-			  $table_reports->addColumn('overtimecompensation', 'float', [
+			  $table_reports->addColumn('vacationdays', 'float', [
                   'notnull' => true,
               ]);		
 			
-			  $table_reports->addColumn('vacation', 'float', [
-                  'notnull' => true,
-              ]);
+			
+			  // flags
+			  $table_reports->addColumn('recalc_required', 'integer', [ ]);
 			  
 			  // Keys
               $table_reports->setPrimaryKey(['id']);

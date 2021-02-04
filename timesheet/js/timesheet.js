@@ -1,82 +1,131 @@
-// default app URL
-var baseUrl = OC.generateUrl('/apps/timesheet');
-
-// ====================================================================
-// ============================== Functional Events ===================
+// ==========================================================================================================================================================================
+// ================================================================================= Functional Events ======================================================================
 (function() {
 
-// ===================== Dialog Form for editing or manually generating records
-dialogModifyRecordForm = $("#dialog-modify-record").dialog({
-            autoOpen: false,
-            height: 400,
-            width: 450,
-            modal: true,
-            buttons: {
-				"Edit Record": function(){ editRecord(dialogModifyRecordForm); },
-				Cancel: function() { dialogModifyRecordForm.dialog( "close" ); }
-					},
-            close: function() { $("#dialog-modify-record")[0].reset();}
-		});
+	// ===================== After Pageload
+	document.addEventListener('DOMContentLoaded', function() {
+		
+		// Request Reports from this user
+		getReportList(generateReport);
+		
+	});
+
+	// ===================== Dialog Form for editing or manually generating records
+	dialogModifyRecordForm = $("#dialog-modify-record").dialog({
+				autoOpen: false,
+				height: 400,
+				width: 450,
+				modal: true,
+				buttons: {
+					"Edit Record": function(){ editRecord(dialogModifyRecordForm); },
+					Cancel: function() { dialogModifyRecordForm.dialog( "close" ); }
+						},
+				close: function() { $("#dialog-modify-record")[0].reset();}
+	});
 
 		  
-// ===================== Submit Button click
-$("#timesheet-newrecord-submit").click(function() {
-
-	// Request using POST at /record
-	var record_url = baseUrl + '/record';
-	
-	// gather all required data from form
-	var record_data = {
-			// Start/End Time and Date
-            startdate: $('#timesheet-newrecord-date').val(),
-			enddate: $('#timesheet-newrecord-date').val(),
+	// ===================== Submit Button click
+	$("#timesheet-newrecord-submit").click(function() {
+		
+		// gather all required data from form
+		var request_data = {
 			
-            starttime: $('#timesheet-newrecord-starttime').val(),
-            endtime: $('#timesheet-newrecord-endtime').val(),
-			// Breaktime
-			breaktime: $('#timesheet-newrecord-breaktime').val(),
-			// Additional stuff like description and timezone
-            description: $('#timesheet-newrecord-description').val(),
-            timezoneoffset: new Date().getTimezoneOffset(),
-			holiday: 			"false",	
-			vacation: 			"false",
-			unpayedoverhours: 	"false",	
-		};
-		
-	//alert(JSON.stringify(record_data));
-	
-	// POST request with all data
-	$.post(record_url, record_data, function() { })
-			.done(function(data, status) {
-				//var response = data;
-				//alert(response);
+				// Record ID
+				id: "",
 				
-				// Info and refresh
-				getRecordList();
-	
-			})
-			.fail(function() {
-				alert( "error" );
-			})
-			.always(function() {
-			});
-	});
-
-// ===================== Refresh Click
-// Refresh Button click
-$("#timesheet-newrecord-refresh").click(function() {
-	
-	// get Records from this user
-	getRecordList();
+				// Start/End Time and Date
+				startdate: $('#timesheet-newrecord-date').val(),
+				enddate: $('#timesheet-newrecord-date').val(),
+				starttime: $('#timesheet-newrecord-starttime').val(),
+				endtime: $('#timesheet-newrecord-endtime').val(),
+				breaktime: $('#timesheet-newrecord-breaktime').val(),
+				
+				// Additional stuff like description and timezone
+				description: $('#timesheet-newrecord-description').val(),
+				timezoneoffset: 	new Date().getTimezoneOffset(),
+				holiday: 			"false",	
+				vacation: 			"false",
+				unpayedoverhours: 	"false",	
+			};
+			
+		
+		// POST request with all data
+		createupdateRecord(request_data, RefreshTimesheet());
 		
 	});
 
-// ===================== Load Page ===================	
-	// get Reports from this user
-	getReportList();  
+	// ===================== Refresh Button click
+	$("#timesheet-newrecord-refresh").click(function() { RefreshTimesheet(); });
+	
+	// ===================== Save Button click
+	$("#timesheet-settings-save").click(function() {
+		// Get Selected Data
+		var selected_year = $('#timesheet-header-selectionbox-year').val();	
+		var selected_month = $('#timesheet-header-selectionbox-month').val();	
+				
+		var settings_data = {
+				// Working Hours and Days
+				regularweeklyhours: $("#timesheet-settings-regularweeklyhours").val(),		
+				workingdDayMon: 	$("#timesheet-settings-DayMon").prop('checked'),
+				workingdDayTue: 	$("#timesheet-settings-DayTue").prop('checked'),
+				workingdDayWed: 	$("#timesheet-settings-DayWed").prop('checked'),
+				workingdDayThu: 	$("#timesheet-settings-DayThu").prop('checked'),
+				workingdDayFri: 	$("#timesheet-settings-DayFri").prop('checked'),
+				workingdDaySat: 	$("#timesheet-settings-DaySat").prop('checked'),
+				workingdDaySun: 	$("#timesheet-settings-DaySun").prop('checked'),
+				
+				// selected sheet
+				monyearid: 			selected_year + "," + (timesheet_MonthNames.indexOf(selected_month)+1)
+			};
+			
+		// Send Data
+		createupdateReport(settings_data);
+		RefreshTimesheet();
+			
+	});
 
-// ==========================================================================
-// ============================== Static Events/Functions ===================
+// ======================================================================================================================================================================
+// ================================================================================= Static Events ======================================================================
+
+// ===================== Load Records for this user in time periode
+function RefreshTimesheet() {
+	
+	// Get Selected Data
+	var selected_year = $('#timesheet-header-selectionbox-year').val();	
+	var selected_month = $('#timesheet-header-selectionbox-month').val();
+	selected_month = (timesheet_MonthNames.indexOf(selected_month) + 1);		
+	
+	// Request Records
+	getRecords(selected_year, selected_month,"" ,"" , "report", generateRecordList);
+	
+}
+
+// ===================== Refresh Settings-Tab
+function refreshSettings(settings) {
+			
+		// Some Information
+		document.getElementById("timesheet-settings-regularweeklyhours").value = parseFloat(settings.regularweeklyhours) ;
+		document.getElementById("timesheet-settings-label").innerHTML = "Settings for " + settings.monyearid.split(",")[0] + " - " + settings.monyearid.split(",")[1];	
+			
+		// check working days
+		regulardays = settings.regulardays.split(",");
+		if(regulardays.includes("Mon")){ document.getElementById("timesheet-settings-DayMon").checked = true} 
+		else { document.getElementById("timesheet-settings-DayMon").checked = false} 
+		if(regulardays.includes("Tue")){ document.getElementById("timesheet-settings-DayTue").checked = true}
+		else { document.getElementById("timesheet-settings-DayTue").checked = false} 
+		if(regulardays.includes("Wed")){ document.getElementById("timesheet-settings-DayWed").checked = true}
+		else { document.getElementById("timesheet-settings-DayWed").checked = false} 
+		if(regulardays.includes("Thu")){ document.getElementById("timesheet-settings-DayThu").checked = true}
+		else { document.getElementById("timesheet-settings-DayThu").checked = false} 
+		if(regulardays.includes("Fri")){ document.getElementById("timesheet-settings-DayFri").checked = true}
+		else { document.getElementById("timesheet-settings-DayFri").checked = false} 
+		if(regulardays.includes("Sat")){ document.getElementById("timesheet-settings-DaySat").checked = true}
+		else { document.getElementById("timesheet-settings-DaySat").checked = false} 	
+		if(regulardays.includes("Sun")){ document.getElementById("timesheet-settings-DaySun").checked = true}
+		else { document.getElementById("timesheet-settings-DaySun").checked = false} 	
+	
+	}
+
 
 // ===================== Delete Records for this user
 function editRecord(dialogModifyRecordForm) {
@@ -84,94 +133,38 @@ function editRecord(dialogModifyRecordForm) {
 	// gather all data and target
 	target = dialogModifyRecordForm.target;
 	form =  dialogModifyRecordForm.find( "form" );
-	
-	// Request a PUT at /record/{id}
-	var record_url = baseUrl + '/record/' + $(target).data('dbid');
 
-	var record_data = {
+	var request_data = {
+			
+			// Record id
+			id: 				$(target).data('dbid'),
+			
 			// Start/End Time and Date
             startdate: 			form.find("#timesheet-dialog-startdate").val(),		
             starttime: 			form.find("#timesheet-dialog-starttime").val(),		
             endtime: 			form.find("#timesheet-dialog-endtime").val(),
 			enddate: 			form.find("#timesheet-dialog-startdate").val(),		
-			// Breaktime
-			breaktime: 			form.find("#timesheet-dialog-breaktime").val(),		
+			breaktime: 			form.find("#timesheet-dialog-breaktime").val(),
+			
 			// Additional stuff like description and timezone
             description: 		form.find("#timesheet-dialog-description").val(),
-			holiday: 			form.find("#timesheet-dialog-holiday").prop('checked'),	
-			vacation: 			form.find("#timesheet-dialog-vacation").prop('checked'),
+			holiday: 			"false",
+			vacation: 			"false",
 			unpayedoverhours: 	form.find("#timesheet-dialog-unpayedoverhours").prop('checked'),		
             timezoneoffset: new Date().getTimezoneOffset()
 		};
 			
-	// PUT request with entity ID and new data
-	$.ajax({
-		headers: {requesttoken: oc_requesttoken},
-		url: record_url,
-		type: 'PUT', 
-		data: record_data
-		});
+		// POST request with all data
+		createupdateRecord(request_data, RefreshTimesheet());
 
 	// Info and refresh
 	$(dialogModifyRecordForm).dialog("close");
-	getRecordList();
+	RefreshTimesheet();
 
 }
 
-
-// ===================== Load Records for this user in time periode
-function getRecordList() {
-	
-	// Get Selected Data
-	var selected_year = $('#timesheet-header-selectionbox-year').val();	
-	var selected_month = $('#timesheet-header-selectionbox-month').val();		
-		
-	// Request using POST at /record
-	var record_url = baseUrl + "/records?year=" + selected_year + "&month=" + selected_month + "&output=report";
-	
-	// GET request with all data from userID
-	$.ajax({
-		headers: {requesttoken: oc_requesttoken},
-		url: record_url,
-		type: 'GET', 
-		})
-		.done(function(data, status) {
-				
-			// Generate Table
-			generateRecordList(data);
-		})
-		.fail(function() { alert( "error" );})
-}
-
-// ===================== Load Reports of this user
-function getReportList() {
-	
-	// Request using POST at /record
-	var record_url = baseUrl + '/reports';
-		
-	// GET request with all reports from userID
-	$.ajax({
-			headers: {requesttoken: oc_requesttoken},
-			url: record_url,
-			dataType: 'json',	
-			type: 'GET',
-			})
-			.done(function(data, status) {
-				
-				// Generate Table
-				generateReport(data);
-				
-				// Load Records
-				getRecordList();
-										
-			})
-			.fail(function(response) {
-				alert( "error:" + response );
-			})
-			.always(function() {
-			});	
-	
-}
+// ========================================================================================================================================================================
+// ================================================================================= Page Generating ======================================================================
 
 // ===================== Generates Table from Recordlist JSON Response
 function generateRecordList(recordlist){
@@ -224,7 +217,7 @@ function generateRecordList(recordlist){
 				// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 				record_table_row = record_table_row + "<div class='timesheet-report-day-content-cell timesheet-report-column-modify'>";
 				record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' data-dbid=" + record_entity.id + "></span>";
-				record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.date + "'";
+				record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
 				record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
 				record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
 				record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
@@ -253,13 +246,9 @@ function generateRecordList(recordlist){
 	});
 	
 	
-	// ===================== Display HTML Table ===================
-	$("#timesheet-report-content").html($( "<div/>", {
-                      "class": "timesheet-report-content-generated",
-                      html: content.join( "" )
-                    }));
+	// ===================== Display HTML Table and update BarChar ===================
+	$("#timesheet-report-content").html($( "<div/>", { "class": "timesheet-report-content-generated", html: content.join( "" )}));
 					
-	// Update BarChart
 	updateBarChart(barchart_date, barchart_recordduration, barchart_targetduration, barchart_differenceduration);
 
 	// ===================== Generate Report summary Row ===================
@@ -300,9 +289,7 @@ function generateRecordList(recordlist){
 		// Ask for permission
 	 	var result = confirm( "Delete ID: " + $(e.target).data("dbid") + " ?");
 		
-		if (result == true) {
-			deleteRecordID($(e.target).data("dbid"));
-		}
+		if (result == true) { deleteRecordID($(e.target).data("dbid")); }
 	
 	});
 
@@ -320,23 +307,25 @@ function generateRecordList(recordlist){
 		form.find("#timesheet-dialog-endtime").val($(e.target).data("endtime"));
 		form.find("#timesheet-dialog-breaktime").val($(e.target).data("breaktime"));
 		form.find("#timesheet-dialog-description").val($(e.target).data("description"));
-		form.find("#timesheet-dialog-holiday").attr( 'checked', $(e.target).data("holiday") );
-		form.find("#timesheet-dialog-vacation").attr( 'checked', $(e.target).data("vacation") );
-		form.find("#timesheet-dialog-unpayedoverhours").attr( 'checked', $(e.target).data("unpayedoverhours") );															
+		form.find("#timesheet-dialog-unpayedoverhours").attr( 'checked', $(e.target).data("unpayedoverhours") );
+		
 		// Open dialog form
 		dialogModifyRecordForm.dialog("open");
 		
 	
-	});				
+	});	
+	
+	// refresh settings according to current timesheet
+	refreshSettings(recordlist.settings);	
 
 };
 
-// ===================== Generates Table from Recordlist JSON Response
+// ===================== Generates Table from Reportlist JSON Response
 function generateReport(reportlist){
 	
 		// Generate HTML code for Report Header
 		var TScontent_selection = [];
-		var preselect_year;
+		var current_date = new Date();
 		
 		// Generate table row content
 		TScontent_selection = "<div class='timesheet-header-content' > Timesheet for ";
@@ -345,22 +334,22 @@ function generateReport(reportlist){
 		TScontent_selection = TScontent_selection + "<select id='timesheet-header-selectionbox-year' name='year' class='timesheet-header-selectionbox' >";
 		
 		// Iterate all years
-		$.each(reportlist.select, function (record_index, report_year){
-			if(record_index == reportlist.preselect_year){
-				TScontent_selection = TScontent_selection + "<option selected='selected'>" + record_index + "</option>";
-				preselect_year = record_index;			
+		$.each(reportlist.reports, function (record_year, report_month){
+			if(record_year == current_date.getFullYear()){
+				TScontent_selection = TScontent_selection + "<option selected='selected'>" + record_year + "</option>";		
 			} else
-				TScontent_selection = TScontent_selection + "<option>" + record_index + "</option>";
+				TScontent_selection = TScontent_selection + "<option>" + record_year + "</option>";
 		});
 				
 		// End Table Row
 		TScontent_selection = TScontent_selection + "</select><select id='timesheet-header-selectionbox-month' name='month'  class='timesheet-header-selectionbox' >";
-
-		$.each(reportlist.select[preselect_year], function (record_index, report_month){		
-			if(record_index == reportlist.preselect_month)
-				TScontent_selection = TScontent_selction + "<option selected='selected'>" + report_month + "</option>";			
+			
+		$.each(reportlist.reports[current_date.getFullYear()], function (record_index, report_month){	
+	
+			if(report_month == (current_date.getMonth()+1))
+				TScontent_selection = TScontent_selection + "<option selected='selected'>" + timesheet_MonthNames[report_month-1] + "</option>";			
 			else
-				TScontent_selection = TScontent_selection + "<option>" + report_month + "</option>";
+				TScontent_selection = TScontent_selection + "<option>" + timesheet_MonthNames[report_month-1] + "</option>";
 		});
 		
 		TScontent_selection = TScontent_selection + "</select></div>";
@@ -377,23 +366,25 @@ function generateReport(reportlist){
 		
 		// Get selected year and corresponding months
 		var year = $(this).val();
-		var cormonths = reportlist.select[year];
+		var cormonths = reportlist.reports[year];
 
 		var html_options = $.map(cormonths, function(month){
-								return '<option value="' + month + '">' + month + '</option>'
+								return '<option value="' + timesheet_MonthNames[month-1] + '">' + timesheet_MonthNames[month-1] + '</option>'
 						}).join('');	
 							
 		$("#timesheet-header-selectionbox-month").html(html_options);
-		getRecordList();		
+		RefreshTimesheet();		
 			
     });
 
 
 	// ===================== Month changed ===================					
 	$('#timesheet-header-selectionbox-month').change(function () {
-		getRecordList();
+		RefreshTimesheet();
 		});
-			
+
+	// Everything is setup? Refresh page
+	RefreshTimesheet();			
 };
 
 // ===================== Generate BarChart

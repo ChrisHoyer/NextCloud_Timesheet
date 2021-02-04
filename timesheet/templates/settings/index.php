@@ -1,6 +1,6 @@
 <div id="app-settings">
 	<div id="app-settings-header">
-		<button class="settings-button"
+		<button class="settings-button" id="timesheet-settings-open"
 				data-apps-slide-toggle="#app-settings-content"
 		></button>
 	</div>
@@ -8,12 +8,13 @@
  
       <!-- Settings form --> 
    <form>
-    <fieldset >
+    <fieldset>
+    	<label id="timesheet-settings-label"></label>
     	<div>
-    		<label for="timesheet-settings-regularweeklyhours">Regular Working Hours per Week
-        	<input type="number" name="regularweeklyhours" min=0 step=0.01 id="timesheet-settings-regularweeklyhours" value="0" class="timesheet-settings-entrybox"></label>
+    	<label for="timesheet-settings-regularweeklyhours">Regular Working Hours per Week
+        <input type="number" name="regularweeklyhours" min=0 step=0.01 id="timesheet-settings-regularweeklyhours" value="0" class="timesheet-settings-entrybox"></label>
         </div>
-        <div> Usually working at:
+        <div> Regular Workingdays:
         <label for="timesheet-settings-DayMon">Monday
         <input type="checkbox" name="DayMon" id="timesheet-settings-DayMon" value="" class="timesheet-settings-entrybox"> </label> 
         <label for="timesheet-settings-DayTue">Tuesday

@@ -9,19 +9,19 @@
  */
 return [
     'routes' => [
+	
+		// pages
 	   ['name' => 'timesheet#index', 'url' => '/', 'verb' => 'GET'],
 	   ['name' => 'calendar#index', 'url' => '/calendar', 'verb' => 'GET'],
-	   
-	   // show records /reports 
-	   ['name' => 'report#showAllReports', 'url' => '/reports', 'verb' => 'GET'],
-	   ['name' => 'timesheet#showAll', 'url' => '/records', 'verb' => 'GET'],
-	   	   
-	   // Modify records
-	   ['name' => 'timesheet#create', 'url' => '/record', 'verb' => 'POST'],
-	   ['name' => 'timesheet#delete', 'url' => '/record/{id}', 'verb' => 'DELETE'],
-	   ['name' => 'timesheet#update', 'url' => '/record/{id}', 'verb' => 'PUT'],
-	   	   	   
-	   // Modify report
-	   ['name' => 'report#createupdate', 'url' => '/report', 'verb' => 'POST'],	   
+
+	   // Timesheet
+	   ['name' => 'timesheet#getRecordsRange', 'url' => '/getrecords', 'verb' => 'GET'],
+	   ['name' => 'timesheet#createupdateRecord', 'url' => '/record', 'verb' => 'POST'],
+	   ['name' => 'timesheet#deleteRecord', 'url' => '/record/{id}', 'verb' => 'DELETE'],
+	   	   	     	   
+	   // Records
+	   ['name' => 'report#getReportlist', 'url' => '/getreportlist', 'verb' => 'GET'],
+	   ['name' => 'report#getReport', 'url' => '/getreport', 'verb' => 'GET'],
+	   ['name' => 'report#createupdateRecord', 'url' => '/report', 'verb' => 'POST'],	   
     ]
 ];

@@ -44,26 +44,31 @@
       * @NoAdminRequired
       *  
       */
-     public function createupdate() {
+     public function createupdateRecord() {
 
 		 // validation of record data
-		$valid_report = $this->fwservice->validate_ReportSettings($this->request, $this->userId); 
+		$valid_report = $this->fwservice->validate_ReportReq($this->request, $this->userId); 
 
+		if ( strpos($valid_report, "ERROR") == true) {
+			// Error -> send it back to form
+			return new DataResponse( $valid_data );
+		}
+		
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
 		
 		// create new ID, if nothing found
-		if (empty($existingID)){	
+		if (empty($existingID)){
+				
 			$serviceResponse = $this->service->create($valid_report, $this->userId);
-			return new DataResponse($this->fwservice->clean_report($serviceResponse));
 			
 		// ID found	
 		} else {
 			
 			$serviceResponse = $this->service->update($existingID[0]->id, $valid_report, $this->userId);
-			return new DataResponse($this->fwservice->clean_report($serviceResponse));
-			
 		}
+		
+		return new DataResponse($this->fwservice->clean_report($serviceResponse));
 
      }
 
@@ -73,71 +78,26 @@
       * @NoAdminRequired
       * 
       */
-     public function showAllReports() {
+     public function getReportlist() {
 		 
-		 // Report List for Drop Down Menü
-		 $reportlist_decoded;	
-
 		 // now find the id and show it			 
 		 $reportlist = $this->service->findAll($this->userId);
-		 $reportlist_decoded["resp1"] = $reportlist;		
-		  
-		// Generate default entry on existing records (startdate) of user
-		if (!empty($reportlist)){	
-
-			// Extract existing dates from records			
-			foreach ($reportlist as &$report) {
-				
-				// Seperate Month and Year
-				$MonYear = explode(",", $report->monyearid);
-				$report_year = $MonYear[0];			
-				$report_month = $MonYear[1];
-				
-			    $reportlist_decoded["resp"][$report_month] = $report_year;
-				
-				// Get all months from this year (empty if generated new)
-				$existing_months = $reportlist_decoded["select"][$report_year];
-				
-				// check if months is empty, otherwise load
-				if( empty($existing_months) )
-					$existing_months = array($report_month);
-				else {
-					
-					// check if month is included
-					if (!in_array($report_month, $existing_months))
-						array_push($existing_months, $report_month);					
-				}
-				
-				// Write Back
-				$reportlist_decoded["select"][$report_year] = $existing_months;				
-								
-			}
-							
-		}
-
-		
-		// check if current month is included
-		$current_year = gmdate("Y");			
-		$current_month = gmdate("F");	
-		
-		// Get all months from this year (empty if generated new)
-		$existing_months = $reportlist_decoded["select"][$current_year];
-		
-		// check if months is empty, otherwise load
-		if( empty($existing_months) )
-			$existing_months = array($current_month);
-		else {
-			// check if month is included
-			if (!in_array($current_month, $existing_months))
-			array_push($existing_months, $current_month);					
-		}
-		
-		// Write Back
-		$reportlist_decoded["select"][$current_year] = $existing_months;			
-		$reportlist_decoded["preselect_year"] = $current_year;
-		$reportlist_decoded["preselect_month"] = $current_month;
-				
+		 
+		 // show availible Rports
+		 $serviceResponse = $this->fwservice->extract_availReports($reportlist);
+	
 		 // Return
-		 return $reportlist_decoded;
+		 return $serviceResponse;
+     }
+	 
+// ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      * 
+      */
+     public function getReport($year, $month) {
+		 
+		 // now find the id and show it			 
+		 return $this->service->findMonYear(($year . "," . $month), $this->userId)[0];
      }		 
  }

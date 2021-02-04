@@ -7,7 +7,6 @@ script('timesheet', 'calendar.min');
 // Scripts and Style for global app
 style('timesheet', 'global');
 script('timesheet', 'api-interface');
-script('timesheet', 'settings');
 
 // scripts and style for specific page
 style('timesheet', $style);

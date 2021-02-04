@@ -8,7 +8,7 @@ use Exception;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
-class TimesheetService {
+class RecordService {
 	
 	// Database Mapper
 	private $mapper;

@@ -8,18 +8,21 @@ use OCP\AppFramework\Db\Entity;
 class WorkReport extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
-    public $regularweeklyhours;
+	public $monyearid;	
+	public $userId;
+	
+	public $regularweeklyhours;
     public $regulardays;
-	public $vacation;
 		
 	public $actualhours;
 	public $targethours;
-	public $overtimepayed;
+	public $overtime;
 	public $overtimeunpayed;
-	public $overtimecompensation;
+	public $vacationdays;
+	
+	public $recalcrequired;
 		
-	public $monyearid;	
-	public $userId;
+
 			
     public function jsonSerialize() {
         return [
@@ -36,10 +39,12 @@ class WorkReport extends Entity implements JsonSerializable {
 			// Calculated Hours
             'actualhours' => $this->actualhours,
 			'targethours' => $this->targethours,
-            'overtimepayed' => $this->overtimepayed,
+            'overtime' => $this->overtime,
             'overtimeunpayed' => $this->overtimeunpayed,
-            'overtimecompensation' => $this->overtimecompensation,
-			'vacation' => $this->vacation
+			'vacationdays' => $this->vacationdays,
+			
+			// Flags
+			'recalcrequired' => $this->recalcrequired
 						
         ];
     }

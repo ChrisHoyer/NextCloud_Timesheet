@@ -9,7 +9,7 @@
  use OCP\AppFramework\Http\DataResponse;
  use OCP\AppFramework\Http\JSONResponse;
  
- use OCA\Timesheet\Service\TimesheetService;
+ use OCA\Timesheet\Service\RecordService;
  use OCA\Timesheet\Service\ReportService;
  use OCA\Timesheet\Service\FrameworkService;
  
@@ -32,7 +32,7 @@
 // ==================================================================================================================
 	// Constructing this instance
      public function __construct(string $AppName, IRequest $request, $userId,
-	 							 TimesheetService $service, FrameworkService $fwservice, ReportService $rpservice){
+	 							 RecordService $service, ReportService $rpservice, FrameworkService $fwservice){
          parent::__construct($AppName, $request);
 		 
 		 // initialize variables
@@ -63,47 +63,43 @@
       * @NoAdminRequired
       *  
       */
-     public function create() {
+     public function createupdateRecord() {
 
 		// validation of record data
-		$valid_data = $this->fwservice->validate_RecordRequest($this->request, $this->userId); 
-
+		$valid_data = $this->fwservice->validate_RecordReq($this->request, $this->userId); 
 		
 		if ( strpos($valid_data, "ERROR") == true) {
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
-			
-		} else {
-			
-			// Use service to save the record data in a database
-			$serviceResponse = $this->service->create($valid_data, $this->userId);
-			return new DataResponse($serviceResponse);
-		}	
-     }
-
-// ==================================================================================================================	
-     /**
-      * @NoAdminRequired
-      * 
-	  * @param int $id  	  
-      */
-     public function update(int $id) {
-
-		// validation of record data
-		$valid_data = $this->validate_recorddate(); 
-		
-		if ( strpos($valid_data, "ERROR") == true) {
-			
-			// Error -> send it back to form
-			return new DataResponse( $valid_data );
-			
-		} else {
-			
-			// Use service to save the record data in a database
-			$serviceResponse = $this->service->update($id, $valid_data, $this->userId);
-			return new DataResponse($serviceResponse);
 		}
-     }
+			
+		// check if database entry exists 
+		$requestID = $this->request->id;
+				
+		if (!empty($requestID) ) {
+			$existingID = $this->service->find($requestID, $this->userId);
+		} else {
+			$existingID = "";
+		}
+		
+		// create new ID, if nothing found
+		if (empty($existingID)){	
+			$serviceResponse = $this->service->create($valid_data, $this->userId);
+			
+		// ID found	
+		} else {
+			// Use service to save the record data in a database			
+			$serviceResponse = $this->service->update($requestID, $valid_data, $this->userId);
+		}
+		
+		// set recalc_required flag for corresponding report
+		$reportID = gmdate("Y", $serviceResponse->startdatetime) . "," .gmdate("n", $serviceResponse->startdatetime); 
+		$this->rpservice->setRecalcReportFlag($reportID, $this->userId);
+					
+
+		return new DataResponse($serviceResponse);
+	}	
+     
 
 // ==================================================================================================================	
      /**
@@ -111,7 +107,7 @@
       * 
 	  * @param int $id  
       */
-     public function delete(int $id) {	
+     public function deleteRecord(int $id) {	
 	 	// New Error Handler function, which calls the find function
 		 return $this->handleNotFound(function () use ($id) {
 		 // now find the id and show it			 
@@ -123,22 +119,9 @@
      /**
       * @NoAdminRequired
       * 
-	  * @param int $id  
       */
-     public function show(int $id) {	
-	 	// New Error Handler function, which calls the find function
-		 return $this->handleNotFound(function () use ($id) {
-		 // now find the id and show it			 
-            return $this->service->find($id, $this->userId);
-        });
-     }
-
-// ==================================================================================================================	
-     /**
-      * @NoAdminRequired
-      * 
-      */
-     public function showAll($year, $month, $start, $end, $output) {
+     public function getRecordsRange($year, $month, $start, $end, $output) {
+		 
 		 		 
 		 //	 Check if parameters for year and month are defined
 		 if( !is_null($year) & !is_null($month) ) {
@@ -171,6 +154,10 @@
 		if($output == "report"){
 			 $monthly_report_setting = $this->rpservice->findMonYear(($year . "," . $month), $this->userId);
 			 $recordlist_table = $this->fwservice->map_report($recordlist, $daylist, $monthly_report_setting);
+			 
+			 // write summary into report
+			 $this->rpservice->Recordlist2Report($recordlist_table["summary"], $this->userId);
+			 
 		} elseif($output == "list"){
 			 $recordlist_table = $this->fwservice->map_list($recordlist, $daylist);
 		}

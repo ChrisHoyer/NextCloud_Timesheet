@@ -40,12 +40,10 @@ dialogAddEventForm = $("#dialog-add-event").dialog({
 	  // Create new Calendar Entry (open Dialog)
       select: function(arg) { 
 	  	
-		
 			// load content into form
 			form = dialogAddEventForm.find( "form" )
 			form.find("#timesheet-dialog-startdate").val( extractDate(arg.start) );
 			form.find("#timesheet-dialog-enddate").val( extractDate(arg.end-1) );
-	  
 	  
 	  		dialogAddEventForm.dialog("open"); 
 	  	},
@@ -53,10 +51,8 @@ dialogAddEventForm = $("#dialog-add-event").dialog({
 	  // Click on Event?
       eventClick: function(arg) {
 		  
-		 // object is editable
-		 if(!arg.event.extendedProps.edit) {
-			 return;
-		 }
+		// object is editable
+		if(!arg.event.extendedProps.edit) { return; }
 	  
         if (confirm('Are you sure you want to delete ' + arg.event.title + ' ?')) {
 			deleteRecordID(arg.event.id);
@@ -64,13 +60,11 @@ dialogAddEventForm = $("#dialog-add-event").dialog({
         }
       },
 	  
-
-	  
 	  // Get Events from JSON request
 	  events: function(info, successCallback, failureCallback) {
 
 		 // Request using GET at /records
-		 var record_url = baseUrl + "/records?start=" + (info.start.valueOf()).toString().slice(0, -3) + "&end=" + (info.end.valueOf()).toString().slice(0, -3);
+		 var record_url = baseUrl + "/getrecords?start=" + (info.start.valueOf()).toString().slice(0, -3) + "&end=" + (info.end.valueOf()).toString().slice(0, -3);
 		 record_url = record_url + "&output=list";
 		  
 		 // AJAX GET Json call

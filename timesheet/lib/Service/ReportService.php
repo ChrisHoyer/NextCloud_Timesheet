@@ -43,15 +43,14 @@ class ReportService {
 			$report->setRegularweeklyhours($new_report->regularweeklyhours);
 			$report->setRegulardays($new_report->regulardays);
 			
-			$report->setVacation($new_report->vacation);
 			$report->setActualhours($new_report->actualhours);
 			$report->setTargethours($new_report->targethours);
 						
-			$report->setOvertimepayed($new_report->overtimepayed);
+			$report->setOvertime($new_report->overtime);
 			$report->setOvertimeunpayed($new_report->overtimeunpayed);
-			$report->setOvertimecompensation($new_report->overtimecompensation);
-						
-						
+			$report->setVacationdays($new_report->vacationdays);
+			
+		
 		 	//insert in table
 		 	return $this->WRmapper->update($report);	
 		 		
@@ -61,11 +60,67 @@ class ReportService {
 			 // Exception Handler
 			 $this->handleException($e);
 		 } 			
-			
-
-		 
+ 
      }
-	 	 
+	 
+// ==================================================================================================================		 
+	// Update an entry
+	public function Recordlist2Report($recordsummary, string $userId) {
+		
+		 // Try to find and update the Id and User ID
+		 try {
+		 	
+			// find ID and then delete it
+			$report = $this->WRmapper->findMonYear($recordsummary["reportID"], $userId)[0];
+						
+			// Copy all data to new old record			
+			$report->setActualhours($recordsummary["total_duration_hours"]);
+			$report->setTargethours($recordsummary["target_duration_hours"]);
+						
+			$report->setOvertime($recordsummary["difference_duration_hours"]);
+			$report->setVacationdays($recordsummary["vacationdays"]);
+
+			//clear flag
+			$report->setRecalcrequired(0);
+												
+		 	//insert in table
+		 	return $this->WRmapper->update($report);
+			
+			clearRecalcReportFlag($recordsummary->reportID, $userId);	
+		 		
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 }
+		return;
+     }	 
+	 
+	 
+	 // ==================================================================================================================
+	// tidy up record data from return
+	public function setRecalcReportFlag(string $monyearid, string $userId){
+			
+		 // Try to find the Id and User ID
+		 try {
+		 	
+			$report = $this->WRmapper->findMonYear($monyearid, $userId)[0];
+			
+			// only set flag
+			$report->setRecalcrequired(1);
+
+		 	//insert in table
+		 	return $this->WRmapper->update($report);			
+				  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 } 
+	 }
+ 	 
 	// ==================================================================================================================
  	 // Find all entry
 	 public function findAll(string $userId){
