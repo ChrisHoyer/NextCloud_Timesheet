@@ -7,7 +7,7 @@
   use OCP\Migration\SimpleMigrationStep;
   use OCP\Migration\IOutput;
 
-  class Version000600Date202102042125 extends SimpleMigrationStep {
+  class Version000650Date202103012051 extends SimpleMigrationStep {
 
       /**
         * @param IOutput $output
@@ -142,12 +142,15 @@
 			
 			
 			  // flags
-			  $table_reports->addColumn('recalc_required', 'integer', [ ]);
+			  $table_reports->addColumn('recalc', 'integer', [ ]);
 			  
 			  // Keys
               $table_reports->setPrimaryKey(['id']);
               $table_reports->addIndex(['user_id'], 'timesheet_user_id_index');		
 		  }
+		  
+		   $table_reports = $schema->getTable('timesheet_reports');	
+		   $table_reports->addColumn('recalc', 'integer', [ ]);		  
 
           return $schema;
       }

@@ -19,7 +19,23 @@ class ReportService {
 		 // initialize variables
 		 $this->WRmapper = $WRmapper;
 	 }
-	 
+
+// ==================================================================================================================	
+	// Exception Handler (private)
+	private function handleException($e){
+		
+		// if not exist or multiple objects are returned
+        if ($e instanceof DoesNotExistException || $e instanceof MultipleObjectsReturnedException) {
+			
+			// Object not found
+            throw new NotFoundException($e->getMessage());
+			
+        } else {
+            throw $e;
+        }
+	}
+	
+		 
 	 // ==================================================================================================================	
 	// Create a new entry
 	public function create(WorkReport $report, string $userId) {
@@ -81,7 +97,7 @@ class ReportService {
 			$report->setVacationdays($recordsummary["vacationdays"]);
 
 			//clear flag
-			$report->setRecalcrequired(0);
+			$report->setRecalc(0);
 												
 		 	//insert in table
 		 	return $this->WRmapper->update($report);
@@ -108,7 +124,7 @@ class ReportService {
 			$report = $this->WRmapper->findMonYear($monyearid, $userId)[0];
 			
 			// only set flag
-			$report->setRecalcrequired(1);
+			$report->setRecalc(1);
 
 		 	//insert in table
 		 	return $this->WRmapper->update($report);			
@@ -139,6 +155,24 @@ class ReportService {
 		 
 	 }  
 
+	// ==================================================================================================================
+ 	 // Find all entry
+	 public function getLastEntry(string $userId){
+		 
+		 // Try to find the Id and User ID
+		 try {
+		 	
+			return $this->WRmapper->getLastEntry($userId);	
+				  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 }
+		 
+	 }
+	 
 // ==================================================================================================================	 
 	 // Find an entry
 	 public function findMonYear(string $monyearid, string $userId){

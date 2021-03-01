@@ -62,6 +62,24 @@ class WorkReportMapper extends QBMapper {
 		
 
     }
-	
+
+// ==================================================================================================================
+    public function getLastEntry(string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select highest ID from DB, where only current user
+        $qb->select('*')
+           ->from($this->getTableName())
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+		   ->orderBy('id', 'DESC')
+		   ->setMaxResults(1);
+		   
+        return $this->findEntities($qb);
+		
+
+    }
+		
 // ================================================================================================================== 
 }

@@ -53,7 +53,8 @@
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
 		}
-		
+
+	 			
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
 		
@@ -83,9 +84,45 @@
 		 // now find the id and show it			 
 		 $reportlist = $this->service->findAll($this->userId);
 		 
-		 // show availible Rports
+		 // show availible Reports
 		 $serviceResponse = $this->fwservice->extract_availReports($reportlist);
-	
+	 
+		 // get current month is included
+		 $current_year = gmdate("Y");			
+		 $current_month = gmdate("n");
+		 
+		 // check if current month/year is included
+		 $existing_months = $serviceResponse["reports"][$current_year];
+		 
+		 if( empty($existing_months) or (!in_array($current_month, $existing_months))) {
+			 
+			 // get latest entry
+			 $lastEntry = $this->service->getLastEntry($this->userId);
+			 
+			 // generate empty entry for current month
+			 if ( empty($lastEntry) ){
+				 $lastEntry = new WorkReport();
+				 $lastEntry->setmonyearid( $current_year . "," . $current_month );
+				 
+			} else {
+				
+				// otherwise use last entry and modify it
+				$lastEntry = $lastEntry[0];
+				$lastEntry->setmonyearid( $current_year . "," . $current_month );
+				$lastEntry->id = "";
+				$lastEntry->user_id = $this->userId;									
+			}
+		 
+		 	// insert new report
+			$this->request = $lastEntry;
+			$this->createupdateRecord();
+			
+			 // show availible Reports
+			 $serviceResponse = $this->fwservice->extract_availReports($reportlist);			
+			
+			 
+		}	
+		
 		 // Return
 		 return $serviceResponse;
      }

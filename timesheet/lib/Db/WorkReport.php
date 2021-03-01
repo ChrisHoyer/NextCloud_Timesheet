@@ -20,7 +20,7 @@ class WorkReport extends Entity implements JsonSerializable {
 	public $overtimeunpayed;
 	public $vacationdays;
 	
-	public $recalcrequired;
+	public $recalc;
 		
 
 			
@@ -44,7 +44,7 @@ class WorkReport extends Entity implements JsonSerializable {
 			'vacationdays' => $this->vacationdays,
 			
 			// Flags
-			'recalcrequired' => $this->recalcrequired
+			'recalc' => $this->recalc
 						
         ];
     }

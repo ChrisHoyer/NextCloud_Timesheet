@@ -294,6 +294,7 @@ class FrameworkService {
 		 // Default Value for Tags and Projects
 		 $record->setTags("");
 		 $record->setProjects("");		 
+	
 		 
 		 
 		 // return ok
@@ -314,24 +315,28 @@ class FrameworkService {
 		 $report->setRegularweeklyhours($newrequest->regularweeklyhours);
 		 
 		 // Weekly Working Days
-		 $RegularDays = "";
-		 ($newrequest->workingdDayMon == 'true') ? ($RegularDays = $RegularDays . "Mon,") : "";
-		 ($newrequest->workingdDayTue == 'true') ? ($RegularDays = $RegularDays . "Tue,") : "";
-		 ($newrequest->workingdDayWed == 'true') ? ($RegularDays = $RegularDays . "Wed,") : "";
-		 ($newrequest->workingdDayThu == 'true') ? ($RegularDays = $RegularDays . "Thu,") : "";
-		 ($newrequest->workingdDayFri == 'true') ? ($RegularDays = $RegularDays . "Fri,") : "";
-		 ($newrequest->workingdDaySat == 'true') ? ($RegularDays = $RegularDays . "Sat,") : "";	 
-		 ($newrequest->workingdDaySun == 'true') ? ($RegularDays = $RegularDays . "Sun,") : "";	
-		 $report->setRegulardays(rtrim($RegularDays, ", "));
-		 
-		 // no data
-		 $report->setVacation(0);
-		 $report->setActualhours(0);
-		 $report->setTargethours(0);
-		 $report->setOvertimepayed(0);
-		 $report->setOvertimeunpayed(0);
-		 $report->setOvertimecompensation(0);
+		 if (empty($newrequest->regulardays)){
+			 $RegularDays = "";
+			 ($newrequest->workingdDayMon == 'true') ? ($RegularDays = $RegularDays . "Mon,") : "";
+			 ($newrequest->workingdDayTue == 'true') ? ($RegularDays = $RegularDays . "Tue,") : "";
+			 ($newrequest->workingdDayWed == 'true') ? ($RegularDays = $RegularDays . "Wed,") : "";
+			 ($newrequest->workingdDayThu == 'true') ? ($RegularDays = $RegularDays . "Thu,") : "";
+			 ($newrequest->workingdDayFri == 'true') ? ($RegularDays = $RegularDays . "Fri,") : "";
+			 ($newrequest->workingdDaySat == 'true') ? ($RegularDays = $RegularDays . "Sat,") : "";	 
+			 ($newrequest->workingdDaySun == 'true') ? ($RegularDays = $RegularDays . "Sun,") : "";	
+			 $report->setRegulardays(rtrim($RegularDays, ", "));
 			 
+		 } else {
+			$report->setRegulardays($newrequest->regulardays); 
+		 }
+		 
+		 // get old data
+		 if (empty($newrequest->vacationdays)){ $report->setVacationdays(0); } else { $report->setVacationdays($newrequest->vacationdays);}
+		 if (empty($newrequest->actualhours)){ $report->setActualhours(0); } else { $report->setActualhours($newrequest->actualhours);}
+		 if (empty($newrequest->targethours)){ $report->setTargethours(0); } else { $report->setTargethours($newrequest->targethours);}
+		 if (empty($newrequest->overtime)){ $report->setOvertime(0); } else { $report->setOvertime($newrequest->overtime);}
+		 if (empty($newrequest->overtimeunpayed)){ $report->setOvertimeunpayed(0); } else { $report->setOvertimeunpayed($newrequest->overtimeunpayed);}
+	 		 
 		 // return ok
 		 return $report;
 		 		
@@ -343,14 +348,9 @@ public function extract_availReports($response){
 
 		// Report List for Drop Down Menü
 		$reportlist_decoded;	
-		 	
-		// get current month is included
-		$current_year = gmdate("Y");			
-		$current_month = gmdate("n");
-		
-		$reportlist_decoded["DB"] = $response;
-			
-				  
+		 			
+		//$reportlist_decoded["DB"] = $response;
+		  
 		// Generate default entry on existing records (startdate) of user
 		if (!empty($response)){	
 
@@ -382,22 +382,6 @@ public function extract_availReports($response){
 			}			
 		}
 
-		// check if current month/year is included
-		$existing_months = $reportlist_decoded["reports"][$current_year];
-			
-		if( empty($existing_months) ) {
-			
-			$existing_months = array($current_month);
-			$reportlist_decoded["reports"][$current_year] = $existing_months;
-				
-		} else {
-
-			// check if month is included			
-			if (!in_array($current_month, $existing_months)){
-					array_push($existing_months, $current_month);
-					$reportlist_decoded["reports"][$current_year] = $existing_months;
-			}
-		}	
 		
 		return $reportlist_decoded;
 }
