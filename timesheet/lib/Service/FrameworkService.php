@@ -161,7 +161,7 @@ class FrameworkService {
 				$recordlist_table["summary"]["target_duration_hours"]  = $recordlist_table["summary"]["target_duration_hours"] + $target_duration;
 				$recordlist_table["summary"]["target_workingduration_hours"]  = $recordlist_table["summary"]["target_workingduration_hours"] + $target_workduration;
 													
-				$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($difference_duration), round(fmod($difference_duration, 1) * 60));				
+				$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($difference_duration), round(fmod(abs($difference_duration), 1) * 60));				
 				$recordlist_table["report"][$day]["difference_duration"] = ((int)$difference_duration > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
 				$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int)$total_duration, round(fmod($total_duration, 1) * 60));				
 			}	

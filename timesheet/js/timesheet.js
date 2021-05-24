@@ -241,7 +241,7 @@ function generateRecordList(recordlist){
 		barchart_date.unshift(day_entity.date);
 		barchart_recordduration.unshift(day_entity.total_duration_hours);
 		barchart_targetduration.unshift(day_entity.target_workduration_hours);		
-		barchart_differenceduration.unshift(day_entity.difference_duration_hours);
+		if(day_entity.difference_duration_hours <= 0){ barchart_differenceduration.unshift(0); } else { barchart_differenceduration.unshift(day_entity.difference_duration_hours); }
 					
 	});
 	
