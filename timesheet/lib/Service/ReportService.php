@@ -58,7 +58,10 @@ class ReportService {
 			// Copy all data to new old record
 			$report->setRegularweeklyhours($new_report->regularweeklyhours);
 			$report->setRegulardays($new_report->regulardays);
-			
+
+			$report->setStartreport($new_report->startreport);
+			$report->setEndreport($new_report->endreport);
+			 
 			$report->setActualhours($new_report->actualhours);
 			$report->setTargethours($new_report->targethours);
 						

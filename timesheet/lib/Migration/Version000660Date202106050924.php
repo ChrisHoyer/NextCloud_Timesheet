@@ -7,7 +7,7 @@
   use OCP\Migration\SimpleMigrationStep;
   use OCP\Migration\IOutput;
 
-  class Version000650Date202103012051 extends SimpleMigrationStep {
+  class Version000660Date202106050924 extends SimpleMigrationStep {
 
       /**
         * @param IOutput $output
@@ -109,7 +109,15 @@
               $table_reports->addColumn('monyearid', 'string', [
                   'notnull' => true,
                   'length' => 200,
-              ]);			  
+              ]);	
+			  
+			  // Table Layout Start End (UNIX STD Time)
+              $table_records->addColumn('startreport', 'integer', [
+                  'notnull' => true,
+              ]);
+              $table_records->addColumn('endreport', 'integer', [
+                  'notnull' => true,
+              ]);	
 			  
 			  // Table Layout Weekly Days and hours
               $table_reports->addColumn('regularweeklyhours', 'float', [
@@ -131,6 +139,10 @@
 			  $table_reports->addColumn('overtime', 'float', [
                   'notnull' => true,
               ]);
+
+			  $table_reports->addColumn('overtime_acc', 'float', [
+                  'notnull' => true,
+              ]);
 			  
 			  $table_reports->addColumn('overtimeunpayed', 'float', [
                   'notnull' => true,
@@ -148,9 +160,7 @@
               $table_reports->setPrimaryKey(['id']);
               $table_reports->addIndex(['user_id'], 'timesheet_user_id_index');		
 		  }
-		  
-		   $table_reports = $schema->getTable('timesheet_reports');	
-		   $table_reports->addColumn('recalc', 'integer', [ ]);		  
+		   
 
           return $schema;
       }

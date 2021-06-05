@@ -8,8 +8,11 @@ use OCP\AppFramework\Db\Entity;
 class WorkReport extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
-	public $monyearid;	
 	public $userId;
+	public $monyearid;
+	
+	public $startreport;
+	public $endreport;
 	
 	public $regularweeklyhours;
     public $regulardays;
@@ -17,6 +20,7 @@ class WorkReport extends Entity implements JsonSerializable {
 	public $actualhours;
 	public $targethours;
 	public $overtime;
+	public $overtimeacc;	
 	public $overtimeunpayed;
 	public $vacationdays;
 	
@@ -31,7 +35,11 @@ class WorkReport extends Entity implements JsonSerializable {
             'id' => $this->id,
 			'userId' => $this->userId,
 			'monyearid' => $this->monyearid,
-								
+
+			// If the report should start within a month
+			'startreport' => $this->startreport,
+			'endreport' => $this->endreport,
+			
 			// Weekly Days and hours
             'regularweeklyhours' => $this->regularweeklyhours,
             'regulardays' => $this->regulardays,
@@ -40,6 +48,7 @@ class WorkReport extends Entity implements JsonSerializable {
             'actualhours' => $this->actualhours,
 			'targethours' => $this->targethours,
             'overtime' => $this->overtime,
+			'overtimeacc' => $this->overtimeacc,
             'overtimeunpayed' => $this->overtimeunpayed,
 			'vacationdays' => $this->vacationdays,
 			

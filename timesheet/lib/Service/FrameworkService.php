@@ -15,7 +15,7 @@ class FrameworkService {
 		
 		// Return values
 		$recordlist_table;
-		$recordlist_table["settings"] = $monthly_report_setting[0];
+		$recordlist_table["settings"] = $monthly_report_setting;
 		$eventlist;
 										 	
 		// Iterate all days and find corresponding records
@@ -114,8 +114,8 @@ class FrameworkService {
 		if(!empty($monthly_report_setting)){
 			
 			// Extract values from Report Setting
-			$monthly_report["workingdays"] = explode(",", $monthly_report_setting[0]->regulardays);
-			$monthly_report["dailyhours"] = floatval($monthly_report_setting[0]->regularweeklyhours)/count($monthly_report["workingdays"]);
+			$monthly_report["workingdays"] = explode(",", $monthly_report_setting["regulardays"]);
+			$monthly_report["dailyhours"] = floatval($monthly_report_setting["regularweeklyhours"])/count($monthly_report["workingdays"]);
 
 			$recordlist_table["summary"]["vacationdays"] = floatval(0.0);
 							
@@ -162,19 +162,16 @@ class FrameworkService {
 				$recordlist_table["summary"]["target_workingduration_hours"]  = $recordlist_table["summary"]["target_workingduration_hours"] + $target_workduration;
 													
 				$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($difference_duration), round(fmod(abs($difference_duration), 1) * 60));				
-				$recordlist_table["report"][$day]["difference_duration"] = ((int)$difference_duration > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
+				$recordlist_table["report"][$day]["difference_duration"] = ($difference_duration > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
 				$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int)$total_duration, round(fmod($total_duration, 1) * 60));				
 			}	
 		}
 		
 		// generate Summary
-		$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["difference_duration_hours"]), 
-												round(fmod($recordlist_table["summary"]["difference_duration_hours"], 1) * 60));			
-		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ?
-																		 ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;			
-		$recordlist_table["summary"]["total_duration"] = sprintf('%02d:%02d', (int)$recordlist_table["summary"]["total_duration_hours"],
-																	 round(fmod($recordlist_table["summary"]["total_duration_hours"], 1) * 60));	
-		$recordlist_table["summary"]["reportID"] = $monthly_report_setting[0]->monyearid;		
+		$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["difference_duration_hours"]), round(fmod(abs($recordlist_table["summary"]["difference_duration_hours"]), 1) * 60));			
+		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;			
+		$recordlist_table["summary"]["total_duration"] = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["total_duration_hours"]), round(fmod(abs($recordlist_table["summary"]["total_duration_hours"]), 1) * 60));	
+		$recordlist_table["summary"]["reportID"] = $monthly_report_setting["monyearid"];		
 																	 		
 		// return
 		return $recordlist_table;
@@ -227,6 +224,7 @@ class FrameworkService {
 		
 		
 	}
+	
 // ==================================================================================================================
 	public function validate_RecordReq($newrequest, $userid){
 		
@@ -311,9 +309,17 @@ class FrameworkService {
 		 $report->setUserId($userID);
 		 $report->setmonyearid($newrequest->monyearid);
  		 		 
-		 // Weekly Hours
+		 // Weekly Hours, start and enddate of report
 		 $report->setRegularweeklyhours($newrequest->regularweeklyhours);
-		 
+		
+		if (strtotime($newrequest->endreport) > strtotime($newrequest->startreport)){
+			$report->setStartreport(strtotime($newrequest->startreport  . " 00:00"));
+			$report->setEndreport(strtotime($newrequest->endreport  . " 11:59"));
+		} else {
+			$report->setStartreport(0);
+			$report->setEndreport(0);			
+		}
+		
 		 // Weekly Working Days
 		 if (empty($newrequest->regulardays)){
 			 $RegularDays = "";
@@ -343,8 +349,8 @@ class FrameworkService {
 	}
 	
 // ==================================================================================================================
-// return availible reports
-public function extract_availReports($response){
+	// return availible reports
+	public function extract_availReports($response){
 
 		// Report List for Drop Down Menü
 		$reportlist_decoded;	
@@ -386,14 +392,10 @@ public function extract_availReports($response){
 		return $reportlist_decoded;
 }
 
-
-		
 // ==================================================================================================================
 	// tidy up record data from return
 	public function clean_report($response){
-			
-
-		
+				
 		// return
 		return $response;
 		

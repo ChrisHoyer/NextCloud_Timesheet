@@ -65,7 +65,8 @@
 				
 		var settings_data = {
 				// Working Hours and Days
-				regularweeklyhours: $("#timesheet-settings-regularweeklyhours").val(),		
+				regularweeklyhours: $("#timesheet-settings-regularweeklyhours").val(),	
+			
 				workingdDayMon: 	$("#timesheet-settings-DayMon").prop('checked'),
 				workingdDayTue: 	$("#timesheet-settings-DayTue").prop('checked'),
 				workingdDayWed: 	$("#timesheet-settings-DayWed").prop('checked'),
@@ -73,7 +74,11 @@
 				workingdDayFri: 	$("#timesheet-settings-DayFri").prop('checked'),
 				workingdDaySat: 	$("#timesheet-settings-DaySat").prop('checked'),
 				workingdDaySun: 	$("#timesheet-settings-DaySun").prop('checked'),
-				
+			
+				// report time frame
+				startreport: $("#timesheet-settings-startreport").val(),	
+				endreport: $("#timesheet-settings-endreport").val(),	
+			
 				// selected sheet
 				monyearid: 			selected_year + "," + (timesheet_MonthNames.indexOf(selected_month)+1)
 			};
@@ -103,10 +108,22 @@ function RefreshTimesheet() {
 // ===================== Refresh Settings-Tab
 function refreshSettings(settings) {
 			
+	
 		// Some Information
 		document.getElementById("timesheet-settings-regularweeklyhours").value = parseFloat(settings.regularweeklyhours) ;
 		document.getElementById("timesheet-settings-label").innerHTML = "Settings for " + settings.monyearid.split(",")[0] + " - " + settings.monyearid.split(",")[1];	
-			
+
+		// report timeframe
+		if(parseFloat(settings.startreport)){ document.getElementById("timesheet-settings-startreport").value = settings.startreport; }
+		else {document.getElementById("timesheet-settings-startreport").value = settings.reportdatemin; }
+		document.getElementById("timesheet-settings-startreport").setAttribute("max", settings.reportdatemax);
+		document.getElementById("timesheet-settings-startreport").setAttribute("min", settings.reportdatemin);	
+
+		if(parseFloat(settings.endreport)){ document.getElementById("timesheet-settings-endreport").value = settings.endreport; }
+		else {document.getElementById("timesheet-settings-endreport").value = settings.reportdatemax; }	
+		document.getElementById("timesheet-settings-endreport").setAttribute("max", settings.reportdatemax);
+		document.getElementById("timesheet-settings-endreport").setAttribute("min", settings.reportdatemin);	
+	
 		// check working days
 		regulardays = settings.regulardays.split(",");
 		if(regulardays.includes("Mon")){ document.getElementById("timesheet-settings-DayMon").checked = true} 
