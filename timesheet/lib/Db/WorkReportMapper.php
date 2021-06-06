@@ -46,7 +46,6 @@ class WorkReportMapper extends QBMapper {
     } 
 
 
-
 // ==================================================================================================================
     public function findAll(string $userId) {
 		

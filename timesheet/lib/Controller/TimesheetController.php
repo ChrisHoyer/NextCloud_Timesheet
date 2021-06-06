@@ -126,9 +126,9 @@
 		 //	 Check if parameters for year and month are defined
 		 if( !is_null($year) & !is_null($month) ) {
 			 
-			 // Generate timestemp for the first and last day of the month in UNIX time
+			 // Generate timestemp for the first and last day of the month in UNIX time without offset
 			 $firstday = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
-			 $lastday = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
+			 $lastday = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 00:00");
 			 
 		// check if parameters for startdate and enddate are defined
 		 } elseif( !is_null($start) & !is_null($end) ) {
@@ -146,43 +146,43 @@
 		// now find all entries from this month
 		$recordlist = $this->service->findAllRange($firstday, $lastday, $this->userId);
 		 
-		$monthly_report_setting = $this->rpservice->findMonYear(($year . "," . $month), $this->userId);
-			
 		// get first element, cast to array and include first and last date
+		$monthly_report_setting = $this->rpservice->findMonYear(($year . "," . $month), $this->userId);
 		$monthly_report_setting = (array) $monthly_report_setting[0];
-		$monthly_report_setting["reportdatemax"] = gmdate("Y-m-t", $firstday);
-		$monthly_report_setting["reportdatemin"] = gmdate("Y-m-d", $firstday);
-		
 		 
+
 		// check if first and last day is determined by report
 		$report_firstday = ($monthly_report_setting["startreport"])?($monthly_report_setting["startreport"]):($firstday);
 		$report_lastday = ($monthly_report_setting["endreport"])?($monthly_report_setting["endreport"]):($lastday);
+
+		$monthly_report_setting["reportdatemax"] = gmdate("Y-m-t", $firstday);
+		$monthly_report_setting["reportdatemin"] = gmdate("Y-m-d", $firstday);
 		 
-		// get date from last and start date
+		// get date from last and start date (only full day counts)
 		$monthly_report_setting["startreport"] = ($monthly_report_setting["startreport"])?(gmdate("Y-m-d", $monthly_report_setting["startreport"] . " 00:00")):(0);
-		$monthly_report_setting["endreport"] = ($monthly_report_setting["endreport"])?(gmdate("Y-m-d", $monthly_report_setting["endreport"] . " 23:59")):(0);
+		$monthly_report_setting["endreport"] = ($monthly_report_setting["endreport"])?(gmdate("Y-m-d", $monthly_report_setting["endreport"] . " 00:00")):(0);
 		 
 		 
 		// get all days of this month (if current month, only days in past)
 		if($lastday > time()) $lastday = time();
 		if($report_lastday > time()) $report_lastday = time();
 		 
-		for($i=$report_lastday; $i>$report_firstday; $i-=86400) {$daylist[] = date('Y-m-d', $i);}	 
+		for($i=$report_lastday; $i>=$report_firstday; $i-=86400) {$daylist[] = date('Y-m-d', $i);}	 
 		
 		 // read records and cast into format for jquery
 		if($output == "report"){
 			
-			 $recordlist_table = $this->fwservice->map_report($recordlist, $daylist, $monthly_report_setting);
+			 $recordlist_table = $this->fwservice->map_record2report($recordlist, $daylist, $monthly_report_setting);
 			 $recordlist_table["daylist"] = $daylist;
 			 $recordlist_table["first_last"] = $report_firstday . " to " . $report_lastday;
-			
-			 // write summary into report
-			 $this->rpservice->Recordlist2Report($recordlist_table["summary"], $this->userId);
+						
+			 // update Report based on Records
+			 $this->rpservice->updateReport($recordlist_table["summary"], $this->userId);
 			
 
 			 
 		} elseif($output == "list"){
-			 $recordlist_table = $this->fwservice->map_list($recordlist, $daylist);
+			 $recordlist_table = $this->fwservice->map_record2day($recordlist, $daylist);
 		}
 		
 		// some infos about search request

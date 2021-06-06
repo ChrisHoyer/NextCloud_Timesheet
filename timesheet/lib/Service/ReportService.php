@@ -81,10 +81,38 @@ class ReportService {
 		 } 			
  
      }
-	 
+
+// ==================================================================================================================	
+	// Update an entry
+	public function updateOvertimeAcc($monyearid, $overtimeacc, string $userId) {
+
+
+		
+		
+		 // Try to find and update the Id and User ID
+		 try {
+		 	
+			// find existing report
+			$report = $this->WRmapper->findMonYear($monyearid, $userId)[0];
+			
+			// Update accumulated Overtime
+			$report->setOvertimeacc($overtimeacc);			
+		
+		 	//insert in table
+		 	return $this->WRmapper->update($report);	
+		 		
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 } 			
+ 
+     }
+	
 // ==================================================================================================================		 
 	// Update an entry
-	public function Recordlist2Report($recordsummary, string $userId) {
+	public function updateReport($recordsummary, string $userId) {
 		
 		 // Try to find and update the Id and User ID
 		 try {
@@ -115,9 +143,8 @@ class ReportService {
 		 }
 		return;
      }	 
-	 
-	 
-	 // ==================================================================================================================
+	  
+// ==================================================================================================================
 	// tidy up record data from return
 	public function setRecalcReportFlag(string $monyearid, string $userId){
 			
@@ -140,7 +167,7 @@ class ReportService {
 		 } 
 	 }
  	 
-	// ==================================================================================================================
+// ==================================================================================================================
  	 // Find all entry
 	 public function findAll(string $userId){
 		 
@@ -158,7 +185,7 @@ class ReportService {
 		 
 	 }  
 
-	// ==================================================================================================================
+// ==================================================================================================================
  	 // Find all entry
 	 public function getLastEntry(string $userId){
 		 

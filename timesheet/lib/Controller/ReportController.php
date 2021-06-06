@@ -44,11 +44,11 @@
       * @NoAdminRequired
       *  
       */
-     public function createupdateRecord() {
+     public function createupdateReport() {
 
 		 // validation of record data
 		$valid_report = $this->fwservice->validate_ReportReq($this->request, $this->userId); 
-
+		 
 		if ( strpos($valid_report, "ERROR") == true) {
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
@@ -57,7 +57,7 @@
 	 			
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
-		
+		 
 		// create new ID, if nothing found
 		if (empty($existingID)){
 				
@@ -68,7 +68,14 @@
 			
 			$serviceResponse = $this->service->update($existingID[0]->id, $valid_report, $this->userId);
 		}
-		
+
+		 // Refresh accumulated overtime in reports
+		 $reportlist = $this->service->findAll($this->userId);
+		 $overtimeResponse = $this->fwservice->getOvertimeAcc($reportlist);
+		 foreach ($overtimeResponse as $key => $value) {
+			 $this->service->updateOvertimeAcc($key, $value, $this->userId);
+		 }		 
+		 
 		return new DataResponse($this->fwservice->clean_report($serviceResponse));
 
      }
@@ -85,7 +92,7 @@
 		 $reportlist = $this->service->findAll($this->userId);
 		 
 		 // show availible Reports
-		 $serviceResponse = $this->fwservice->extract_availReports($reportlist);
+		 $serviceResponse = $this->fwservice->getReportList($reportlist);
 	 
 		 // get current month is included
 		 $current_year = gmdate("Y");			
@@ -118,11 +125,12 @@
 			$this->createupdateRecord();
 			
 			 // show availible Reports
-			 $serviceResponse = $this->fwservice->extract_availReports($reportlist);			
+			 $serviceResponse = $this->fwservice->getReportList($reportlist);		
 			
 			 
 		}	
-		
+		 		 
+		 
 		 // Return
 		 return $serviceResponse;
      }

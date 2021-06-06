@@ -78,6 +78,7 @@
 				// report time frame
 				startreport: $("#timesheet-settings-startreport").val(),	
 				endreport: $("#timesheet-settings-endreport").val(),	
+				timezoneoffset: new Date().getTimezoneOffset(),
 			
 				// selected sheet
 				monyearid: 			selected_year + "," + (timesheet_MonthNames.indexOf(selected_month)+1)
@@ -275,7 +276,11 @@ function generateRecordList(recordlist){
 			var monthly_difference = recordlist.summary.difference_duration;	
 			var monthly_difference_sign = (recordlist.summary.difference_duration_hours > 0) ? "pos": (recordlist.summary.difference_duration_hours < 0) ? "neg": "none";						
 		} else { var monthly_difference = ""; var monthly_difference_sign="none"; }
-
+	
+	if(recordlist.summary.total_overtime_hours !=0 ){
+			var total_difference = recordlist.summary.difference_duration_total;	
+			var total_difference_sign = (recordlist.summary.total_overtime_hours > 0) ? "pos": (recordlist.summary.total_overtime_hours < 0) ? "neg": "none";						
+		} else { var total_difference = ""; var total_difference_sign="none"; }
 	
 	// report row
 	var report_row = [];	
@@ -287,8 +292,9 @@ function generateRecordList(recordlist){
 	// Generate table report row content
 	report_row = report_row + "<div class='timesheet-record-table-summary-leftfiller'></div>";	
 	report_row = report_row + "<div class='timesheet-record-summary-workinghours'> <span>&Sigma;</span> " + recordlist.summary.total_duration + "</div>";
-	report_row = report_row + "<div class='timesheet-record-summary-overtime timesheet-report-overtimesgn-" + monthly_difference_sign +"'>" + monthly_difference + "</div>";
-				
+	report_row = report_row + "<div class='timesheet-record-summary-monthlyovertime timesheet-report-overtimesgn-" + monthly_difference_sign +"'>" + monthly_difference + "</div>";
+	report_row = report_row + "<div class='timesheet-record-summary-totalovertime timesheet-report-overtimesgn-" + total_difference_sign +"'> Total: " + total_difference + "</div>";
+	
 	// End Table Row
 	report_row = (report_row + "</div>").toString();
 		

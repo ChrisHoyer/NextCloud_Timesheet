@@ -5,10 +5,11 @@ use OCA\Timesheet\Db\WorkRecord;
 use OCA\Timesheet\Db\WorkReport;
  
 class FrameworkService {
-	
+
+
 
 // ==================================================================================================================
-	public function map_report($recordlist, $daylist, $monthly_report_setting){
+	public function map_record2report($recordlist, $daylist, $monthly_report_setting){
 		
 		// This function maps records to a daylist and creates nested table
 		// return: array with dates and report information
@@ -69,6 +70,7 @@ class FrameworkService {
 					// calculate Event Duration for the first and last day of the month in UNIX time
 					$firstday_event = strtotime($report_entry["startdate"] . " 00:00");
 					$lastday_event = strtotime($report_entry["enddate"] . " 23:59");
+					
 					if($lastday_event > time()) $lastday_event = time();
 					for($i=$lastday_event; $i>$firstday_event; $i-=86400) {$daylist_event[] = date('Y-m-d', $i);}	
 														
@@ -163,14 +165,21 @@ class FrameworkService {
 													
 				$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($difference_duration), round(fmod(abs($difference_duration), 1) * 60));				
 				$recordlist_table["report"][$day]["difference_duration"] = ($difference_duration > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
-				$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int)$total_duration, round(fmod($total_duration, 1) * 60));				
+				$recordlist_table["report"][$day]["total_duration"] = sprintf('%02d:%02d', (int)$total_duration, round(fmod($total_duration, 1) * 60));	
+				
 			}	
 		}
 		
 		// generate Summary
 		$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["difference_duration_hours"]), round(fmod(abs($recordlist_table["summary"]["difference_duration_hours"]), 1) * 60));			
-		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;			
+		$recordlist_table["summary"]["difference_duration"] = ((int)$recordlist_table["summary"]["difference_duration_hours"] > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;
+		
+		$recordlist_table["summary"]["total_overtime_hours"]  = floatval($monthly_report_setting["overtimeacc"]) + $recordlist_table["summary"]["difference_duration_hours"];
+		$diff_duration_HHMM = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["total_overtime_hours"]), round(fmod(abs($recordlist_table["summary"]["total_overtime_hours"]), 1) * 60));			
+		$recordlist_table["summary"]["difference_duration_total"] = ((int)$recordlist_table["summary"]["total_overtime_hours"] > 0) ? ("+" . $diff_duration_HHMM) : "-" . $diff_duration_HHMM;	
+		
 		$recordlist_table["summary"]["total_duration"] = sprintf('%02d:%02d', (int)abs($recordlist_table["summary"]["total_duration_hours"]), round(fmod(abs($recordlist_table["summary"]["total_duration_hours"]), 1) * 60));	
+		
 		$recordlist_table["summary"]["reportID"] = $monthly_report_setting["monyearid"];		
 																	 		
 		// return
@@ -180,7 +189,7 @@ class FrameworkService {
 	}
 	
 // ==================================================================================================================
-	public function map_list($recordlist, $daylist){
+	public function map_record2day($recordlist, $daylist){
 		
 		// This function maps records to a daylist and creates nested table
 		// return: array with dates and report information
@@ -303,18 +312,22 @@ class FrameworkService {
 // ==================================================================================================================	
 	// Check record data from request
 	public function validate_ReportReq($newrequest, $userID){
-
+	
 		 // create instance of database class
 		 $report = new WorkReport();
 		 $report->setUserId($userID);
 		 $report->setmonyearid($newrequest->monyearid);
- 		 		 
+ 		 	
+		
 		 // Weekly Hours, start and enddate of report
 		 $report->setRegularweeklyhours($newrequest->regularweeklyhours);
 		
 		if (strtotime($newrequest->endreport) > strtotime($newrequest->startreport)){
-			$report->setStartreport(strtotime($newrequest->startreport  . " 00:00"));
-			$report->setEndreport(strtotime($newrequest->endreport  . " 11:59"));
+			
+			// shift by timezone to get real UNIX time
+			$report->setStartreport(strtotime("00:00 " . $newrequest->startreport));
+			$report->setEndreport(strtotime("00:00 " . $newrequest->endreport));
+			
 		} else {
 			$report->setStartreport(0);
 			$report->setEndreport(0);			
@@ -350,16 +363,14 @@ class FrameworkService {
 	
 // ==================================================================================================================
 	// return availible reports
-	public function extract_availReports($response){
+	public function getReportList($response){
 
 		// Report List for Drop Down Menü
 		$reportlist_decoded;	
-		 			
-		//$reportlist_decoded["DB"] = $response;
 		  
 		// Generate default entry on existing records (startdate) of user
 		if (!empty($response)){	
-
+				
 			// Extract existing dates from records			
 			foreach ($response as &$report) {
 				
@@ -371,24 +382,23 @@ class FrameworkService {
 				// Get all months from this year (empty if generated new)
 				$existing_months = $reportlist_decoded["reports"][$report_year];
 				
-				// check if months is empty, otherwise load
+				// check if months is empty, otherwise load current month
 				if( empty($existing_months) )
+				{
 					$existing_months = array($report_month);
 					
-				else {
-					
-					// check if month is included
-					if (!in_array($report_month, $existing_months))
+				} else {
+					// check if month is included, if not include
+					if (!in_array($report_month, $existing_months)) {
 						array_push($existing_months, $report_month);					
+					}
 				}
-							
+	
 				// Write Back
-				$reportlist_decoded["reports"][$report_year] = $existing_months;				
-								
+				$reportlist_decoded["reports"][$report_year] = $existing_months;									
 			}			
 		}
 
-		
 		return $reportlist_decoded;
 }
 
@@ -399,6 +409,34 @@ class FrameworkService {
 		// return
 		return $response;
 		
+		
+	}
+	
+// ==================================================================================================================
+	// update overtime from all reports list
+	public function getOvertimeAcc($response){
+				
+		// Report List for Drop Down Menü
+		$overtimelist;	
+		  
+		// Generate default entry on existing records (startdate) of user
+		if (!empty($response)){	
+				
+			$overtimeacc = floatval(0.0);
+			
+			// Extract existing dates from records			
+			foreach ($response as &$report) {
+				
+				// Get Overtime and accumulate
+				$overtime = $report->overtime;
+				$overtimelist[$report->monyearid] = $overtimeacc;
+				$overtimeacc = $overtimeacc + $overtime;
+									
+			}			
+		}
+	
+		// return
+		return $overtimelist;
 		
 	}
 	

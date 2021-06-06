@@ -240,9 +240,15 @@
 	font-weight: bold;	
 }
 
-.timesheet-record-summary-overtime {
+.timesheet-record-summary-monthlyovertime {
 	margin: 5px;
 	width: 50px;
+	font-weight: bold;
+}
+
+.timesheet-record-summary-totalovertime {
+	margin: 5px;
+	width: 150px;
 	font-weight: bold;
 }
 
