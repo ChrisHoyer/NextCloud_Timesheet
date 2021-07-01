@@ -355,7 +355,8 @@ class FrameworkService {
 		 if (empty($newrequest->targethours)){ $report->setTargethours(0); } else { $report->setTargethours($newrequest->targethours);}
 		 if (empty($newrequest->overtime)){ $report->setOvertime(0); } else { $report->setOvertime($newrequest->overtime);}
 		 if (empty($newrequest->overtimeunpayed)){ $report->setOvertimeunpayed(0); } else { $report->setOvertimeunpayed($newrequest->overtimeunpayed);}
-	 		 
+		 if (empty($newrequest->overtimeacc)){ $report->setOvertimeacc(0); } else { $report->setOvertimeacc($newrequest->overtimeacc);}
+		
 		 // return ok
 		 return $report;
 		 		

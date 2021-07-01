@@ -128,7 +128,7 @@
 			 
 			 // Generate timestemp for the first and last day of the month in UNIX time without offset
 			 $firstday = strtotime(gmdate("Y-m-d", strtotime($year . "-" . $month . "-01")) . " 00:00");
-			 $lastday = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 00:00");
+			 $lastday = strtotime(gmdate("Y-m-t", strtotime($year . "-" . $month . "-01")) . " 23:59");
 			 
 		// check if parameters for startdate and enddate are defined
 		 } elseif( !is_null($start) & !is_null($end) ) {

@@ -57,7 +57,7 @@
 	 			
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
-		 
+		 		 
 		// create new ID, if nothing found
 		if (empty($existingID)){
 				
@@ -72,6 +72,7 @@
 		 // Refresh accumulated overtime in reports
 		 $reportlist = $this->service->findAll($this->userId);
 		 $overtimeResponse = $this->fwservice->getOvertimeAcc($reportlist);
+		 
 		 foreach ($overtimeResponse as $key => $value) {
 			 $this->service->updateOvertimeAcc($key, $value, $this->userId);
 		 }		 
@@ -94,13 +95,13 @@
 		 // show availible Reports
 		 $serviceResponse = $this->fwservice->getReportList($reportlist);
 	 
-		 // get current month is included
+		 // get current month and year
 		 $current_year = gmdate("Y");			
 		 $current_month = gmdate("n");
 		 
 		 // check if current month/year is included
 		 $existing_months = $serviceResponse["reports"][$current_year];
-		 
+		 			 
 		 if( empty($existing_months) or (!in_array($current_month, $existing_months))) {
 			 
 			 // get latest entry
@@ -122,15 +123,15 @@
 		 
 		 	// insert new report
 			$this->request = $lastEntry;
-			$this->createupdateRecord();
+			$this->createupdateReport();
 			
-			 // show availible Reports
-			 $serviceResponse = $this->fwservice->getReportList($reportlist);		
+			// ask for all new reports
+			$reportlist = $this->service->findAll($this->userId);
+			$serviceResponse = $this->fwservice->getReportList($reportlist);		
 			
 			 
 		}	
-		 		 
-		 
+		 		 	 
 		 // Return
 		 return $serviceResponse;
      }
