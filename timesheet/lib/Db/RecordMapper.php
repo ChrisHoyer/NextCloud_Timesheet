@@ -1,16 +1,24 @@
 <?php
 namespace OCA\Timesheet\Db;
 
-use OCP\IDbConnection;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\Entity;
 use OCP\AppFramework\Db\QBMapper;
+use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IDBConnection;
 
-class WorkRecordMapper extends QBMapper {
-
+class RecordMapper extends QBMapper {
+	
+// got functionality from parent: insert, delete and update function
+// ==================================================================================================================	
+	// maps a record from database into a record file for
+	/**
+	* this class deals with the direct database connection for each individual record entity
+	* It contains start/end time as well as a project and other usefull information to track working time.
+	*/
     public function __construct(IDbConnection $db) {
-        parent::__construct($db, 'timesheet_records', WorkRecord::class);
+        parent::__construct($db, 'timesheet_records', Record::class);
     }
-
-	// got from parent: insert, delete and update function
 
 // ==================================================================================================================
 	// find using SQL commands
@@ -22,10 +30,8 @@ class WorkRecordMapper extends QBMapper {
 		// select from app Table, where only this ID and current user
 		$qb->select('*')
 		   ->from($this->getTableName())
-		   ->where(
-		   $qb->expr()->eq('id', $qb->createNamedParameter($id))
-		   )->andWhere(
-		   $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+		   ->where($qb->expr()->eq('id', $qb->createNamedParameter($id)))
+		   ->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
            );
 
         return $this->findEntity($qb);

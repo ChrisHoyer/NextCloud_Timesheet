@@ -5,7 +5,7 @@ use JsonSerializable;
 
 use OCP\AppFramework\Db\Entity;
 
-class WorkRecord extends Entity implements JsonSerializable {
+class Record extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
     public $startdatetime;

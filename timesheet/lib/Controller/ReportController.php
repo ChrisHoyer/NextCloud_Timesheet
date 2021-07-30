@@ -11,7 +11,7 @@
  use OCA\Timesheet\Service\FrameworkService;
  use OCA\Timesheet\Service\ReportService;
  
- use OCA\Timesheet\Db\WorkReport;
+ use OCA\Timesheet\Db\Report;
  
  class ReportController extends Controller {
 	 
@@ -109,7 +109,7 @@
 			 
 			 // generate empty entry for current month
 			 if ( empty($lastEntry) ){
-				 $lastEntry = new WorkReport();
+				 $lastEntry = new Report();
 				 $lastEntry->setmonyearid( $current_year . "," . $current_month );
 				 
 			} else {

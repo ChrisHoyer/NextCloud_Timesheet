@@ -1,16 +1,24 @@
 <?php
 namespace OCA\Timesheet\Db;
 
-use OCP\IDbConnection;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\Entity;
 use OCP\AppFramework\Db\QBMapper;
+use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IDBConnection;
 
-class WorkReportMapper extends QBMapper {
-
+class ReportMapper extends QBMapper {
+	
+// got functionality from parent: insert, delete and update function
+// ==================================================================================================================	
+	// maps a report from database into a report file format
+	/**
+	* this class deals with the direct database connection for the table "timehseet_reports".
+	* the content contains a report, which means a summery of the monthy reported time and project
+	*/
     public function __construct(IDbConnection $db) {
-        parent::__construct($db, 'timesheet_reports', WorkReport::class);
+        parent::__construct($db, 'timesheet_reports', Report::class);
     }
-
-	// got from parent: insert, delete and update function
 
 // ==================================================================================================================
 	// find using SQL commands
@@ -47,7 +55,12 @@ class WorkReportMapper extends QBMapper {
 
 
 // ==================================================================================================================
-    public function findAll(string $userId) {
+  	/**
+	 * Returns all reports by userId
+	 * @param string $userId
+	 * @return array with entities
+	 */
+	public function findAll(string $userId) {
 		
 		// Build SQL querry
         $qb = $this->db->getQueryBuilder();
@@ -59,7 +72,6 @@ class WorkReportMapper extends QBMapper {
 
         return $this->findEntities($qb);
 		
-
     }
 
 // ==================================================================================================================

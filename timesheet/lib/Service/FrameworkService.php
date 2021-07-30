@@ -1,8 +1,8 @@
 <?php
 namespace OCA\Timesheet\Service;
 
-use OCA\Timesheet\Db\WorkRecord;
-use OCA\Timesheet\Db\WorkReport;
+use OCA\Timesheet\Db\Record;
+use OCA\Timesheet\Db\Report;
  
 class FrameworkService {
 
@@ -240,7 +240,7 @@ class FrameworkService {
 		// this function validates a new recorddate, given by a new request with a userid
 
 		 // create instance of database class
-		 $record = new WorkRecord();
+		 $record = new Record();
 		 $record->setUserId($userid);
 		 
 		 // Check user input: starttime/startdate before endtime/enddate
@@ -314,7 +314,7 @@ class FrameworkService {
 	public function validate_ReportReq($newrequest, $userID){
 	
 		 // create instance of database class
-		 $report = new WorkReport();
+		 $report = new Report();
 		 $report->setUserId($userID);
 		 $report->setmonyearid($newrequest->monyearid);
  		 	

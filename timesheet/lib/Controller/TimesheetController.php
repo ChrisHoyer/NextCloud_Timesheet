@@ -1,6 +1,10 @@
 <?php
  namespace OCA\Timesheet\Controller;
 
+ use OCA\Timesheet\Service\FrameworkService;
+ use OCA\Timesheet\Service\ReportService;
+ use OCA\Timesheet\Service\RecordService;
+
  use OCP\IRequest;
  use OCP\AppFramework\Controller;
  
@@ -9,64 +13,65 @@
  use OCP\AppFramework\Http\DataResponse;
  use OCP\AppFramework\Http\JSONResponse;
  
- use OCA\Timesheet\Service\RecordService;
- use OCA\Timesheet\Service\ReportService;
- use OCA\Timesheet\Service\FrameworkService;
- 
- use OCA\Timesheet\Db\WorkRecord;
- 
+
  class TimesheetController extends Controller {
 
-     // Private variables, which are necessary.
+     // request information
      private $userId;
-	 private $service;
-	 private $fwservice;
-	 private $rpservice;
-	 	 
 	 protected $request;
 	 
+	 // All Services
+	 private $frameworkservice;
+	 private $recordservice;
+	 private $reportservice;
+	 	 
 	 // use Errors.php
 	 use Errors;
 
 		
 // ==================================================================================================================
-	// Constructing this instance
+	// Constructing this instance with request, userID and services
      public function __construct(string $AppName, IRequest $request, $userId,
-	 							 RecordService $service, ReportService $rpservice, FrameworkService $fwservice){
+								 FrameworkService $frameworkservice,
+								 ReportService $reportservice,
+								 RecordService $recordservice)
+	 {
          parent::__construct($AppName, $request);
 		 
 		 // initialize variables
 		 $this->request = $request;
 		 $this->userId = $userId;
-		 $this->service = $service;
-		 $this->fwservice = $fwservice;
-		 $this->rpservice = $rpservice;
+		 
+		 // initialize services
+		 $this->frameworkservice = $frameworkservice;
+		 $this->reportservice = $reportservice;
+		 $this->recordservice = $recordservice;
      }
 
 // ==================================================================================================================	
 	/**
-	 * CAUTION: the @Stuff turns off security checks; for this page no admin is
-	 *          required and no CSRF check. If you don't know what CSRF is, read
-	 *          it up in the docs or you might create a security hole. This is
-	 *          basically the only required method to add this exemption, don't
-	 *          add it to any other method if you don't exactly know what it does
+	 * This part generates the default landing page
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function index() {
-		return new TemplateResponse('timesheet', 'index',['appPage' => 'content/index', 'script' => 'timesheet', 'style' => 'timesheet']);  // templates/index.php
+		
+		// landing page: get content, style and javascript
+		return new TemplateResponse('timesheet', 'index',['appPage' => 'content/index', 'script' => 'timesheet', 'style' => 'timesheet']);
 	}	 
 
 // ==================================================================================================================	
      /**
-      * @NoAdminRequired
-      *  
+      * This function is called, if a new record data request comes in. Either a new record should be created or an existing
+	  * record will be updated. This depends on the the existing ID of this record. An empty ID triggers a record creation
+	  *
+	  * @NoAdminRequired
       */
      public function createupdateRecord() {
 
 		// validation of record data
-		$valid_data = $this->fwservice->validate_RecordReq($this->request, $this->userId); 
+		$valid_data = $this->frameworkservice->validate_RecordReq($this->request, $this->userId); 
 		
 		if ( strpos($valid_data, "ERROR") == true) {
 			// Error -> send it back to form
@@ -77,24 +82,24 @@
 		$requestID = $this->request->id;
 				
 		if (!empty($requestID) ) {
-			$existingID = $this->service->find($requestID, $this->userId);
+			$existingID = $this->recordservice->find($requestID, $this->userId);
 		} else {
 			$existingID = "";
 		}
 		
 		// create new ID, if nothing found
 		if (empty($existingID)){	
-			$serviceResponse = $this->service->create($valid_data, $this->userId);
+			$serviceResponse = $this->recordservice->create($valid_data, $this->userId);
 			
 		// ID found	
 		} else {
 			// Use service to save the record data in a database			
-			$serviceResponse = $this->service->update($requestID, $valid_data, $this->userId);
+			$serviceResponse = $this->recordservice->update($requestID, $valid_data, $this->userId);
 		}
 		
 		// set recalc_required flag for corresponding report
 		$reportID = gmdate("Y", $serviceResponse->startdatetime) . "," .gmdate("n", $serviceResponse->startdatetime); 
-		$this->rpservice->setRecalcReportFlag($reportID, $this->userId);
+		$this->reportservice->setRecalcReportFlag($reportID, $this->userId);
 					
 
 		return new DataResponse($serviceResponse);
@@ -111,7 +116,7 @@
 	 	// New Error Handler function, which calls the find function
 		 return $this->handleNotFound(function () use ($id) {
 		 // now find the id and show it			 
-            return $this->service->delete($id, $this->userId);
+            return $this->recordservice->delete($id, $this->userId);
         });
      }
 
@@ -144,10 +149,10 @@
 		 }
 			 		 
 		// now find all entries from this month
-		$recordlist = $this->service->findAllRange($firstday, $lastday, $this->userId);
+		$recordlist = $this->recordservice->findAllRange($firstday, $lastday, $this->userId);
 		 
 		// get first element, cast to array and include first and last date
-		$monthly_report_setting = $this->rpservice->findMonYear(($year . "," . $month), $this->userId);
+		$monthly_report_setting = $this->reportservice->findMonYear(($year . "," . $month), $this->userId);
 		$monthly_report_setting = (array) $monthly_report_setting[0];
 		 
 
@@ -172,17 +177,17 @@
 		 // read records and cast into format for jquery
 		if($output == "report"){
 			
-			 $recordlist_table = $this->fwservice->map_record2report($recordlist, $daylist, $monthly_report_setting);
+			 $recordlist_table = $this->frameworkservice->map_record2report($recordlist, $daylist, $monthly_report_setting);
 			 $recordlist_table["daylist"] = $daylist;
 			 $recordlist_table["first_last"] = $report_firstday . " to " . $report_lastday;
 						
 			 // update Report based on Records
-			 $this->rpservice->updateReport($recordlist_table["summary"], $this->userId);
+			 $this->reportservice->updateReport($recordlist_table["summary"], $this->userId);
 			
 
 			 
 		} elseif($output == "list"){
-			 $recordlist_table = $this->fwservice->map_record2day($recordlist, $daylist);
+			 $recordlist_table = $this->frameworkservice->map_record2day($recordlist, $daylist);
 		}
 		
 		// some infos about search request

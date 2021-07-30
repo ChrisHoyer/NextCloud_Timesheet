@@ -1,18 +1,36 @@
 <?php
 namespace OCA\Timesheet\Service;
 
-use OCA\Timesheet\Db\WorkRecord;
-use OCA\Timesheet\Db\WorkRecordMapper;
-
 use Exception;
+
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
+use OCA\Timesheet\Db\Record;
+use OCA\Timesheet\Db\RecordMapper;
+
+/* Record Service Class
+ *
+ * This class deals with everything related to records. New records will be process and checked within this
+ * class. 
+ * 
+ **/
+
+
+
 class RecordService {
 	
-	// Database Mapper
-	private $mapper;
-
+	// database record mapper instance
+	private $recordmapper;
+	
+// ==================================================================================================================	
+	// create record class instance
+     public function __construct(RecordMapper $recordmapper){
+		 
+		 // initialize mapper
+		 $this->recordmapper = $recordmapper;
+	 }
+	
 // ==================================================================================================================	
 	// Exception Handler (private)
 	private function handleException($e){
@@ -29,39 +47,23 @@ class RecordService {
 	}
 	
 // ==================================================================================================================	
-	// Create Mapper while constructing this instance
-     public function __construct(WorkRecordMapper $mapper){
-		 // initialize variables
-		 $this->mapper = $mapper;
-	 }
-
-// ==================================================================================================================	
-	// Create a new entry
-	public function create(WorkRecord $record, string $userId) {
+	// insert a record into the database
+	public function create(Record $record, string $userId) {
 		 
 		 //insert in table
-		 return $this->mapper->insert($record);
+		 return $this->recordmapper->insert($record);
 		 
      }	
-
-// ==================================================================================================================
-	// read all dates from existing records
-	public function read_existingdates(string $userId){
-		
-		// get values
-		return $this->mapper->getDates($userId);
-		
-	}
 	
 // ==================================================================================================================	
 	// Update an entry
-	public function update(int $id, WorkRecord $new_record, string $userId) {
+	public function update(int $id, Record $new_record, string $userId) {
 		
 		 // Try to find and update the Id and User ID
 		 try {
 		 	
 			// find ID and then delete it
-			$record = $this->mapper->find($id, $userId);
+			$record = $this->recordmapper->find($id, $userId);
 			
 			// Copy all data to new old record
 			$record->setStartdatetime($new_record->startdatetime);
@@ -80,19 +82,25 @@ class RecordService {
 						
 						
 		 	//insert in table
-		 	return $this->mapper->update($record);	
+		 	return $this->recordmapper->update($record);	
 		 		
 		 // Id not found
 		 } catch(Exception $e) {
 			 
 			 // Exception Handler
 			 $this->handleException($e);
-		 } 			
-			
-
-		 
+		 } 			 
      }	
-	 
+	 	
+// ==================================================================================================================
+	// read all dates from existing records
+	public function read_existingdates(string $userId){
+		
+		// get values
+		return $this->recordmapper->getDates($userId);
+		
+	}
+
 // ==================================================================================================================	
 	 // delete an entry
 	 public function delete(int $id, string $userId){
@@ -101,8 +109,8 @@ class RecordService {
 		 try {
 		 	
 			// find ID and then delete it
-			$record = $this->mapper->find($id, $userId);
-			$this->mapper->delete($record);
+			$record = $this->recordmapper->find($id, $userId);
+			$this->recordmapper->delete($record);
 			
 			return $record;		  
 		 // Id not found
@@ -112,7 +120,7 @@ class RecordService {
 			 $this->handleException($e);
 		 } 
 	 }
-	 
+	  
 // ==================================================================================================================	 
 	 // Find an entry
 	 public function find(int $id, string $userId){
@@ -120,7 +128,7 @@ class RecordService {
 		 // Try to find the Id and User ID
 		 try {
 		 	
-			return $this->mapper->find($id, $userId);		  
+			return $this->recordmapper->find($id, $userId);		  
 		 // Id not found
 		 } catch(Exception $e) {
 			 
@@ -128,7 +136,7 @@ class RecordService {
 			 $this->handleException($e);
 		 } 
 	 }
-  
+ 
 // ==================================================================================================================
  	 // Find an entry
 	 public function findAll(string $userId){
@@ -136,7 +144,7 @@ class RecordService {
 		 // Try to find the Id and User ID
 		 try {
 		 	
-			return $this->mapper->findAll($userId);	
+			return $this->recordmapper->findAll($userId);	
 				  
 		 // Id not found
 		 } catch(Exception $e) {
@@ -155,7 +163,7 @@ class RecordService {
 		 // Try to find the Id and User ID
 		 try {
 		 	
-			return $this->mapper->findAllStartDateRange($firstday, $lastday, $userId);	
+			return $this->recordmapper->findAllStartDateRange($firstday, $lastday, $userId);	
 				  
 		 // Id not found
 		 } catch(Exception $e) {
@@ -166,4 +174,4 @@ class RecordService {
 		 
 	 } 
 	   
-};
+}

@@ -5,7 +5,7 @@ use JsonSerializable;
 
 use OCP\AppFramework\Db\Entity;
 
-class WorkReport extends Entity implements JsonSerializable {
+class Report extends Entity implements JsonSerializable {
 
 	// protected $id <-- already defined in Entity class
 	public $userId;

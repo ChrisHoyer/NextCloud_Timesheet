@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="WorkRecord.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132508840482111948" remote="132508842600000000" Dst="1" />
-<file name="WorkRecordMapper.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132555226580961774" remote="132555229190000000" Dst="1" />
-<file name="WorkReport.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132569465119523860" remote="132569465270000000" Dst="1" />
-<file name="WorkReportMapper.php" server="192.168.178.3//mnt/Main/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132569271963563594" remote="132569271990000000" Dst="1" />
-<file name="WorkRecord.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132508840482111948" remote="132590892350000000" Dst="2" />
-<file name="WorkRecordMapper.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132555226580961774" remote="132590892350000000" Dst="2" />
-<file name="WorkReport.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132673519978594305" remote="132673540290000000" Dst="2" />
-<file name="WorkReportMapper.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132674431252935020" remote="132674442960000000" Dst="2" />
+<file name="Report.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132721342012348017" remote="132721342120000000" Dst="2" />
+<file name="ReportMapper.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132721340548848746" remote="132721340760000000" Dst="2" />
+<file name="Record.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132721341950697457" remote="132721342120000000" Dst="2" />
+<file name="RecordMapper.php" server="192.168.178.3//mnt/Cloud/iocage/jails/nextcloud/root/usr/local/www/nextcloud/apps/timesheet/" local="132721345957707639" remote="132721346380000000" Dst="2" />
 </dwsync>
