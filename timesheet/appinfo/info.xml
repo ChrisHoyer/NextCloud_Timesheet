@@ -4,17 +4,15 @@
     <id>timesheet</id>
     <name>Timesheet</name>
     <summary>A timesheet (or time sheet) is a method for recording the amount of a workers time spent on each job</summary>
-    <description><![CDATA[Timesheet Tabular
-
-tbd]]></description>
-    <version>0.6.60</version>
+    <description><![CDATA[Timesheet Tabulartbd]]></description>
+    <version>0.6.62</version>
     <licence>agpl</licence>
     <author mail="info@chrishoyer.de" >ChrisHoyer</author>
     <namespace>Timesheet</namespace>
     <category>office</category>
     <bugs>https://github.com/ChrisHoyer/NextCloud_Timesheet</bugs>
     <dependencies>
-        <nextcloud min-version="22" max-version="22"/>
+        <nextcloud min-version="22" max-version="23"/>
     </dependencies>
     <navigations>
         <navigation>

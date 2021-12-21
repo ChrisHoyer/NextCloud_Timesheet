@@ -45,7 +45,7 @@
       *  
       */
      public function createupdateReport() {
-
+		 
 		 // validation of record data
 		$valid_report = $this->fwservice->validate_ReportReq($this->request, $this->userId); 
 		 
@@ -54,13 +54,13 @@
 			return new DataResponse( $valid_data );
 		}
 
-	 			
+			 			
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
 		 		 
 		// create new ID, if nothing found
 		if (empty($existingID)){
-				
+			
 			$serviceResponse = $this->service->create($valid_report, $this->userId);
 			
 		// ID found	
@@ -107,11 +107,14 @@
 			 // get latest entry
 			 $lastEntry = $this->service->getLastEntry($this->userId);
 			 
-			 // generate empty entry for current month
+			 // generate new Entry, if no last entry was found
 			 if ( empty($lastEntry) ){
+				 
 				 $lastEntry = new Report();
 				 $lastEntry->setmonyearid( $current_year . "," . $current_month );
 				 
+				 
+			// use last entry and modify it for new entry (copy everything except ids)
 			} else {
 				
 				// otherwise use last entry and modify it
@@ -120,7 +123,7 @@
 				$lastEntry->id = "";
 				$lastEntry->user_id = $this->userId;									
 			}
-		 
+		 			 
 		 	// insert new report
 			$this->request = $lastEntry;
 			$this->createupdateReport();
@@ -128,9 +131,8 @@
 			// ask for all new reports
 			$reportlist = $this->service->findAll($this->userId);
 			$serviceResponse = $this->fwservice->getReportList($reportlist);		
-			
-			 
-		}	
+				 
+		} 
 		 		 	 
 		 // Return
 		 return $serviceResponse;
