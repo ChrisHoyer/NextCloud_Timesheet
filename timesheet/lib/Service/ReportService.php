@@ -70,8 +70,10 @@ class ReportService {
 			$report->setOvertime($new_report->overtime);
 			$report->setOvertimeunpayed($new_report->overtimeunpayed);
 			$report->setVacationdays($new_report->vacationdays);
-			
-		
+			 
+			 // set Flags
+			$report->setSignedoff($new_report->signedoff);		 
+							 
 		 	//insert in table
 		 	return $this->reportmapper->update($report);	
 		 		
@@ -84,20 +86,25 @@ class ReportService {
      }
 
 // ==================================================================================================================	
-	// Update an entry
-	public function updateOvertimeAcc($monyearid, $overtimeacc, string $userId) {
+	// Get Overtime except for this ID
+	public function GetOvertime(string $monyearid, string $userId) {
 
 		 // Try to find and update the Id and User ID
 		 try {
 		 	
-			// find existing report
-			$report = $this->reportmapper->findMonYear($monyearid, $userId)[0];
+			// find existing reports except current one
+			$overtime_list = $this->reportmapper->findAllOvertime($monyearid, $userId);	
+			 
+			// Variable with acculumated overtime
+			$overtime = floatval(0.0);
 			
-			// Update accumulated Overtime
-			$report->setOvertimeacc($overtimeacc);			
-		
-		 	//insert in table
-		 	return $this->reportmapper->update($report);	
+			// Extract existing dates from records			
+			foreach ($overtime_list as &$item) {
+				
+				$overtime = $overtime + floatval($item->overtime);
+			}
+			 
+			return $overtime;
 		 		
 		 // Id not found
 		 } catch(Exception $e) {
@@ -125,13 +132,11 @@ class ReportService {
 			$report->setOvertime($recordsummary["difference_duration_hours"]);
 			$report->setVacationdays($recordsummary["vacationdays"]);
 
-			//clear flag
-			$report->setRecalc(0);
 												
 		 	//insert in table
 		 	return $this->reportmapper->update($report);
 			
-			clearRecalcReportFlag($recordsummary->reportID, $userId);	
+			//clearRecalcReportFlag($recordsummary->reportID, $userId);	
 		 		
 		 // Id not found
 		 } catch(Exception $e) {
@@ -141,30 +146,7 @@ class ReportService {
 		 }
 		return;
      }	 
-	  
-// ==================================================================================================================
-	// tidy up record data from return
-	public function setRecalcReportFlag(string $monyearid, string $userId){
-			
-		 // Try to find the Id and User ID
-		 try {
-		 	
-			$report = $this->reportmapper->findMonYear($monyearid, $userId)[0];
-			
-			// only set flag
-			$report->setRecalc(1);
-
-		 	//insert in table
-		 	return $this->reportmapper->update($report);			
-				  
-		 // Id not found
-		 } catch(Exception $e) {
-			 
-			 // Exception Handler
-			 $this->handleException($e);
-		 } 
-	 }
- 	 
+	   	 
 // ==================================================================================================================
  	 // Find all entry
 	 public function findAll(string $userId){

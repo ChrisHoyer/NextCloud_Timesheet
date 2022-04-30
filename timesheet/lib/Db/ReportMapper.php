@@ -53,6 +53,21 @@ class ReportMapper extends QBMapper {
         return $this->findEntities($qb);
     } 
 
+// ==================================================================================================================
+public function findAllOvertime(string $monyearid, string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select from DB, where only current user
+        $qb->select('overtime')
+           ->from($this->getTableName())
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)))
+		   ->andWhere($qb->expr()->neq('monyearid', $qb->createNamedParameter($monyearid)))
+		   ->setParameter('monyearid', $monyearid);
+		   
+        return $this->findEntities($qb);
+    } 
 
 // ==================================================================================================================
   	/**

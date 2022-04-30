@@ -155,6 +155,9 @@
 		$monthly_report_setting = $this->reportservice->findMonYear(($year . "," . $month), $this->userId);
 		$monthly_report_setting = (array) $monthly_report_setting[0];
 		 
+		// Get acuumulated overtime
+		$monthly_report_setting["overtimeacc"] = $this->reportservice->GetOvertime(($year . "," . $month), $this->userId);
+		 
 
 		// check if first and last day is determined by report
 		$report_firstday = ($monthly_report_setting["startreport"])?($monthly_report_setting["startreport"]):($firstday);

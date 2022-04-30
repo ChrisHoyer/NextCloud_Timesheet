@@ -90,6 +90,25 @@
 			
 	});
 
+	// ===================== Report Sign-off Button Click
+	$("#timesheet-report-signed").click(function() {
+		// Get Selected Data
+		var selected_year = $('#timesheet-header-selectionbox-year').val();	
+		var selected_month = $('#timesheet-header-selectionbox-month').val();
+		
+		var reportid = {
+
+				// selected sheet
+				monyearid: 			selected_year + "," + (timesheet_MonthNames.indexOf(selected_month)+1)
+			
+			};
+			
+		// Send Data
+		signReport(reportid);
+		RefreshTimesheet();
+		
+		});
+	
 // ======================================================================================================================================================================
 // ================================================================================= Static Events ======================================================================
 
@@ -99,7 +118,7 @@ function RefreshTimesheet() {
 	// Get Selected Data
 	var selected_year = $('#timesheet-header-selectionbox-year').val();	
 	var selected_month = $('#timesheet-header-selectionbox-month').val();
-	selected_month = (timesheet_MonthNames.indexOf(selected_month) + 1);		
+	selected_month = (timesheet_MonthNames.indexOf(selected_month) + 1);
 	
 	// Request Records
 	getRecords(selected_year, selected_month,"" ,"" , "report", generateRecordList);
@@ -143,7 +162,6 @@ function refreshSettings(settings) {
 		else { document.getElementById("timesheet-settings-DaySun").checked = false} 	
 	
 	}
-
 
 // ===================== Delete Records for this user
 function editRecord(dialogModifyRecordForm) {
@@ -195,7 +213,17 @@ function generateRecordList(recordlist){
 	var barchart_recordduration = [];
 	var barchart_targetduration = [];
 	var barchart_differenceduration = [];
-				
+		
+	// ===================== Check if signed or not ===================	
+	
+	// Disable if signed
+	document.getElementById("timesheet-newrecord-date").disabled = recordlist.settings.signedoff == "0" ? false : true;
+	document.getElementById("timesheet-newrecord-starttime").disabled = recordlist.settings.signedoff == "0" ? false : true;
+	document.getElementById("timesheet-newrecord-endtime").disabled = recordlist.settings.signedoff == "0" ? false : true;
+	document.getElementById("timesheet-newrecord-breaktime").disabled = recordlist.settings.signedoff == "0" ? false : true;
+	document.getElementById("timesheet-newrecord-description").disabled = recordlist.settings.signedoff == "0" ? false : true;
+	document.getElementById("timesheet-newrecord-submit").disabled = recordlist.settings.signedoff == "0" ? false : true;
+		
 	// ===================== Generate Record Table ===================	
 	
 	// Iterate all record items in List
@@ -234,11 +262,17 @@ function generateRecordList(recordlist){
 				// Generate clickable trash can (trash can icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 				// Generate clickable edit (edit icon implemented by nextcloud env, https://docs.nextcloud.com/server/15/developer_manual/design/icons.html)
 				record_table_row = record_table_row + "<div class='timesheet-report-day-content-cell timesheet-report-column-modify'>";
-				record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' data-dbid=" + record_entity.id + "></span>";
-				record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
-				record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
-				record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
-				record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span></div>";	
+				
+				if(recordlist.settings.signedoff == "0")
+				{
+					record_table_row = record_table_row + "<span class='timesheet-record-delete icon-delete' data-dbid=" + record_entity.id + "></span>";
+					record_table_row = record_table_row + "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
+					record_table_row = record_table_row + " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
+					record_table_row = record_table_row + " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
+					record_table_row = record_table_row + " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span>";
+				}
+				
+				record_table_row = record_table_row + "</div>";
 					
 				// Description
 				record_table_row = record_table_row + "<div class='timesheet-report-day-content-cell timesheet-report-column-description'>" + record_entity.description + "</div>";
@@ -351,7 +385,7 @@ function generateReport(reportlist){
 		var current_date = new Date();
 		
 		// Generate table row content
-		TScontent_selection = "<div class='timesheet-header-content' > Timesheet for ";
+		TScontent_selection = "<div class='timesheet-header-selectionbox-content' >";
 
 		// Generate selectionbox
 		TScontent_selection = TScontent_selection + "<select id='timesheet-header-selectionbox-year' name='year' class='timesheet-header-selectionbox' >";
@@ -376,10 +410,13 @@ function generateReport(reportlist){
 		});
 		
 		TScontent_selection = TScontent_selection + "</select></div>";
+	
+		// Button for sign-off
+		TScontent_selection = TScontent_selection +
 
 				
 		// Include into Table
-		$("#timesheet-header").html($( "<div/>", {
+		$("#timesheet-header-selectionbox").html($( "<div/>", {
                       "class": "timesheet-record-table-report-generated",
                       html: TScontent_selection.toString()
                     }));

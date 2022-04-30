@@ -45,6 +45,25 @@ function createupdateReport(request_data, successCallback, failureCallback) {
 			.fail(function(reponse) { failureCallback(response); })
 }
 
+// ===================== SIGN Report by ID for this user
+function signReport(request_data, successCallback, failureCallback) {
+	
+	// Request using POST at /getrecords with accepted arguments year, month or start, end
+	var request_url = baseUrl + "/signreport";
+		 
+	// GET request with all data from userID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			data: request_data,
+			dataType: 'json',	
+			type: 'POST', 
+			})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+}
+
 // ===================== GET complete Reportlist from User
 function getReportList(successCallback, failureCallback) {
 	

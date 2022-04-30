@@ -7,7 +7,11 @@ $currenttime = date("H:i");
 ?>
 
 <!-- Header -->
-    <div id="timesheet-header"></div>
+    <div id="timesheet-header">Timesheet for <div id="timesheet-header-selectionbox"> </div> 
+	    <div class="timesheet-header-itembox">
+			<button type="button" id="timesheet-report-signed" class="timesheet-button"><span class='icon-logout timesheet-header-button-icon'></span>Sign-off/Sign-on</button>
+		</div>
+	</div>
 
 <!-- new record bar -->
     	<form id="timesheet-newrecord" oninput="timesheet-newrecord-worktime.value=timesheet-newrecord-starttime.value">

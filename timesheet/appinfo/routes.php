@@ -22,6 +22,7 @@ return [
 	   // Records
 	   ['name' => 'report#getReportlist', 'url' => '/getreportlist', 'verb' => 'GET'],
 	   ['name' => 'report#getReport', 'url' => '/getreport', 'verb' => 'GET'],
-	   ['name' => 'report#createupdateReport', 'url' => '/report', 'verb' => 'POST'],	  
+	   ['name' => 'report#createupdateReport', 'url' => '/report', 'verb' => 'POST'],
+	   ['name' => 'report#signReport', 'url' => '/signreport', 'verb' => 'POST'],
     ]
 ];

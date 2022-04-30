@@ -19,12 +19,11 @@ class Report extends Entity implements JsonSerializable {
 		
 	public $actualhours;
 	public $targethours;
-	public $overtime;
-	public $overtimeacc;	
+	public $overtime;	
 	public $overtimeunpayed;
 	public $vacationdays;
 	
-	public $recalc;
+	public $signedoff;
 		
 
 			
@@ -48,12 +47,11 @@ class Report extends Entity implements JsonSerializable {
             'actualhours' => $this->actualhours,
 			'targethours' => $this->targethours,
             'overtime' => $this->overtime,
-			'overtimeacc' => $this->overtimeacc,
             'overtimeunpayed' => $this->overtimeunpayed,
 			'vacationdays' => $this->vacationdays,
 			
 			// Flags
-			'recalc' => $this->recalc
+			'signedoff' => $this->signedoff
 						
         ];
     }

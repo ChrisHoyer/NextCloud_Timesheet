@@ -349,13 +349,16 @@ class FrameworkService {
 			$report->setRegulardays($newrequest->regulardays); 
 		 }
 		 
-		 // get old data
+		 // get old data TODO: cast from string into correct format!
 		 if (empty($newrequest->vacationdays)){ $report->setVacationdays(0); } else { $report->setVacationdays($newrequest->vacationdays);}
 		 if (empty($newrequest->actualhours)){ $report->setActualhours(0); } else { $report->setActualhours($newrequest->actualhours);}
 		 if (empty($newrequest->targethours)){ $report->setTargethours(0); } else { $report->setTargethours($newrequest->targethours);}
 		 if (empty($newrequest->overtime)){ $report->setOvertime(0); } else { $report->setOvertime($newrequest->overtime);}
 		 if (empty($newrequest->overtimeunpayed)){ $report->setOvertimeunpayed(0); } else { $report->setOvertimeunpayed($newrequest->overtimeunpayed);}
 		 if (empty($newrequest->overtimeacc)){ $report->setOvertimeacc(0); } else { $report->setOvertimeacc($newrequest->overtimeacc);}
+
+		// Flags
+		if (empty($newrequest->signed)){ $report->setSignedoff(0); } else { $report->setSignedoff( intval($newrequest->signed) );}
 		
 		 // return ok
 		 return $report;
@@ -410,34 +413,6 @@ class FrameworkService {
 		// return
 		return $response;
 		
-		
-	}
-	
-// ==================================================================================================================
-	// update overtime from all reports list
-	public function getOvertimeAcc($response){
-				
-		// Report List for Drop Down Menü
-		$overtimelist;	
-		  
-		// Generate default entry on existing records (startdate) of user
-		if (!empty($response)){	
-				
-			$overtimeacc = floatval(0.0);
-			
-			// Extract existing dates from records			
-			foreach ($response as &$report) {
-				
-				// Get Overtime and accumulate
-				$overtime = $report->overtime;
-				$overtimelist[$report->monyearid] = $overtimeacc;
-				$overtimeacc = $overtimeacc + $overtime;
-									
-			}			
-		}
-	
-		// return
-		return $overtimelist;
 		
 	}
 	

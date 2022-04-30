@@ -53,11 +53,10 @@
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
 		}
-
-			 			
+		 		 
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);
-		 		 
+		 		 		 
 		// create new ID, if nothing found
 		if (empty($existingID)){
 			
@@ -68,19 +67,46 @@
 			
 			$serviceResponse = $this->service->update($existingID[0]->id, $valid_report, $this->userId);
 		}
-
+		 
 		 // Refresh accumulated overtime in reports
 		 $reportlist = $this->service->findAll($this->userId);
-		 $overtimeResponse = $this->fwservice->getOvertimeAcc($reportlist);
 		 
-		 foreach ($overtimeResponse as $key => $value) {
-			 $this->service->updateOvertimeAcc($key, $value, $this->userId);
-		 }		 
+		 return DataResponse($reportlist);
+		 
+		 //$overtimeResponse = $this->fwservice->getOvertimeAcc($reportlist);
+		 
+		 //foreach ($overtimeResponse as $key => $value) {
+		//	 $this->service->updateOvertimeAcc($key, $value, $this->userId);
+		 //}		 
 		 
 		return new DataResponse($this->fwservice->clean_report($serviceResponse));
 
      }
 
+	 // ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      *  
+      */
+     public function signReport() {
+		 	 
+		// check if database entry for this month/year and user exists
+		$existingID = $this->service->findMonYear($this->request->monyearid, $this->userId); 
+		 		 		 
+		// ID found?
+		if (!empty($existingID)){
+			
+			// Change State
+			$existingID[0]->signedoff = $existingID[0]->signedoff == "0" ? "1" : "0";
+						
+			// update
+			$serviceResponse = $this->service->update($existingID[0]->id, $existingID[0], $this->userId);
+		}
+		 
+		 
+		return new DataResponse($serviceResponse);
+
+     }
 
 // ==================================================================================================================	
      /**

@@ -1,3 +1,15 @@
+/* ============ timesheet-header ============ */
+
+/* Top header Bar */
+#timesheet-header {	
+    height: 95px;
+
+    padding: 10px 20px 10px 20px;	
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+}
 
 /* ============ timesheet-newrecord-bar ============ */
 
