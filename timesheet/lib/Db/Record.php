@@ -22,7 +22,7 @@ class Record extends Entity implements JsonSerializable {
 	public $userId;
 
 	public $tags;
-	public $projects;
+	public $assignedproject;
 
 			
     public function jsonSerialize() {
@@ -50,7 +50,7 @@ class Record extends Entity implements JsonSerializable {
 			// Additional stuff like description, tags and timezone
             'description' => $this->description,
 			'tags' => $this->tags,
-			'projects' => $this->projects,
+			'assignedproject' => $this->assignedproject,
             'timezoneoffset' => $this->timezoneoffset
 
         ];

@@ -4,6 +4,7 @@
  use OCA\Timesheet\Service\FrameworkService;
  use OCA\Timesheet\Service\ReportService;
  use OCA\Timesheet\Service\RecordService;
+ use OCA\Timesheet\Service\ProjectService;
 
  use OCP\IRequest;
  use OCP\AppFramework\Controller;
@@ -24,6 +25,7 @@
 	 private $frameworkservice;
 	 private $recordservice;
 	 private $reportservice;
+	 private $projectservice;
 	 	 
 	 // use Errors.php
 	 use Errors;
@@ -34,7 +36,8 @@
      public function __construct(string $AppName, IRequest $request, $userId,
 								 FrameworkService $frameworkservice,
 								 ReportService $reportservice,
-								 RecordService $recordservice)
+								 RecordService $recordservice,
+								 ProjectService $projectservice)
 	 {
          parent::__construct($AppName, $request);
 		 
@@ -46,6 +49,7 @@
 		 $this->frameworkservice = $frameworkservice;
 		 $this->reportservice = $reportservice;
 		 $this->recordservice = $recordservice;
+		 $this->projectservice = $projectservice;
      }
 
 // ==================================================================================================================	
@@ -69,7 +73,8 @@
 	  * @NoAdminRequired
       */
      public function createupdateRecord() {
-
+		
+		 
 		// validation of record data
 		$valid_data = $this->frameworkservice->validate_RecordReq($this->request, $this->userId); 
 		
@@ -96,12 +101,7 @@
 			// Use service to save the record data in a database			
 			$serviceResponse = $this->recordservice->update($requestID, $valid_data, $this->userId);
 		}
-		
-		// set recalc_required flag for corresponding report
-		$reportID = gmdate("Y", $serviceResponse->startdatetime) . "," .gmdate("n", $serviceResponse->startdatetime); 
-		$this->reportservice->setRecalcReportFlag($reportID, $this->userId);
-					
-
+							
 		return new DataResponse($serviceResponse);
 	}	
      
@@ -147,18 +147,21 @@
 			 
 			 return "Error in Request";
 		 }
-			 		 
+		 		 
 		// now find all entries from this month
 		$recordlist = $this->recordservice->findAllRange($firstday, $lastday, $this->userId);
 		 
 		// get first element, cast to array and include first and last date
 		$monthly_report_setting = $this->reportservice->findMonYear(($year . "," . $month), $this->userId);
+		 
 		$monthly_report_setting = (array) $monthly_report_setting[0];
 		 
 		// Get acuumulated overtime
 		$monthly_report_setting["overtimeacc"] = $this->reportservice->GetOvertime(($year . "," . $month), $this->userId);
 		 
-
+		// Get Projectlist
+		$projectlist = $this->projectservice->findAllProjectnames($this->userId);
+		 
 		// check if first and last day is determined by report
 		$report_firstday = ($monthly_report_setting["startreport"])?($monthly_report_setting["startreport"]):($firstday);
 		$report_lastday = ($monthly_report_setting["endreport"])?($monthly_report_setting["endreport"]):($lastday);
@@ -180,7 +183,7 @@
 		 // read records and cast into format for jquery
 		if($output == "report"){
 			
-			 $recordlist_table = $this->frameworkservice->map_record2report($recordlist, $daylist, $monthly_report_setting);
+			 $recordlist_table = $this->frameworkservice->map_record2report($recordlist, $daylist, $projectlist, $monthly_report_setting);
 			 $recordlist_table["daylist"] = $daylist;
 			 $recordlist_table["first_last"] = $report_firstday . " to " . $report_lastday;
 						

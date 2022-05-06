@@ -5,7 +5,7 @@
     <name>Timesheet</name>
     <summary>A timesheet (or time sheet) is a method for recording the amount of a workers time spent on each job</summary>
     <description><![CDATA[Timesheet Tabulartbd]]></description>
-    <version>0.6.70</version>
+    <version>0.7.04</version>
     <licence>agpl</licence>
     <author mail="info@chrishoyer.de" >ChrisHoyer</author>
     <namespace>Timesheet</namespace>

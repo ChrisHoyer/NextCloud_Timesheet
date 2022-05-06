@@ -3,13 +3,14 @@ namespace OCA\Timesheet\Service;
 
 use OCA\Timesheet\Db\Record;
 use OCA\Timesheet\Db\Report;
- 
+use OCA\Timesheet\Db\Project;
+
 class FrameworkService {
 
 
 
 // ==================================================================================================================
-	public function map_record2report($recordlist, $daylist, $monthly_report_setting){
+	public function map_record2report($recordlist, $daylist, $projectlist, $monthly_report_setting){
 		
 		// This function maps records to a daylist and creates nested table
 		// return: array with dates and report information
@@ -26,7 +27,8 @@ class FrameworkService {
 			$recordlist_entry["day_timerange"] = array(strtotime($day . " 00:00"), strtotime($day . " 23:59"));
 			
 			// Find all entries that start in this timerange
-			$found_recordlist = array_filter($recordlist, function ($value) use($recordlist_entry) 
+			$found_recordlist = array_filter($recordlist, function ($value) use($recordlist_entry)
+											 
 			{return ($value->startdatetime >= $recordlist_entry["day_timerange"][0] && $value->startdatetime <= $recordlist_entry["day_timerange"][1]); });							
 			
 			// Add Working Hours for that day
@@ -55,8 +57,21 @@ class FrameworkService {
 				$report_entry["unpayedoverhours"] = $record->unpayedoverhours;
 				
 				$report_entry["recordduration"] = $record->recordduration;
-				$report_entry["description"] = $record->description;		
-
+				$report_entry["description"] = $record->description;
+				
+				// Assigned Project
+				if($record->assignedproject == 0)
+				{
+					$report_entry["assignedproject_name"] = "- unassigned -";
+					$report_entry["assignedproject_id"] = "0";
+				}
+				else
+				{
+					$report_entry["assignedproject_name"] = $projectlist[$record->assignedproject];
+					$report_entry["assignedproject_id"] = $record->assignedproject;
+				}
+									
+					
 				// check if legal holiday or vacation(payed) is marked
 				if (($record->holiday == "true") || ($record->vacation == "true")){
 				
@@ -300,10 +315,8 @@ class FrameworkService {
 		 
 		 // Default Value for Tags and Projects
 		 $record->setTags("");
-		 $record->setProjects("");		 
+		 $record->setAssignedproject($newrequest->assignedproject);		 
 	
-		 
-		 
 		 // return ok
 		 return $record;
 		 		
@@ -355,13 +368,35 @@ class FrameworkService {
 		 if (empty($newrequest->targethours)){ $report->setTargethours(0); } else { $report->setTargethours($newrequest->targethours);}
 		 if (empty($newrequest->overtime)){ $report->setOvertime(0); } else { $report->setOvertime($newrequest->overtime);}
 		 if (empty($newrequest->overtimeunpayed)){ $report->setOvertimeunpayed(0); } else { $report->setOvertimeunpayed($newrequest->overtimeunpayed);}
-		 if (empty($newrequest->overtimeacc)){ $report->setOvertimeacc(0); } else { $report->setOvertimeacc($newrequest->overtimeacc);}
 
 		// Flags
 		if (empty($newrequest->signed)){ $report->setSignedoff(0); } else { $report->setSignedoff( intval($newrequest->signed) );}
 		
 		 // return ok
 		 return $report;
+		 		
+	}
+
+// ==================================================================================================================	
+	// Check project data from request
+	public function validate_ProjectReq($newrequest, $userID){
+	
+		// create instance of database class
+		$project = new Project();
+		$project->setUserId($userID);
+ 		 
+		// Check Name and Description
+		$project->setProjectname($newrequest->projectname);
+		$project->setDescription($newrequest->description);
+		
+		// Parent ID (TODO: Sanity Check!)
+		$project->setParentid(0);		
+
+		// TODO: Planned Time
+		$project->setPlannedduration(0.0);	
+		
+		// return ok
+		return $project;
 		 		
 	}
 	

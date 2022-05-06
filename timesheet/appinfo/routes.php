@@ -13,7 +13,8 @@ return [
 		// pages
 	   ['name' => 'timesheet#index', 'url' => '/', 'verb' => 'GET'],
 	   ['name' => 'calendar#index', 'url' => '/calendar', 'verb' => 'GET'],
-
+	   ['name' => 'project#index', 'url' => '/project', 'verb' => 'GET'],
+		
 	   // Timesheet
 	   ['name' => 'timesheet#getRecordsRange', 'url' => '/getrecords', 'verb' => 'GET'],
 	   ['name' => 'timesheet#createupdateRecord', 'url' => '/record', 'verb' => 'POST'],
@@ -24,5 +25,11 @@ return [
 	   ['name' => 'report#getReport', 'url' => '/getreport', 'verb' => 'GET'],
 	   ['name' => 'report#createupdateReport', 'url' => '/report', 'verb' => 'POST'],
 	   ['name' => 'report#signReport', 'url' => '/signreport', 'verb' => 'POST'],
+		
+		// Projects
+	   ['name' => 'project#getProjectlist', 'url' => '/getprojectlist', 'verb' => 'GET'],
+	   ['name' => 'project#getProjects', 'url' => '/getprojects', 'verb' => 'GET'],	
+	   ['name' => 'project#createupdateProject', 'url' => '/project', 'verb' => 'POST'],
+		
     ]
 ];

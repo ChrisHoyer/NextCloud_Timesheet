@@ -84,7 +84,7 @@ function getReportList(successCallback, failureCallback) {
 
 // ===================== GET records in range
 function getRecords(year, month, start, end, output, successCallback, failureCallback) {
-	
+		
 	// Request using POST at /getrecords with accepted arguments year, month or start, end
 	var request_url = baseUrl + "/getrecords?year=" + year + "&month=" + month;
 	request_url = request_url + "&start=" + start + "&end=" + end + "&output=" + output;
@@ -136,6 +136,65 @@ function deleteRecordID(recordID, successCallback, failureCallback) {
 			// Callbacks
 			.success(function(data, status) { successCallback(data); })
 			.fail(function(reponse) { failureCallback(response); })
+}
+
+// ====================================================================================================================================================
+// ================================================= API Interface for Projects =======================================================================
+
+// ===================== GET complete Projectlist from User
+function getProjectList(successCallback, failureCallback) {
+	
+	// Request using POST at /record
+	var request_url = baseUrl + '/getprojectlist';
+		
+	// GET request with all reports from userID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			dataType: 'json',	
+			type: 'GET',
+			})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+}
+
+// ===================== GET complete Projectlist from User
+function getProjects(successCallback, failureCallback) {
+	
+	// Request using POST at /record
+	var request_url = baseUrl + '/getprojects';
+		
+	// GET request with all reports from userID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			dataType: 'json',	
+			type: 'GET',
+			})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+}
+
+// ===================== CREATE or UPDATE Project for this user
+function createupdateProject(request_data, successCallback, failureCallback) {
+
+	// Request a PUT at /project/{id}
+	var request_url = baseUrl + '/project';
+			
+	// PUT request with entity ID and new data
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			data: request_data,
+			dataType: 'json',
+			type: 'POST', 
+			})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+
 }
 
 

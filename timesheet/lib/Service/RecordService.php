@@ -79,7 +79,8 @@ class RecordService {
 			
 			$record->setHoliday($new_record->holiday);
 			$record->setVacation($new_record->vacation);
-						
+			 
+			$record->setAssignedproject($new_record->assignedproject);
 						
 		 	//insert in table
 		 	return $this->recordmapper->update($record);	

@@ -11,10 +11,10 @@
 	justify-content: center;
 }
 
-/* ============ timesheet-newrecord-bar ============ */
+/* ============ timesheet-newproject-bar ============ */
 
 /* Top New Record Bar */
-#timesheet-newrecord {	
+#timesheet-newproject {	
 	display: inline-block;
 	margin: 0 auto;
 	margin-bottom: 20px;
@@ -25,7 +25,7 @@
 }
 
 /* Top New Record Bar */
-#timesheet-newrecord-form {	
+#timesheet-newproject-form {	
     height: 95px;
 
     padding: 10px 20px 10px 20px;	
@@ -35,7 +35,7 @@
 	justify-content: center;
 }
 
-.timesheet-newrecord-itembox {
+.timesheet-newproject-itembox {
 	/*padding-left: 5px;
 	padding-right: 5px;
 	margin-left: 5px;
@@ -51,7 +51,7 @@
 	
 }
 
-.timesheet-newrecord-label {
+.timesheet-newproject-label {
 	writing-mode: tb-rl;
 	writing-mode: vertical-rl;
 	color: #bbb6b6;
@@ -59,40 +59,27 @@
 	font-size:30px;
 }
 
-.timesheet-newrecord-entrybox {
+.timesheet-newproject-entrybox {
 	text-align: center;	
 }
 
 
-.timesheet-newrecord-button-icon {
+.timesheet-newproject-button-icon {
 	margin-right: 5px;
 }
 
 
 
-#timesheet-newrecord-description {
+#timesheet-newproject-description {
 	width: 300px;
 }
 
-#timesheet-newrecord-breaktime::-webkit-datetime-edit-ampm-field {
-   display: none;
- }
 	
-/* ============ timesheet-record-barchart ============ */
 
-#timesheet-record-recordgraph-chart {
-	display: inline-block;
-	margin: 0 auto;
-	margin-bottom: 20px;
-	margin-top: 20px;
-	height: 300px;
-	
-}
-
-/* ============ timesheet-record-table ============ */
+/* ============ timesheet-projects-table ============ */
 
 /* Record Table Center and fitted to content */
-#timesheet-report
+#timesheet-projects
 {
 	min-height: 100px;
     padding: 5px 20px 30px 20px;
@@ -102,18 +89,18 @@
 }
 
 /* Cell Settings */
-.timesheet-report-cell {
+.timesheet-projects-cell {
 	margin: 5px;
 }
 
 /* column: date, start, end, break and duration */
-.timesheet-report-column-date, .timesheet-report-column-start, .timesheet-report-column-end, .timesheet-report-column-break, .timesheet-report-column-duration {
+.timesheet-projects-column-date, .timesheet-projects-column-start, .timesheet-projects-column-end, .timesheet-projects-column-break, .timesheet-projects-column-duration {
 	width: 100px;
 }
 
 
 /* column modify */
-.timesheet-report-column-modify {
+.timesheet-projects-column-modify {
 	width: 50px;
 	display: flex;
 	flex-direction: row;
@@ -123,14 +110,14 @@
 }
 
 /* column modify */
-.timesheet-report-day-content:hover .timesheet-report-column-modify {
+.timesheet-projects-day-content:hover .timesheet-projects-column-modify {
 	opacity: 100%;
 }
 
 /* ============ timesheet-record header ============ */
 
 /* Row Settings */
-.timesheet-report-day-content, .timesheet-report-day-header, .timesheet-record-summary-row {
+.timesheet-projects-day-content, .timesheet-projects-day-header, .timesheet-projects-summary-row {
 	height: 35px;
 	display: flex;
 	flex-direction: row;
@@ -161,7 +148,7 @@
 
 .timesheet-report-header-cell {
 	margin: 5px;
-	font-size:: 15px;
+	font-size: 15px;
 	font-weight: bold;
 	color: #212121;
 }

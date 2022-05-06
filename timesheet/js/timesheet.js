@@ -8,6 +8,12 @@
 		// Request Reports from this user
 		getReportList(generateReport);
 		
+		// Request Projects from this user
+		getProjectList(generateProject);
+		
+		// Everything is setup? Refresh page
+		RefreshTimesheet();
+		
 	});
 
 	// ===================== Dialog Form for editing or manually generating records
@@ -45,7 +51,11 @@
 				timezoneoffset: 	new Date().getTimezoneOffset(),
 				holiday: 			"false",	
 				vacation: 			"false",
-				unpayedoverhours: 	"false",	
+				unpayedoverhours: 	"false",
+			
+				// Project Related
+				assignedproject:   form.find("#timesheet-newrecord-selectionbox-project").val(),
+			
 			};
 			
 		
@@ -118,7 +128,18 @@ function RefreshTimesheet() {
 	// Get Selected Data
 	var selected_year = $('#timesheet-header-selectionbox-year').val();	
 	var selected_month = $('#timesheet-header-selectionbox-month').val();
-	selected_month = (timesheet_MonthNames.indexOf(selected_month) + 1);
+	
+	const d = new Date();
+	
+	if (selected_year == undefined)
+		selected_year = d.getFullYear();
+	
+	if (selected_month == undefined)
+		selected_month = d.getMonth() + 1;
+	else
+		selected_month = (timesheet_MonthNames.indexOf(selected_month) + 1);
+	
+
 	
 	// Request Records
 	getRecords(selected_year, selected_month,"" ,"" , "report", generateRecordList);
@@ -187,7 +208,11 @@ function editRecord(dialogModifyRecordForm) {
 			holiday: 			"false",
 			vacation: 			"false",
 			unpayedoverhours: 	form.find("#timesheet-dialog-unpayedoverhours").prop('checked'),		
-            timezoneoffset: new Date().getTimezoneOffset()
+            timezoneoffset: new Date().getTimezoneOffset(),
+		
+			// Project Related
+			assignedproject:   form.find("#timesheet-dialog-selectionbox-project").val(),
+		
 		};
 			
 		// POST request with all data
@@ -276,7 +301,9 @@ function generateRecordList(recordlist){
 					
 				// Description
 				record_table_row = record_table_row + "<div class='timesheet-report-day-content-cell timesheet-report-column-description'>" + record_entity.description + "</div>";
-						
+
+				// Project
+				record_table_row = record_table_row + "<div class='timesheet-report-day-content-cell timesheet-report-column-project'>" + record_entity.assignedproject_name + "</div>";
 				// End Table Row
 				record_table_row = record_table_row + "</div>";
 				row_day = row_day + record_table_row;
@@ -377,7 +404,7 @@ function generateRecordList(recordlist){
 
 };
 
-// ===================== Generates Table from Reportlist JSON Response
+// ===================== Generates Selectionbox from Reportlist JSON Response
 function generateReport(reportlist){
 	
 		// Generate HTML code for Report Header
@@ -442,9 +469,45 @@ function generateReport(reportlist){
 	$('#timesheet-header-selectionbox-month').change(function () {
 		RefreshTimesheet();
 		});
+			
+};
 
-	// Everything is setup? Refresh page
-	RefreshTimesheet();			
+// ===================== Generates Selectionbox from Projectlist JSON Response
+function generateProject(projectlist){
+	
+		// Generate HTML code for Report Header
+		var Project_NewRecord = [];
+		var Project_EditDialog = [];
+		
+		// Generate table row content
+		Project_NewRecord = "<div class='timesheet-newrecord-projectselectionbox-content' >";
+		Project_NewRecord = Project_NewRecord + "<select id='timesheet-newrecord-selectionbox-project' name='project' class='timesheet-header-selectionbox' >";	
+	
+		Project_EditDialog = "<div class='timesheet-dialog-projectselectionbox-content' >";
+		Project_EditDialog = Project_EditDialog + "<select id='timesheet-dialog-selectionbox-project' name='project' class='timesheet-dialog-selectionbox' >";
+	
+		
+		// Iterate all entries
+		$.each(projectlist, function (id, name){
+			Project_NewRecord = Project_NewRecord + "<option value=\"" + id +"\" >" + name + "</option>";
+			Project_EditDialog = Project_EditDialog + "<option value=\"" + id +"\" >" + name + "</option>";
+		});
+				
+		Project_NewRecord = Project_NewRecord + "</select></div>";
+		Project_EditDialog = Project_EditDialog + "</select></div>";	
+				
+		// Include into Table
+		$("#timesheet-newrecord-projectselectionbox").html($( "<div/>", {
+                      "class": "timesheet-project-selectionbox-generated",
+                      html: Project_NewRecord.toString()
+                    }));
+	
+		// Include into Dialog
+		$("#timesheet-dialog-projectselectionbox").html($( "<div/>", {
+                      "class": "timesheet-project-selectionbox-generated",
+                      html: Project_EditDialog.toString()
+                    }));
+									
 };
 
 // ===================== Generate BarChart
@@ -489,4 +552,5 @@ function updateBarChart(barchart_date, barchart_recordduration, barchart_targetd
 	});
 
 };
+
 }());

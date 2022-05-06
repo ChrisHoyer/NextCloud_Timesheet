@@ -71,7 +71,7 @@
 		 // Refresh accumulated overtime in reports
 		 $reportlist = $this->service->findAll($this->userId);
 		 
-		 return DataResponse($reportlist);
+		 return new DataResponse($reportlist);
 		 
 		 //$overtimeResponse = $this->fwservice->getOvertimeAcc($reportlist);
 		 
