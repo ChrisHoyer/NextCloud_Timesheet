@@ -157,6 +157,38 @@ class RecordService {
 	 } 
 
 // ==================================================================================================================
+ 	 // Find an entry
+	 public function findAllProjectTime(string $userId, int $projectid){
+		 
+		 // Try to find the Id and User ID
+		 try {
+		 	
+			$response = $this->recordmapper->findAllProjectTime($userId, $projectid);	
+				  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 }
+		 
+		 // Subtract End - Start Time for each Record and Accumulate it
+		 $projecttime = 0;
+		 	
+		 // Projects found?
+		 if(!empty($response))
+		 {
+			 foreach ($response as &$project)
+			 {				 
+				 $projecttime += intval(($project->enddatetime-$project->startdatetime)/60); 
+			 }			 
+		 }
+		 
+		 return $projecttime;
+		 
+	 } 
+
+// ==================================================================================================================
  	 // Find an entry for a specific month
 	 public function findAllRange(string $firstday, string $lastday, string $userId){
 		 

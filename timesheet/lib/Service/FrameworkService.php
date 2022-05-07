@@ -390,7 +390,7 @@ class FrameworkService {
 		$project->setDescription($newrequest->description);
 		
 		// Parent ID (TODO: Sanity Check!)
-		$project->setParentid(0);		
+		$project->setParentid($newrequest->parentid);		
 
 		// TODO: Planned Time
 		$project->setPlannedduration(0.0);	

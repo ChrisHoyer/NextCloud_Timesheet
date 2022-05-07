@@ -1,4 +1,4 @@
-<div id="timesheet-content">
+<div id="timesheet-mainframe">
 
 <!-- some default values -->
 <?php
@@ -6,77 +6,92 @@ $today = date("Y-m-d");
 $currenttime = date("H:i");
 ?>
 
-<!-- Header -->
-    <div id="timesheet-header">Timesheet for <div id="timesheet-header-selectionbox"> </div> 
+<!-- Mainframe Header -->
+    <div id="timesheet-header"  class="timesheet-mainframesection">
+		Timesheet for <div id="timesheet-header-selectionbox"> </div> 
 	    <div class="timesheet-header-itembox">
 			<button type="button" id="timesheet-report-signed" class="timesheet-button"><span class='icon-logout timesheet-header-button-icon'></span>Sign-off/Sign-on</button>
 		</div>
 	</div>
 
-<!-- new record bar -->
-    	<form id="timesheet-newrecord" oninput="timesheet-newrecord-worktime.value=timesheet-newrecord-starttime.value">
-        <div id="timesheet-newrecord-form">	
-        	<div class="timesheet-newrecord-itembox timesheet-newrecord-label">
-                ADD
+<!-- Mainframe Addform -->
+	<div id="timesheet-addform"  class="timesheet-mainframesection">
+		
+    	<form id="timesheet-newrecord"  class="timesheet-addform">
+        	<div class="timesheet-formitem timesheet-formheader">ADD</div>
+            <div class="timesheet-formitem">
+                <label for="timesheet-newrecord-date" class="timesheet-label" >Date
+                <input type="date" name="date" id="timesheet-newrecord-date" value="<?php echo $today ?>" max="<?php echo $today ?>" class="timesheet-timebox"></label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-date">Date
-                <input type="date" name="date" id="timesheet-newrecord-date" value="<?php echo $today ?>" max="<?php echo $today ?>" class="timesheet-newrecord-entrybox"></label>
+            <div class="timesheet-formitem">
+                <label for="timesheet-newrecord-starttime" class="timesheet-label" >Start Time
+                <input type="time" name="starttime" id="timesheet-newrecord-starttime" value="00:00" class="timesheet-timebox"></label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-starttime">Start Time
-                <input type="time" name="starttime" id="timesheet-newrecord-starttime" value="00:00" class="timesheet-newrecord-entrybox"></label>
+            <div class="timesheet-formitem">
+                <label for="timesheet-newrecord-endtime" class="timesheet-label" >End Time
+                <input type="time" name="endtime" id="timesheet-newrecord-endtime" value="<?php echo $currenttime ?>" class=" timesheet-timebox"></label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-endtime">End Time
-                <input type="time" name="endtime" id="timesheet-newrecord-endtime" value="<?php echo $currenttime ?>" class=" timesheet-newrecord-entrybox"></label>
+            <div class="timesheet-formitem">
+                <label for="timesheet-newrecord-breaktime" class="timesheet-label" >Break
+                <input type="time" name="breaktime" id="timesheet-newrecord-breaktime" value="00:00" class="timesheet-timebox"></label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-breaktime">Break
-                <input type="time" name="breaktime" id="timesheet-newrecord-breaktime" value="00:00" class="timesheet-newrecord-entrybox"></label>
+            <div class="timesheet-formitem">
+                <label for="timesheet-newrecord-description" class="timesheet-label" >Description
+                <input type="text" name="description" id="timesheet-newrecord-description" value="" class="timesheet-textbox"></label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-description">Description
-                <input type="text" name="description" id="timesheet-newrecord-description" value="" class="timesheet-newrecord-entrybox"></label>
-            </div>
-			<div class="timesheet-newrecord-itembox">
-                <label for="timesheet-newrecord-project">Assigned Project
+			<div class="timesheet-formitem">
+                <label for="timesheet-newrecord-project" class="timesheet-label" >Assigned Project
                 <div id="timesheet-newrecord-projectselectionbox"> </div> </label>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <button type="button" id="timesheet-newrecord-submit" class="timesheet-newrecord-entrybox timesheet-button"><span class='icon-confirm timesheet-newrecord-button-icon'></span>Submit</button>
+            <div class="timesheet-formitem">
+                <button type="button" id="timesheet-newrecord-submit" class="timesheet-button">
+				<span class='icon-confirm timesheet-button-icon'></span>Submit</button>
             </div>
-            <div class="timesheet-newrecord-itembox">
-                <button type="button" id="timesheet-newrecord-refresh" class="timesheet-newrecord-entrybox timesheet-button"><span class='icon-history timesheet-newrecord-button-icon'></span>Refresh</button>
+            <div class="timesheet-formitem">
+                <button type="button" id="timesheet-newrecord-refresh" class="timesheet-button">
+				<span class='icon-history timesheet-button-icon'></span>Refresh</button>
             </div>
-        </div>
         </form>
-<!-- report bar chart -->   
- 	<div id="timesheet-record-recordgraph">
-    	<canvas id="timesheet-record-recordgraph-chart"></canvas>
-    </div>   
-<!-- generated record table -->
-    <div id="timesheet-report">
-           <div id="timesheet-report-summary">
-            <!-- autogenerated content -->
-        </div>
-    	<!-- record table header -->
-        <div id="timesheet-report-header">
-            <div class="timesheet-report-header-cell timesheet-report-column-date"> Date </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-start"> Start Time </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-end"> End Time </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-break"> Break </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-duration"> Total Time </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-modify"> </div>
-            <div class="timesheet-report-header-cell timesheet-report-column-description"> Description </div>
-			<div class="timesheet-report-header-cell timesheet-report-column-project"> Project </div>
-        </div>
-        <div id="timesheet-report-content">
-            <!-- autogenerated content -->
-        </div>
+		
 	</div>
-    
-<!-- dialog edit or manual entry-->   
+	
+<!-- Mainframe Content -->
+	<div id="timesheet-content"  class="timesheet-mainframesection">
+		
+		<!-- report bar chart -->   
+		<div id="timesheet-record-recordgraph">
+			<canvas id="timesheet-record-recordgraph-chart"></canvas>
+		</div> 
+		
+		
+		<!-- Record Table-->
+		<div class="timesheet-table">
+			
+			<div id="timesheet-report-summary">
+				<!-- autogenerated content -->
+			</div>
+			
+			<!-- record table header -->
+			<div class="timesheet-tableheader">
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-time"> Date </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-time"> Start Time </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-time"> End Time </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-time"> Break </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-time"> Total Time </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-modify"> </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-long"> Description </div>
+				<div class="timesheet-tableheader-cell timesheet-tablecolumn-long"> Project </div>
+			</div>
+			<div id="timesheet-report-content">
+				<!-- autogenerated content -->
+			</div>
+			
+		</div>
+		
+    </div>
+	
+<!-- dialog edit entry-->  
+	
 <div id="dialog-modify-record" title="Modify Record" class='hidden'>
   <form>
     <fieldset >

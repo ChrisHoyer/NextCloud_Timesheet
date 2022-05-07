@@ -28,8 +28,9 @@ return [
 		
 		// Projects
 	   ['name' => 'project#getProjectlist', 'url' => '/getprojectlist', 'verb' => 'GET'],
+	   ['name' => 'project#getTopProjectlist', 'url' => '/gettopprojectlist', 'verb' => 'GET'],
 	   ['name' => 'project#getProjects', 'url' => '/getprojects', 'verb' => 'GET'],	
 	   ['name' => 'project#createupdateProject', 'url' => '/project', 'verb' => 'POST'],
-		
+	   ['name' => 'project#deleteProject', 'url' => '/project/{id}', 'verb' => 'DELETE'],		
     ]
 ];

@@ -37,6 +37,23 @@ class RecordMapper extends QBMapper {
         return $this->findEntity($qb);
     }
 
+	// ==================================================================================================================
+	// find using SQL commands
+    public function findAllProjectTime(string $userId, int $projectid) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+		
+		// select from app Table, where only this ID and current user
+		$qb->select('startdatetime', 'enddatetime')
+		   ->from($this->getTableName())
+		   ->where($qb->expr()->eq('assignedproject', $qb->createNamedParameter($projectid)))
+		   ->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+           );
+
+        return $this->findEntities($qb);
+    }
+	
 // ==================================================================================================================
     public function findAll(string $userId) {
 		

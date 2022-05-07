@@ -160,6 +160,24 @@ function getProjectList(successCallback, failureCallback) {
 }
 
 // ===================== GET complete Projectlist from User
+function getTopProjectList(successCallback, failureCallback) {
+	
+	// Request using POST at /record
+	var request_url = baseUrl + '/gettopprojectlist';
+		
+	// GET request with all reports from userID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			dataType: 'json',	
+			type: 'GET',
+			})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+}
+
+// ===================== GET complete Projectlist from User
 function getProjects(successCallback, failureCallback) {
 	
 	// Request using POST at /record
@@ -197,6 +215,24 @@ function createupdateProject(request_data, successCallback, failureCallback) {
 
 }
 
+// ===================== DELETE Project by ID for this user
+function deleteProjectID(recordID, successCallback, failureCallback) {
+
+	// Request a Delete at /record/{id}
+	var request_url = baseUrl + '/project/' + recordID;
+		
+	// DELETE request with entity ID
+	$.ajax({
+			headers: {requesttoken: oc_requesttoken},
+			url: request_url,
+			dataType: 'json',	
+			type: 'DELETE'})
+			// Callbacks
+			.success(function(data, status) { successCallback(data); })
+			.fail(function(reponse) { failureCallback(response); })
+}
+
+//
 
 // ====================================================================================================================================================
 // ====================================================== Utilities ===================================================================================

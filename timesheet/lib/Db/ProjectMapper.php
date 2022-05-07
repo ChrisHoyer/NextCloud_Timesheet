@@ -45,9 +45,7 @@ class ProjectMapper extends QBMapper {
 		// select from DB, where only current user
         $qb->select('*')
            ->from($this->getTableName())
-           ->where(
-            $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
-           );
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
 			
         return $this->findEntities($qb);
     } 
@@ -61,10 +59,24 @@ class ProjectMapper extends QBMapper {
 		// select from DB, where only current user
         $qb->select('projectname', 'id')
            ->from($this->getTableName())
-           ->where(
-            $qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
-           );
+           ->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
 			
         return $this->findEntities($qb);
     } 
+	
+// ==================================================================================================================
+    public function findAllTopProjectnames(string $userId) {
+		
+		// Build SQL querry
+        $qb = $this->db->getQueryBuilder();
+
+		// select from DB, where only current user
+        $qb->select('projectname', 'id')
+           ->from($this->getTableName())
+           ->where( $qb->expr()->eq('user_id', $qb->createNamedParameter($userId) ))
+			->andWhere( $qb->expr()->eq('parentid', $qb->createNamedParameter(0) ));
+			
+        return $this->findEntities($qb);
+    } 
+	
 }

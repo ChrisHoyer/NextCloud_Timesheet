@@ -45,6 +45,26 @@ class ProjectService {
 		 //insert in table
 		 return $this->projectmapper->insert($project);
      }
+
+// ==================================================================================================================	
+	 // delete an entry
+	 public function delete(int $id, string $userId){
+		 
+		 // Try to find and delete the Id and User ID
+		 try {
+		 	
+			// find ID and then delete it
+			$record = $this->projectmapper->find($id, $userId);
+			$this->projectmapper->delete($record);
+			
+			return $record;		  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 } 
+	 }
 	
 // ==================================================================================================================	
 	// Update an entry
@@ -77,14 +97,46 @@ class ProjectService {
 		 } 			 
      }
 
-	// ==================================================================================================================	
- 	 // Find all entry
-	 public function findAllProjectnames(string $userId){
+// ==================================================================================================================	
+ 	// Find all entries with ID and Name
+	public function findAllProjectnames(string $userId){
 		 
 		 // Try to find the Id and User ID
 		 try {
 		 	
 			$response = $this->projectmapper->findAllProjectnames($userId);	
+				  
+		 // Id not found
+		 } catch(Exception $e) {
+			 
+			 // Exception Handler
+			 $this->handleException($e);
+		 }
+		 
+		 // return type
+		 $projectlist;
+		 	
+		 // Projects found?
+		 if(!empty($response))
+		 {
+			 foreach ($response as &$project)
+			 {	
+				 $projectlist[$project->id] = $project->projectname; 
+			 }			 
+		 }
+		 
+		 return $projectlist;
+		 
+	 }
+
+	// ==================================================================================================================	
+ 	// Find all entries with ID and Name and ParentID = 0
+	public function findAllTopProjectnames(string $userId){
+		 
+		 // Try to find the Id and User ID
+		 try {
+		 	
+			$response = $this->projectmapper->findAllTopProjectnames($userId);	
 				  
 		 // Id not found
 		 } catch(Exception $e) {
@@ -108,10 +160,10 @@ class ProjectService {
 		 return $projectlist;
 		 
 	 }
-	
-// ==================================================================================================================	
- 	 // Find all entry
-	 public function findAll(string $userId){
+
+	// ==================================================================================================================	
+ 	 // Find all entrie and generate Tree
+	 public function findAllTree(string $userId){
 		 
 		 // Try to find the Id and User ID
 		 try {
@@ -124,6 +176,8 @@ class ProjectService {
 			 // Exception Handler
 			 $this->handleException($e);
 		 }
+		 
+
 		 
 	 }  
 	

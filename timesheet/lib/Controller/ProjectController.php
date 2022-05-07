@@ -11,19 +11,24 @@
  
  use OCA\Timesheet\Service\FrameworkService;
  use OCA\Timesheet\Service\ProjectService;
- 
+ use OCA\Timesheet\Service\RecordService;
+
  class ProjectController extends Controller {
 
      // Private variables, which are necessary.
      private $userId;
 	 private $service;
 	 private $fwservice;
-	 
+	 private $recordservice;	 
 	 protected $request;
+	 
+	 // use Errors.php
+	 use Errors;
+
 
 // ==================================================================================================================
 	// Constructing this instance
-     public function __construct(string $AppName, IRequest $request, $userId, ProjectService $service, FrameworkService $fwservice){
+     public function __construct(string $AppName, IRequest $request, $userId, ProjectService $service, FrameworkService $fwservice, RecordService $recordservice){
          parent::__construct($AppName, $request);
 		 
 		 // initialize variables
@@ -31,9 +36,24 @@
 		 $this->userId = $userId;
 		 $this->service = $service;
 		 $this->fwservice = $fwservice;
+		 $this->recordservice = $recordservice;		 
      }
 
-	 // ==================================================================================================================	
+// ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      * 
+	  * @param int $id  
+      */
+     public function deleteProject(int $id) {	
+	 	// New Error Handler function, which calls the find function
+		 return $this->handleNotFound(function () use ($id) {
+		 // now find the id and show it			 
+            return $this->service->delete($id, $this->userId);
+        });
+     }
+	 
+// ==================================================================================================================	
      /**
       * This function is called, if a new record data request comes in. Either a new record should be created or an existing
 	  * record will be updated. This depends on the the existing ID of this record. An empty ID triggers a record creation
@@ -85,7 +105,21 @@
 		 	
 		 // Return
 		 return $response;
-     }	 
+     }
+	 
+// ==================================================================================================================	
+     /**
+      * @NoAdminRequired
+      * 
+      */
+     public function getTopProjectlist() {
+		 		 
+		 // now find all projects of this user		 
+		 $response = $this->service->findAllTopProjectnames($this->userId);
+		 	
+		 // Return
+		 return $response;
+     }	
 // ==================================================================================================================	
      /**
       * @NoAdminRequired
@@ -94,10 +128,47 @@
      public function getProjects() {
 		 
 		 // now find the id and show it			 
-		 $reportlist = $this->service->findAll($this->userId);
+		 $response = $this->service->findAllTree($this->userId);
 		 	 		 	 
-		 // Return
-		 return $reportlist;
+		 // return type
+		 $projecttree;
+		 	
+		 // Return Unassigned Project
+		 $projecttree[0]["id"] = 0;
+		 $projecttree[0]["projectname"] = "- unassigned -";				 
+		 $projecttree[0]["description"] = "";
+		 $projecttree[0]["timeplanned"] = "-";
+		 
+		 $projecttree[0]["timespend_UNIX"] = $this->recordservice->findAllProjectTime($this->userId, 0);
+		 
+		 $projecttree[0]["timespend"] = sprintf('%02d:%02d', intval($projecttree[0]["timespend_UNIX"]/60), $projecttree[0]["timespend_UNIX"]%60);	
+		 
+		 // Projects found?
+		 if(!empty($response))
+		 {
+			 foreach ($response as &$projectresponse)
+			 {	
+				 // Add Data into Dictionary
+				 $project["id"] = $projectresponse->id;
+				 $project["projectname"] = $projectresponse->projectname;				 
+				 $project["description"] = $projectresponse->description;
+				 $project["timeplanned"] = $projectresponse->plannedduration;
+				 
+				 // Calculate Time Spend
+				 $project["timespend_UNIX"]= $this->recordservice->findAllProjectTime($this->userId, $projectresponse->id);
+				 $project["timespend"] = sprintf('%02d:%02d', intval($project["timespend_UNIX"]/60), $project["timespend_UNIX"]%60);	
+				 
+				 
+				 // if parent id assigned?
+				 if($projectresponse->parentid == 0)
+					 $projecttree[$projectresponse->id] = $project;
+				 else
+					 $projecttree[$projectresponse->parentid]["child"][$projectresponse->id] = $project;				 
+					  
+			 }			 
+		 }
+		 
+		 return $projecttree;
      }
 
 // ==================================================================================================================	
