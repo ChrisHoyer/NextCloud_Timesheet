@@ -54,7 +54,7 @@
 				unpayedoverhours: 	"false",
 			
 				// Project Related
-				assignedproject:   form.find("#timesheet-newrecord-selectionbox-project").val(),
+				assignedproject: $('#timesheet-newrecord-selectionbox-project').val(),
 			
 			};
 			

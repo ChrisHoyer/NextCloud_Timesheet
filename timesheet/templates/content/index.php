@@ -39,17 +39,17 @@ $currenttime = date("H:i");
                 <label for="timesheet-newrecord-description" class="timesheet-label" >Description
                 <input type="text" name="description" id="timesheet-newrecord-description" value="" class="timesheet-textbox"></label>
             </div>
-			<div class="timesheet-formitem">
+			      <div class="timesheet-formitem">
                 <label for="timesheet-newrecord-project" class="timesheet-label" >Assigned Project
                 <div id="timesheet-newrecord-projectselectionbox"> </div> </label>
             </div>
             <div class="timesheet-formitem">
                 <button type="button" id="timesheet-newrecord-submit" class="timesheet-button">
-				<span class='icon-confirm timesheet-button-icon'></span>Submit</button>
+				    <span class='icon-confirm timesheet-button-icon'></span>Submit</button>
             </div>
             <div class="timesheet-formitem">
                 <button type="button" id="timesheet-newrecord-refresh" class="timesheet-button">
-				<span class='icon-history timesheet-button-icon'></span>Refresh</button>
+				    <span class='icon-history timesheet-button-icon'></span>Refresh</button>
             </div>
         </form>
 		
