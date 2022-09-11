@@ -22,11 +22,12 @@
 				height: 400,
 				width: 450,
 				modal: true,
+        overlay: { backgroundColor: "#000", opacity: 0.5 },
 				buttons: {
 					"Edit Record": function(){ editRecord(dialogModifyRecordForm); },
 					Cancel: function() { dialogModifyRecordForm.dialog( "close" ); }
 						},
-				close: function() { $("#dialog-modify-record")[0].reset();}
+				//close: function() { this.hide(); } //
 	});
 
 		  
@@ -294,7 +295,7 @@ function generateRecordList(recordlist){
 					record_table_row += "<span class='timesheet-record-edit icon-rename' data-startdate='" + record_entity.startdate + "'";
 					record_table_row += " data-starttime='" + record_entity.starttime + "' data-endtime='" + record_entity.endtime + "' data-description='" + record_entity.description + "'";
 					record_table_row += " data-holiday='" + record_entity.holiday + "' data-vacation='" + record_entity.vacation + "' data-unpayedoverhours='" + record_entity.unpayedoverhours + "'";
-					record_table_row += " data-breaktime='" + record_entity.breaktime + "' data-dbid=" + record_entity.id + " ></span>";
+					record_table_row += " data-breaktime='" + record_entity.breaktime + "' data-assignedproject='" + record_entity.assignedproject_name + "' data-dbid=" + record_entity.id + " ></span>";
 				}
 				
 				record_table_row += "</div>";
@@ -392,6 +393,8 @@ function generateRecordList(recordlist){
 		form.find("#timesheet-dialog-breaktime").val($(e.target).data("breaktime"));
 		form.find("#timesheet-dialog-description").val($(e.target).data("description"));
 		form.find("#timesheet-dialog-unpayedoverhours").attr( 'checked', $(e.target).data("unpayedoverhours") );
+ 		form.find("#timesheet-dialog-selectionbox-project").val($(e.target).data("assignedproject")); 
+
 		
 		// Open dialog form
 		dialogModifyRecordForm.dialog("open");
