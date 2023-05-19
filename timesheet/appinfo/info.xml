@@ -1,23 +1,40 @@
 <?xml version="1.0"?>
-<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>timesheet</id>
+	
+	<!--basic data-->
     <name>Timesheet</name>
-    <summary>A timesheet (or time sheet) is a method for recording the amount of a workers time spent on each job</summary>
+    <summary>A time sheet is a method for recording the amount of a workers time spent on each job</summary>
     <description><![CDATA[Timesheet Tabulartbd]]></description>
     <version>0.7.05</version>
     <licence>agpl</licence>
-    <author mail="info@chrishoyer.de" >ChrisHoyer</author>
+    <author mail="info@chrishoyer.de">Chris Hoyer</author>
+	
+	<!--Nextcloud categories-->
     <namespace>Timesheet</namespace>
     <category>office</category>
-    <bugs>https://github.com/ChrisHoyer/NextCloud_Timesheet</bugs>
+	<category>organization</category>
+	<category>tools</category>
+	
+	<!--Tracking links-->
+	<website>https://github.com/ChrisHoyer/NextCloud_Timesheet</website>
+	<bugs>https://github.com/ChrisHoyer/NextCloud_Timesheet/issues</bugs>
+	<repository type="git">https://github.com/ChrisHoyer/NextCloud_Timesheet.git</repository>
+	
+	<!--Nextcloud settings-->
     <dependencies>
-        <nextcloud min-version="22" max-version="24"/>
+		<php min-version="7.4" max-version="8.2"/>
+        <nextcloud min-version="25" max-version="27"/>
     </dependencies>
+	
+	<!--Nextcloud navigation-->
     <navigations>
         <navigation>
+			<id>timesheet</id>
             <name>Timesheet</name>
             <route>timesheet.timesheet.index</route>
+			<order>10</order>
         </navigation>
     </navigations>
+	
 </info>

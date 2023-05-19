@@ -1,7 +1,7 @@
 /* ============ Adjust Nextcloud Style ============ */
 
 /* Resize Main Box from Nextcloud*/
-#app-content-wrapper {
+#timesheet-content-wrapper {
 	height: 100%;
 	width: 100%;
 	display:block;
