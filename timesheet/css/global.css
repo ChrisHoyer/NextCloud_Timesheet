@@ -1,7 +1,8 @@
 /* ============ Adjust Nextcloud Style ============ */
 
-/* Resize Main Box from Nextcloud */
+/* Resize Main Box from Nextcloud*/
 #app-content-wrapper {
+	height: 100%;
 	width: 100%;
 	display:block;
 }
