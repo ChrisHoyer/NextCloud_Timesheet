@@ -78,10 +78,11 @@
 		// validation of record data
 		$valid_data = $this->frameworkservice->validate_RecordReq($this->request, $this->userId); 
 		
+		/* ERROR: $valid_data must be a string
 		if ( strpos($valid_data, "ERROR") == true) {
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
-		}
+		} */
 			
 		// check if database entry exists 
 		$requestID = $this->request->id;

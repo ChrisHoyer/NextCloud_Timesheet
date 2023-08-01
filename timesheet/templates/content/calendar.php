@@ -1,5 +1,5 @@
-<div id="timesheet-content">
-
+<div id="timesheet-mainframe">
+	
 <!-- some default values -->
 <?php
 $today = date("Y-m-d");

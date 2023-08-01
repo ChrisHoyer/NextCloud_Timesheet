@@ -49,10 +49,11 @@
 		 // validation of record data
 		$valid_report = $this->fwservice->validate_ReportReq($this->request, $this->userId); 
 		 
+		 /*
 		if ( strpos($valid_report, "ERROR") == true) {
 			// Error -> send it back to form
 			return new DataResponse( $valid_data );
-		}
+		}*/
 		 		 
 		// check if database entry exists 
 		$existingID = $this->service->findMonYear($valid_report->monyearid, $this->userId);

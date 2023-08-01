@@ -405,7 +405,8 @@ class FrameworkService {
 	public function getReportList($response){
 
 		// Report List for Drop Down Menü
-		$reportlist_decoded;	
+		$reportlist_decoded = [];
+		$reportlist_decoded["reports"] = [];
 		  
 		// Generate default entry on existing records (startdate) of user
 		if (!empty($response)){	
